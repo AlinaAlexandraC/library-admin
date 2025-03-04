@@ -21,7 +21,7 @@ const app = express();
 
 // Middleware
 
-const origins = ['https://library-admin-p09g.onrender.com', 'http://localhost:3000'];
+const origins = ['https://library-admin-1.onrender.com/', 'http://localhost:3000'];
 
 app.use(cors({ origins, credentials: true }));
 app.use(express.json());
