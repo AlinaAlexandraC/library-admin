@@ -21,7 +21,9 @@ const app = express();
 
 // Middleware
 
-app.use(cors({origin: 'http://localhost:3000', credentials: true}));
+const origins = ['https://library-admin-p09g.onrender.com', 'http://localhost:3000'];
+
+app.use(cors({ origins, credentials: true }));
 app.use(express.json());
 
 // Connect to MongoDB
