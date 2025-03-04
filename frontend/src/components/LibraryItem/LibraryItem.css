@@ -1,0 +1,163 @@
+.library-item-wrapper {
+    height: 61px;
+    background-color: #f8f8f8;
+    border-radius: 40px;
+    margin: 0 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.library-item {
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.type-icon {
+    height: inherit;
+    border: 1px solid;
+    border-radius: 50%;
+}
+
+.title-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-weight: 600;
+}
+
+.other-information span,
+.author,
+.chapters {
+    font-size: 14px;
+}
+
+.library-item-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 160px;
+    padding: 0 10px;
+}
+
+.library-item-edit,
+.library-item-status,
+.library-item-delete,
+.library-item-save {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid;
+    cursor: pointer;
+}
+
+.library-item-edit {
+    background-color: #2196f3;
+}
+
+.library-item-save {
+    background-color: antiquewhite;
+}
+
+.library-item-status {
+    background-color: #d6efe9;
+}
+
+.checked {
+    background-color: #389276;
+}
+
+.library-item-delete {
+    background-color: #f53649;
+}
+
+.library-item-buttons img {
+    width: 20px;
+}
+
+.mobile {
+    display: none;
+}
+
+.title-input,
+.no_of_seasons-input,
+.no_of_pages-input {
+    margin-left: 10px;
+    width: fit-content;
+    border: 0;
+    border-radius: 5px 5px 0 0;
+    background-color: #fff;
+}
+
+.no_of_seasons-input,
+.no_of_pages-input {
+    width: 30px;
+    text-align: center;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.title-input:focus,
+.no_of_seasons-input:focus,
+.no_of_pages-input:focus {
+    outline: none;
+    border-bottom: 2px solid #3c3d80;
+}
+
+.genre-select {
+    margin-left: 10px;
+}
+
+@media only screen and (max-width: 425px) {
+    .library-item-wrapper {
+        height: 68px;
+    }
+
+    .non-mobile {
+        display: none;
+    }
+
+    .mobile {
+        display: inline;
+    }
+
+    .other-information span {
+        padding: 0;
+    }
+
+    .other-information {
+        padding: 0 10px;
+    }
+
+    .library-item-buttons {
+        width: 110px;
+    }
+
+    .library-item-edit,
+    .library-item-status,
+    .library-item-delete,
+    .library-item-save {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .library-item-buttons {
+        width: 100px;
+    }
+
+    .other-information span {
+        font-size: 12px;
+    }
+}

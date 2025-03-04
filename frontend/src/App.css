@@ -1,0 +1,93 @@
+.not-found-container {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.not-found {
+    height: calc(400px - 130px);
+    padding: 0 100px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.not-found>span:first-of-type {
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.btn {
+    background-color: #151e72;
+    color: #fff;
+    border-radius: 30px;
+    height: 36px;
+    width: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.link {
+    text-decoration: none;
+}
+
+.link:visited {
+    color: black;
+}
+
+label {
+    font-size: 15px;
+}
+
+input {
+    height: 25px;
+    padding: 1px 7px;
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+select {
+    height: 30px;
+    padding: 1px 7px;
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+.error,
+.success {
+    height: 30px;
+    font-weight: 600;
+    display: inline-block;
+    word-wrap: break-word;
+    text-align: center;
+}
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    padding-top: 10px;
+}

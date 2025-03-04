@@ -1,0 +1,64 @@
+.add-to-library-container {
+    height: calc(100vh - 90px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-to-library-wrapper {
+    height: 100%;
+    padding-top: 20px;
+    width: 70%;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.add-to-library-input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 70%;
+    padding: 15px 0;
+}
+
+.add-to-library-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.title-container,
+.type-container,
+.genre-container,
+.book-container,
+.manga-container,
+.seasons-container,
+.episodes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.anime-container {
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.title-length {
+    display: flex;
+    justify-content: space-between;
+}
+
+.seasons-number,
+.episodes-number {
+    width: 48%;
+}
+
+.instruction {
+    text-align: center;
+    font-size: 12px;
+    padding-bottom: 5px;
+}

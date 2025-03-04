@@ -1,0 +1,27 @@
+.loader-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.bouncing {
+    position: absolute;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    padding: 10px 20px;
+    background: rgba(255, 0, 0, 0.8);
+    border-radius: 5px;
+    width: fit-content;
+    height: fit-content;
+    animation: randomBounce 15s ease-in-out infinite alternate;
+}
+
+@keyframes randomBounce {
+    0% { top: 0; left: 0; background: red; }
+    25% { top: 60%; left: calc(100% - 120px); background: blue; }
+    50% { top: 90%; left: 0; background: green; }
+    75% { top: 20%; left: calc(100% - 120px); background: yellow; }
+    100% { top: 70%; left: 0; background: red; }
+}

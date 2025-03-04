@@ -1,0 +1,40 @@
+.library-list-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 215px);
+}
+
+.library-list-wrapper {
+    width: 90vw;
+    max-width: 1300px;
+    height: 80vh;
+    background-color: #ededed;
+    border-radius: 5px 5px 0 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.library-list-titles {
+    list-style: none;
+    width: 100%;
+    height: calc(100% - 80px);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+}
+
+.no-titles {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 600;
+    gap: 50px;
+}
