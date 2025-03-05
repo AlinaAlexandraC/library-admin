@@ -21,18 +21,17 @@ const app = express();
 
 // Middleware
 
-const origins = ['https://library-admin-1.onrender.com', 'http://localhost:3000'];
+const allowedOrigins = ['https://library-admin-1.onrender.com', 'http://localhost:3000'];
 
-app.use(cors({
-    origin: (origin, callback) => {
-        if (origins.includes(origin) || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-}));
+app.use(
+    cors({
+      origin: allowedOrigins, 
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      allowedHeaders: ["Content-Type", "Authorization"]
+    })
+  );
+
 app.use(express.json());
 
 // Connect to MongoDB
