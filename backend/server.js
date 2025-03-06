@@ -42,6 +42,10 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Routes
 
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: "Server is awake" });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", authenticateToken, userRoutes);
 app.use("/api/titles", authenticateToken, titleRoutes);
