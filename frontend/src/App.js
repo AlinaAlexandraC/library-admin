@@ -12,7 +12,6 @@ import MyAccountPage from './pages/MyAccountPage';
 import UserAgreement from './components/UserAgreement/UserAgreement';
 import UserPrivacyNotice from './components/UserPrivacyNotice/UserPrivacyNotice';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
-import { useEffect } from 'react';
 
 const router = createBrowserRouter([
   {
@@ -78,18 +77,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  useEffect(() => {
-    const wakeUpBackend = async () => {
-      try {
-        await fetch(`${process.env.REACT_APP_API_URL}/api/health`);
-      } catch (error) {
-        console.error("Error waking up backend:", error);
-      }
-    };
-
-    wakeUpBackend();
-  }, []);
-
   return (
     <div className="App">
       <header className="App-header">

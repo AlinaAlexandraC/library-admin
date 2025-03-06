@@ -58,6 +58,24 @@ const Login = () => {
         localStorage.removeItem("libraryCurrentPage");
     }, []);
 
+    useEffect(() => {
+        const wakeUpBackend = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/health`);
+
+                if (response.ok) {
+                    setSuccess(null);
+                } else {
+                    setSuccess("Waking up the server... Please wait ⏳")
+                }
+            } catch (error) {
+                console.error("Error waking up backend:", error);
+            }
+        };
+
+        wakeUpBackend();
+    }, []);
+
     return (
         <div className="login-container">
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
@@ -72,7 +90,7 @@ const Login = () => {
                         </Link>
                     </div>
                     <label>Email address</label>
-                    <input type="email" placeholder="john.doe@example.com" name="email"  value={formData.email} onChange={handleChange} required />
+                    <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
                     <label>Password</label>
                     <Password formData={formData} handleChange={handleChange} />
                     <div className="password-validation">
