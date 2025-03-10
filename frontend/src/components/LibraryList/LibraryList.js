@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { editTitle } from "../../services/titleService";
 import Loader from "../Loader/Loader";
 import SearchBar from "../SearchBar/SearchBar";
+import AnimeItem from "../AnimeItem/AnimeItem";
 
 const LibraryList = () => {
     const [titles, setTitles] = useState([]);
@@ -93,7 +94,9 @@ const LibraryList = () => {
         <div className="library-list-container">
             <div className="library-list-wrapper">
                 <SearchBar onSearch={handleSearch} />
-                {loading ? (
+                <AnimeItem/>
+                <AnimeItem/>
+                {/* {loading ? (
                     <Loader />
                 ) : error ? (
                     <p>{error}</p>
@@ -110,7 +113,7 @@ const LibraryList = () => {
                             </li>
                         ))}
                     </ul>
-                )}
+                )} */}
             </div>
             <LibraryPagination totalPages={totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
         </div>

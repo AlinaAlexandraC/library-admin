@@ -1,5 +1,5 @@
 .add-to-library-container {
-    height: calc(100vh - 90px);
+    height: calc(100dvh - 90px);
     display: flex;
     justify-content: center;
     align-items: center;

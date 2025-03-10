@@ -38,7 +38,7 @@ const NavBar = () => {
         <div className="nav-bar-container">
             <div className="nav-bar-wrapper">
                 <div className="nav-bar-header">
-                    <Link to="/library" className="link">
+                    <Link to="/lists" className="link">
                         <div className="nav-bar-library">
                             <img src={libraryIcon} alt="library-icon" className="library-icon" />
                             <span>Library</span>

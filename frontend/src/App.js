@@ -12,6 +12,7 @@ import MyAccountPage from './pages/MyAccountPage';
 import UserAgreement from './components/UserAgreement/UserAgreement';
 import UserPrivacyNotice from './components/UserPrivacyNotice/UserPrivacyNotice';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import LibraryLists from './pages/LibraryLists';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,16 @@ const router = createBrowserRouter([
   {
     path: "/registration",
     element: <RegistrationPage />
+  },
+  {
+    path: "/lists",
+    element: <PrivateRoute><Layout /></PrivateRoute>,
+    children: [
+      {
+        path: "/lists",
+        element: <LibraryLists />
+      }
+    ]
   },
   {
     path: "/library",

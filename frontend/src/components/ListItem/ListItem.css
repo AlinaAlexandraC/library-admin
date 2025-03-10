@@ -1,0 +1,12 @@
+.list-item-container {
+    background-color: aliceblue;
+    height: 90px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 40px;
+}
+
+.list-icon {
+    height: 100%;
+}

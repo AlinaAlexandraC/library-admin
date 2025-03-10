@@ -1,0 +1,83 @@
+.item-buttons-container {
+    width: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.2));
+}
+
+.item-buttons-connector {
+    border-top: 15px solid transparent;
+    border-right: 35px solid #f8f8f8;
+    border-bottom: 15px solid transparent;
+}
+
+.item-buttons {
+    width: calc(100% - 15px);
+    background-color: #f8f8f8;
+    height: 100%;
+}
+
+.item-buttons-edit,
+.item-buttons-save,
+.item-buttons-status,
+.item-buttons-delete {
+    cursor: pointer;
+    height: 33%;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.item-buttons-edit div,
+.item-buttons-save div,
+.item-buttons-status div,
+.item-buttons-delete div {
+    padding: 0 15px;
+}
+
+.item-buttons-status {
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+}
+
+.item-buttons-status img {
+    opacity: 0.5;
+}
+
+.library-item-status {
+    background-color: #d6efe9;
+}
+
+.checked img {
+    opacity: 1;
+}
+
+.item-buttons img {
+    height: 28px;
+}
+
+@media (max-width: 767px) {
+    .item-buttons {
+        justify-content: center;
+    }
+
+    .item-buttons-edit,
+    .item-buttons-save,
+    .item-buttons-status,
+    .item-buttons-delete {
+        justify-content: center;
+    }
+
+    .item-buttons img {
+        height: 15px;
+    }
+
+    .item-buttons-edit div,
+    .item-buttons-save div,
+    .item-buttons-status div,
+    .item-buttons-delete div {
+        display: none;
+    }
+}
