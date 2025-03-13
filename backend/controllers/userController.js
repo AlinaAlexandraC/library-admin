@@ -1,10 +1,11 @@
 import User from "../models/User.js";
+import admin from "../config/firebase.js";
 
 // Get user by Firebase UID
 
 export const getUserByUid = async (req, res) => {
     try {
-        const user = await User.findOne({ firebaseUid: req.params.uid });
+        const user = await User.findOne({ firebaseUid: req.user.uid });
         if (!user) return res.status(404).json({ message: "User not found." });
         res.status(200).json(user);
     } catch (error) {
@@ -16,10 +17,9 @@ export const getUserByUid = async (req, res) => {
 
 export const updateUserDetails = async (req, res) => {
     try {
-        const { firebaseUid } = req.user;
         const { firstName, lastName, email } = req.body;
 
-        const user = await User.findOne({ firebaseUid });
+        const user = await User.findOne({ firebaseUid: req.user.uid });
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
@@ -38,13 +38,18 @@ export const updateUserDetails = async (req, res) => {
 
 export const deleteUserAccount = async (req, res) => {
     try {
-        const { firebaseUid } = req.user;
-
-        const user = await User.findOne({ firebaseUid });
+        const user = await User.findOne({ firebaseUid: req.user.uid });
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        await User.deleteOne({ firebaseUid });
+        await User.deleteOne({ firebaseUid: req.user.uid });
+
+        try {
+            await admin.auth().deleteUser(req.user.uid);
+        } catch (error) {
+            return res.status(500).json({ message: 'Failed to delete user from Firebase.' });
+        }
+
         res.status(200).json({ message: "User deleted successfully." });
     } catch (error) {
         res.status(400).json({ message: error.message });

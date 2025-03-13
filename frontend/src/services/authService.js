@@ -1,5 +1,5 @@
 import { auth } from "../config/firebase";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import axios from "axios";
 
 // Register User
@@ -32,7 +32,7 @@ export const loginUser = async (formData) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const idToken = await userCredential.user.getIdToken();
 
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`,
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/`,
       { token: idToken },
       { withCredentials: true }
     );
@@ -47,6 +47,7 @@ export const loginUser = async (formData) => {
 
 export const logoutUser = async () => {
   try {
+    const auth = getAuth();
     await signOut(auth);
 
     await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/logout`, {}, { withCredentials: true });

@@ -1,0 +1,56 @@
+.add-titles-from-folder-container {
+    height: calc(100dvh - 90px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-titles-from-folder-wrapper {
+    height: 100%;
+    padding-top: 20px;
+    width: 70%;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.add-titles-from-folder-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.select-folder-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid;
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+    align-self: center;
+}
+
+.folder-icon {
+    width: 120px;
+}
+
+.titles-list-from-folder {
+    height: 70%;
+    border: 1px solid;
+    border-radius: 10px;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.titles-list-from-folder li {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}

@@ -14,7 +14,6 @@ export const registerUser = async (req, res) => {
 
         const firebaseUid = userCredential.uid;
 
-        // Check if the user already exists by email or firebaseUid
         const existingUser = await User.findOne({ $or: [{ email }, { firebaseUid }] });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
@@ -65,11 +64,13 @@ export const loginUser = async (req, res) => {
     }
 };
 
+// Logout user
+
 export const logoutUser = async (req, res) => {
-    res.clearCookie("token", {
-        httpOnly: true,
-        sameSite: "Strict",
-        secure: process.env.NODE_ENV === "production"
-    });
-    res.status(200).json({ message: "Logged out successfully" });
+    try {
+        res.clearCookie("token");
+        res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Logout failed" });
+    }
 };

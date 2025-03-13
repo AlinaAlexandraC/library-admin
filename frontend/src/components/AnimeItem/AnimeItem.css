@@ -4,7 +4,8 @@
     align-items: center;
     margin: 0 10px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-
+    border-radius: 5px;
+    height: 100px;
 }
 
 .katana {
@@ -14,7 +15,6 @@
     align-items: center;
     position: relative;
     margin-left: 10px;
-
 }
 
 .katana-handle {
@@ -103,7 +103,18 @@
 
     .katana-handle,
     .katana-blade {
-        height: 70%;
+        height: 50%;
+    }
+
+    .katana-blade {
+        width: calc(71% - 10px);
+    }
+
+    .katana-blade::after {
+        right: -10px;
+        width: 20px;
+        transform: skewX(145deg);
+        border-radius: 0 2px 2px 0;
     }
 
     .katana-guard {
@@ -116,11 +127,16 @@
     }
 
     .anime-information {
-        font-size: 12px;
+        font-size: 10px;
     }
 
     .katana-shadow {
-        height: 5%;
-        box-shadow: #616161 -8px 5px 3px;
+        display: none;
+    }
+}
+
+@media (max-width: 1412px) {
+    .katana {
+        width: 95%;
     }
 }

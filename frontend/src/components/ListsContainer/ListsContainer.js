@@ -5,6 +5,7 @@ import bookIcon from "../../assets/icons/book.svg";
 import mangaIcon from "../../assets/icons/manga.svg";
 import movieIcon from "../../assets/icons/movie.svg";
 import seriesIcon from "../../assets/icons/series.svg";
+import unknownIcon from "../../assets/icons/unknown.svg";
 import { Link } from "react-router";
 
 const ListsContainer = () => {
@@ -25,6 +26,9 @@ const ListsContainer = () => {
                 </Link>
                 <Link to="#" className="link">
                     <ListItem listIcon={seriesIcon}>Series</ListItem>
+                </Link>
+                <Link to="#" className="link">
+                    <ListItem listIcon={unknownIcon}>Miscellaneous</ListItem>
                 </Link>
             </div>
         </div>

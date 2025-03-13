@@ -1,10 +1,54 @@
 import { useEffect, useRef, useState } from "react";
 import "./AnimeItem.css";
 import ItemButtons from "../ItemButtons/ItemButtons";
+import { editTitle, removeTitle } from "../../services/titleService";
 
-const AnimeItem = () => {
+const AnimeItem = ({ title, onDelete, handleSave }) => {
     const handleRef = useRef(null);
     const [checks, setChecks] = useState(3);
+    const [isChecked, setIsChecked] = useState(title.status);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedTitle, setEditedTitle] = useState({ ...title });
+
+    const toggleChecked = async () => {
+        setIsChecked(prev => !prev);
+        try {
+            await editTitle({ ...title, checked: !isChecked });
+        } catch (error) {
+            setIsChecked(prev => !prev);
+        }
+    };
+
+    const handleSaveClick = async () => {
+        try {
+            const response = await editTitle(editedTitle);
+            if (!response || response.error) {
+                throw new Error("Failed to update title");
+            }
+
+            setIsEditing(false);
+            handleSave(editedTitle);
+        } catch (error) {
+            console.error("Failed to save item:", error);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await removeTitle(title.id);
+            onDelete(title.id);
+        } catch (error) {
+            console.error("Failed to delete item:", error);
+        }
+    };
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setEditedTitle((prevTitle) => ({
+            ...prevTitle,
+            [name]: value,
+        }));
+    };
 
     useEffect(() => {
         const calculateChecks = () => {
@@ -35,13 +79,17 @@ const AnimeItem = () => {
                 </div>
                 <div className="katana-blade">
                     <div className="anime-information">
-                        <div className="anime-title">Apothecary Diaries</div>
-                        <div className="anime-details">Other</div>
+                        {isEditing ? (
+                            <input type="text" name="title" value={editedTitle.title} onChange={handleChange} className="title-input" />
+                        ) : (
+                            <span className="name">{title.title}</span>
+                        )}
+                        <div className="anime-details">{title.type}</div>
                     </div>
                     <div className="katana-shadow"></div>
                 </div>
-            </div>            
-            <ItemButtons/>
+            </div>
+            <ItemButtons isChecked={isChecked} isEditing={isEditing} setIsEditing={setIsEditing} toggleChecked={toggleChecked} />
         </div>
     );
 };

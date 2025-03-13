@@ -1,24 +1,42 @@
 import User from "../models/User.js";
 import Title from "../models/Title.js";
+import admin from "../config/firebase.js";
 
 // Add a title to the user's list
 
 export const addTitleToUserList = async (req, res) => {
     try {
-        const { firebaseUid, title_id } = req.body;
-        const user = await User.findOne({ firebaseUid });
-
-        if (!user) return res.status(404).json({ message: "User not found." });
-
-        if (user.titlesList.some(item => item.title.id.toString() === title_id)) {
-            return res.status(400).json({ message: "Title is already in the list." });
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
 
-        user.titlesList.push({ title_id, dateAdded: new Date() });
+        const token = authHeader.split(" ")[1];
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        const firebaseUid = decodedToken.uid;
+
+        const { title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status } = req.body;
+
+        if (!title) {
+            return res.status(400).json({ message: "Title is required." });
+        }
+
+        let user = await User.findOne({ firebaseUid });
+        if (!user) return res.status(404).json({ message: "User not found." });
+
+        const newTitle = new Title({ title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status });
+        const savedTitle = await newTitle.save();
+
+        if (!user.titlesList) {
+            user.titlesList = [];
+        }
+
+        user.titlesList.push({ title_id: savedTitle._id, dateAdded: new Date() });
         await user.save();
-        res.status(201).json(user);
+
+        res.status(201).json({ success: true, message: "Title added successfully!", title: savedTitle });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -26,7 +44,27 @@ export const addTitleToUserList = async (req, res) => {
 
 export const getTitles = async (req, res) => {
     try {
-        const titles = await Title.find();
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
+        }    
+
+        const token = authHeader.split(" ")[1];        
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        const firebaseUid = decodedToken.uid;
+
+        const user = await User.findOne({ firebaseUid }).populate('titlesList.title_id');
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        if (user.titlesList.length === 0) {
+            return res.status(404).json({ message: "No titles found for this user." });
+        }
+
+        const titles = user.titlesList.map(item => item.title_id);
+
         res.status(200).json(titles);
     } catch (error) {
         res.status(400).json({ message: error.message });

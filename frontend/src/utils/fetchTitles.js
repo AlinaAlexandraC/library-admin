@@ -2,11 +2,12 @@ import { fetchData } from "../services/apiService";
 
 const fetchTitles = async (setTitles, setError, setLoading) => {
     try {
-        const data = await fetchData('list');
-        if (data.success && Array.isArray(data.titles)) {
-            setTitles(data.titles);
+        const data = await fetchData('titles/list');
+        
+        if (Array.isArray(data)) { 
+            setTitles(data);
         } else {
-            setError("No titles found.");
+            setError("Invalid response structure.");
         }
     } catch (error) {
         setError(error.message);

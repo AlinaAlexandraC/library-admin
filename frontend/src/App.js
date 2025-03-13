@@ -1,9 +1,9 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import FormPage from './pages/FormPage';
+import AddTitlesPage from './pages/AddTitlesPage/AddTitlesPage';
 import LibraryPage from "./pages/LibraryPage";
 import Layout from './pages/Layout';
-import NotFound from './pages/NotFound';
+import NotFound from './pages/NotFound/NotFound';
 import RandomizerPage from './pages/RandomizerPage';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/form",
-        element: <FormPage />
+        element: <AddTitlesPage />
       }
     ]
   },

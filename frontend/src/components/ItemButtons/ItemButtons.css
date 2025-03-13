@@ -1,5 +1,5 @@
 .item-buttons-container {
-    width: 15%;
+    width: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,6 +14,7 @@
 }
 
 .item-buttons {
+    border-radius: 5px;
     width: calc(100% - 15px);
     background-color: #f8f8f8;
     height: 100%;
@@ -59,21 +60,14 @@
 }
 
 @media (max-width: 767px) {
-    .item-buttons {
-        justify-content: center;
+    .item-buttons-connector {
+        border-top: 10px solid transparent;
+        border-right: 25px solid #f8f8f8;
+        border-bottom: 10px solid transparent;
     }
+}
 
-    .item-buttons-edit,
-    .item-buttons-save,
-    .item-buttons-status,
-    .item-buttons-delete {
-        justify-content: center;
-    }
-
-    .item-buttons img {
-        height: 15px;
-    }
-
+@media (max-width: 1412px) {
     .item-buttons-edit div,
     .item-buttons-save div,
     .item-buttons-status div,

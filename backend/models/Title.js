@@ -7,29 +7,29 @@ const TitleSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["Anime", "Book", "Manga", "Movie", "Series"],
-        required: false
+        enum: ["", "Anime", "Book", "Manga", "Movie", "Series"],
+        default: ""
     },
     genre: {
         type: String,
-        enum: ["Isekai", "Shonen", "Mecha", "Slice of Life", "Romance", "Ecchi", "Other"],
-        required: false
+        enum: ["", "Isekai", "Shonen", "Mecha", "Slice of Life", "Romance", "Ecchi", "Other"],
+        default: ""
     },
     author: {
         type: String,
-        required: false
+        default: ""
     },
     numberOfSeasons: {
         type: Number,
-        required: false
+        default: null
     },
     numberOfEpisodes: {
         type: Number,
-        required: false
+        default: null
     },
     numberOfChapters: {
         type: Number,
-        required: false
+        default: null
     },
     status: {
         type: Boolean,

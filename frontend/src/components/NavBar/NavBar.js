@@ -32,7 +32,7 @@ const NavBar = () => {
         } catch (error) {
             console.error("Failed to log out:", error);
         }
-    }
+    };
 
     return (
         <div className="nav-bar-container">

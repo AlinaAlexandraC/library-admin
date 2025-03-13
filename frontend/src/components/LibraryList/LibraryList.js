@@ -94,26 +94,24 @@ const LibraryList = () => {
         <div className="library-list-container">
             <div className="library-list-wrapper">
                 <SearchBar onSearch={handleSearch} />
-                <AnimeItem/>
-                <AnimeItem/>
-                {/* {loading ? (
+                {loading ? (
                     <Loader />
                 ) : error ? (
                     <p>{error}</p>
-                ) : displayedTitles.length === 0 ? (
+                ) : (!displayedTitles || displayedTitles.length === 0) ? (
                     <div className="no-titles">
                         <div>No titles found</div>
                         <button className="no-titles-button btn" onClick={() => navigate("/form")}>Add a title</button>
                     </div>
                 ) : (
                     <ul className="library-list-titles" ref={containerRef}>
-                        {displayedTitles.map((title) => (
-                            <li key={title.id} className={`element-${title.id}`}>
-                                <LibraryItem title={title} onDelete={onDelete} handleSave={handleSave} />
+                        {displayedTitles.map((title, index) => (
+                            <li key={index} className={`element-${index}`}>
+                                <AnimeItem title={title} onDelete={onDelete} handleSave={handleSave} />
                             </li>
                         ))}
                     </ul>
-                )} */}
+                )}
             </div>
             <LibraryPagination totalPages={totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
         </div>

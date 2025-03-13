@@ -1,11 +1,11 @@
-.add-to-library-container {
+.add-titles-manually-container {
     height: calc(100dvh - 90px);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.add-to-library-wrapper {
+.add-titles-manually-wrapper {
     height: 100%;
     padding-top: 20px;
     width: 70%;
@@ -15,17 +15,17 @@
     justify-content: space-between;
 }
 
-.add-to-library-input-container {
+.add-titles-manually-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.add-titles-manually-input-container {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     height: 70%;
     padding: 15px 0;
-}
-
-.add-to-library-title {
-    font-size: 24px;
-    font-weight: 600;
 }
 
 .title-container,

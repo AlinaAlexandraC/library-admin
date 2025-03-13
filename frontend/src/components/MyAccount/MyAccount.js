@@ -4,24 +4,24 @@ import formImage from "../../assets/images/user-vertical.jpg";
 import formImageHorizontal from "../../assets/images/user-horizontal.jpg";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../services/apiService";
+import DeleteAccount from "../DeleteAccount/DeleteAccount";
 
 const MyAccount = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
-
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const userId = localStorage.getItem("userId");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const data = await fetchData(`user/${userId}/profile`);
+                const data = await fetchData("users/details");
 
-                setFirstName(data.first_name);
-                setLastName(data.last_name);
+                setFirstName(data.firstName);
+                setLastName(data.lastName);
                 setEmail(data.email);
             } catch (error) {
                 setError("Failed to load user data");
@@ -29,7 +29,7 @@ const MyAccount = () => {
         };
 
         fetchUserData();
-    }, [userId]);
+    }, []);
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -44,13 +44,13 @@ const MyAccount = () => {
         }
 
         const userData = {
-            first_name: firstName,
-            last_name: lastName,
+            firstName: firstName,
+            lastName: lastName,
             email: email,
         };
 
         try {
-            const response = await fetchData(`user/${userId}/profile`, 'PUT', userData);
+            await fetchData("users/update", 'PATCH', userData);
 
             setError(null);
             setSuccess("Details saved successfully");
@@ -63,6 +63,14 @@ const MyAccount = () => {
         }
     };
 
+    const handleDeleteClick = () => {
+        setShowDeleteModal(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setShowDeleteModal(false);
+    };
+
     return (
         <div className="my-account-container">
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
@@ -70,7 +78,7 @@ const MyAccount = () => {
                 <div className="my-account-wrapper">
                     <div className="my-account-details">
                         <div className="first-name-container">
-                            <label htmlFor="first-name">First name</label>
+                            <label>First name</label>
                             {isEditing ? (
                                 <input type="text"
                                     value={firstName}
@@ -81,7 +89,7 @@ const MyAccount = () => {
                             )}
                         </div>
                         <div className="last-name-container">
-                            <label htmlFor="last-name">Last name</label>
+                            <label>Last name</label>
                             {isEditing ? (
                                 <input type="text"
                                     value={lastName}
@@ -92,7 +100,7 @@ const MyAccount = () => {
                             )}
                         </div>
                         <div className="email-container">
-                            <label htmlFor="email">Email</label>
+                            <label>Email</label>
                             {isEditing ? (
                                 <input type="text"
                                     value={email}
@@ -110,12 +118,18 @@ const MyAccount = () => {
                             ) : (
                                 <button className="edit btn" onClick={handleEdit}>Edit details</button>
                             )}
-                            <button className="delete-account btn">Delete account</button>
+                            <button className="delete-account btn" onClick={handleDeleteClick}>Delete account</button>
                         </div>
                     </div>
                     <label className={`${error ? "error" : "success"}`}>{error ? error : success}</label>
                 </div>
             </Form>
+            {showDeleteModal && (
+                <>
+                    <div className="overlay" onClick={handleCloseDeleteModal}></div>
+                    <DeleteAccount onClose={handleCloseDeleteModal} />
+                </>
+            )}
         </div>
     );
 };

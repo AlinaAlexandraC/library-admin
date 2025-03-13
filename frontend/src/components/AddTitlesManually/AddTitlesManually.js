@@ -1,19 +1,21 @@
-import "./AddToLibrary.css";
-import Form from "../Form/Form";
+import "./AddTitlesManually.css";
+import Form from "../Form/Form.js";
 import { useState } from "react";
 import { addTitle } from "../../services/titleService.js";
 import { useNavigate } from "react-router";
 import formImage from "../../assets/images/form-vertical.jpg";
 import formImageHorizontal from "../../assets/images/form-horizontal.jpg";
 
-const AddToLibrary = () => {
+const AddTitlesManually = () => {
     const [titleFormData, setTitleFormData] = useState({
         title: "",
-        author: "",
         type: "",
         genre: "",
-        no_of_seasons: "",
-        no_of_episodes: ""
+        author: "",
+        numberOfSeasons: "",
+        numberOfEpisodes: "",
+        numberOfChapters: "",
+        status: false,
     });
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
@@ -25,18 +27,21 @@ const AddToLibrary = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
             const response = await addTitle(titleFormData);
 
             if (response.success) {
-                setSuccess(response.message);
+                setSuccess("Title added successfully!");
                 setTitleFormData({
                     title: "",
-                    author: "",
                     type: "",
                     genre: "",
-                    no_of_seasons: "",
-                    no_of_episodes: ""
+                    author: "",
+                    numberOfSeasons: "",
+                    numberOfEpisodes: "",
+                    numberOfChapters: "",
+                    status: false,
                 });
                 setTimeout(() => setSuccess(""), 2000);
             } else {
@@ -50,11 +55,11 @@ const AddToLibrary = () => {
     };
 
     return (
-        <div className="add-to-library-container">
+        <div className="add-titles-manually-container">
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="add-to-library-wrapper" onSubmit={handleSubmit}>
-                    <div className="add-to-library-title">Add a new title here</div>
-                    <div className="add-to-library-input-container">
+                <form className="add-titles-manually-wrapper" onSubmit={handleSubmit}>
+                    <div className="add-titles-manually-title">Add a new title here</div>
+                    <div className="add-titles-manually-input-container">
                         <div className="title-container">
                             <label>Title*</label>
                             <input type="text" placeholder="ex. The Apothecary Diaries" className="title" required name="title" value={titleFormData.title} onChange={handleChange} />
@@ -81,13 +86,13 @@ const AddToLibrary = () => {
                                     <div className="seasons-number">
                                         <div className="seasons-container">
                                             <label>No. of seasons</label>
-                                            <input type="number" placeholder="no. of seasons" className="seasons-input" name="no_of_seasons" value={titleFormData.no_of_seasons} onChange={handleChange} />
+                                            <input type="number" placeholder="no. of seasons" className="seasons-input" name="numberOfSeasons" value={titleFormData.numberOfSeasons} onChange={handleChange} />
                                         </div>
                                     </div>
                                     <div className="episodes-number">
                                         <div className="episodes-container">
                                             <label>No. of episodes</label>
-                                            <input type="number" placeholder="no. of episodes" className="episodes-input" name="no_of_pages" value={titleFormData.no_of_pages} onChange={handleChange} />
+                                            <input type="number" placeholder="no. of episodes" className="episodes-input" name="numberOfEpisodes" value={titleFormData.numberOfEpisodes} onChange={handleChange} />
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +107,7 @@ const AddToLibrary = () => {
                         {titleFormData.type === "Manga" && (
                             <div className="manga-container">
                                 <label>No. of chapters</label>
-                                <input type="number" placeholder="no. of chapters" className="chapters-input" name="no_of_pages" value={titleFormData.no_of_pages} onChange={handleChange} />
+                                <input type="number" placeholder="no. of chapters" className="chapters-input" name="numberOfChapters" value={titleFormData.numberOfChapters} onChange={handleChange} />
                             </div>
                         )}
                         {titleFormData.type === "Series" && (
@@ -110,13 +115,13 @@ const AddToLibrary = () => {
                                 <div className="seasons-number">
                                     <div className="seasons-container">
                                         <label>No. of seasons</label>
-                                        <input type="number" placeholder="no. of seasons" className="seasons-input" name="no_of_seasons" value={titleFormData.no_of_seasons} onChange={handleChange} />
+                                        <input type="number" placeholder="no. of seasons" className="seasons-input" name="numberOfSeasons" value={titleFormData.numberOfSeasons} onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div className="episodes-number">
                                     <div className="episodes-container">
                                         <label>No. of episodes</label>
-                                        <input type="number" placeholder="no. of episodes" className="episodes-input" name="no_of_pages" value={titleFormData.no_of_pages} onChange={handleChange} />
+                                        <input type="number" placeholder="no. of episodes" className="episodes-input" name="numberOfEpisodes" value={titleFormData.numberOfEpisodes} onChange={handleChange} />
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +129,7 @@ const AddToLibrary = () => {
                     </div>
                     <div className="buttons-container">
                         <div className="buttons">
-                            <button type="submit" className="add-to-library-button btn">Add to list</button>
+                            <button type="submit" className="add-titles-manually-button btn">Add to list</button>
                             <button className="see-library-button btn" onClick={() => navigate("/library")}>See list</button>
                         </div>
                         <label className={`${error ? "error" : "success"}`}>{error ? error : success}</label>
@@ -136,4 +141,4 @@ const AddToLibrary = () => {
     );
 };
 
-export default AddToLibrary;
+export default AddTitlesManually;
