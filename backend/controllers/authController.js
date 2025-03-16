@@ -1,4 +1,5 @@
 import admin from "../config/firebase.js";
+import Session from "../models/Session.js";
 import User from "../models/User.js";
 
 // Register new user
@@ -51,6 +52,9 @@ export const loginUser = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
+        const session = new Session({ userId: user._id, firebaseUid, token });
+        await session.save();
+
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -67,8 +71,14 @@ export const loginUser = async (req, res) => {
 // Logout user
 
 export const logoutUser = async (req, res) => {
+    const token = req.cookies.token;
+
     try {
-        res.clearCookie("token");
+        if (token) {
+            await Session.deleteOne({ token });
+            res.clearCookie("token");
+        }
+
         res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
         res.status(500).json({ message: "Logout failed" });
