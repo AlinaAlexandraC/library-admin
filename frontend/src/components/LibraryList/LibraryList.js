@@ -63,7 +63,7 @@ const LibraryList = () => {
         localStorage.setItem("libraryCurrentPage", currentPage);
     }, [currentPage]);
 
-    const activeList = query ? searchResults : titles;
+    const activeList = (query ? searchResults : titles).filter(Boolean);
     const totalPages = Math.ceil(activeList.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const displayedTitles = activeList.slice(startIndex, startIndex + itemsPerPage);

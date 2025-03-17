@@ -40,12 +40,16 @@
     height: 70%;
     border: 1px solid;
     border-radius: 10px;
+    overflow: scroll;
 }
 
 ul {
     padding: 0;
     margin: 0;
-    overflow: hidden;
+}
+
+.titles-list-from-folder::-webkit-scrollbar {
+    display: none;
 }
 
 .titles-list-from-folder li {

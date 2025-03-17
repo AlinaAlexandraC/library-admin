@@ -67,13 +67,22 @@ export const editTitle = async (titleData) => {
 
 export const removeTitle = async (id) => {
     try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) throw new Error("User is not authenticated");
+
+        const token = await user.getIdToken();
+
+        if (!token) throw new Error("User is not authenticated");
+        
         const response = await fetch(API_URL_DELETE, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({ id }),
-            credentials: "include"
         });
 
         if (!response.ok) {

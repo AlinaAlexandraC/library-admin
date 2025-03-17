@@ -29,7 +29,7 @@ const AddTitlesManually = () => {
         e.preventDefault();
 
         try {
-            const response = await addTitle(titleFormData);
+            const response = await addTitle({ titles: [titleFormData] });            
 
             if (response.success) {
                 setSuccess("Title added successfully!");

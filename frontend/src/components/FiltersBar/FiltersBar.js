@@ -126,7 +126,6 @@ const FiltersBar = ({ selectedFilters, setSelectedFilters }) => {
                     </div>
                 </div>
             </div>
-            <div className="added-filters">here</div>
         </div >
     );
 };

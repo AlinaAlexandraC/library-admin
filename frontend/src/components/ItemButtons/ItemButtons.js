@@ -3,10 +3,43 @@ import editIcon from "../../assets/icons/edit.svg";
 import saveIcon from "../../assets/icons/save.svg";
 import deleteIcon from "../../assets/icons/delete.svg";
 import watchedIcon from "../../assets/icons/watched.svg";
+import { useState } from "react";
+import { editTitle, removeTitle } from "../../services/titleService";
 
-const ItemButtons = ({ isChecked, isEditing, setIsEditing, toggleChecked }) => {
-    const handleEdit = () => {
-        setIsEditing(true);
+const ItemButtons = ({ title, onDelete, handleSave, editedTitle, isEditing, setIsEditing, handleEdit }) => {
+    const [isChecked, setIsChecked] = useState(title ? title.status : false);
+
+    const toggleChecked = async () => {
+        const newChecked = !isChecked;
+        setIsChecked(newChecked);
+        try {
+            await editTitle({ ...title, checked: newChecked });
+        } catch (error) {
+            setIsChecked(!newChecked);
+        }
+    };
+
+    const handleSaveClick = async () => {
+        try {
+            const response = await editTitle(editedTitle);
+            if (!response || response.error) {
+                throw new Error("Failed to update title");
+            }
+
+            setIsEditing(false);
+            handleSave(editedTitle);
+        } catch (error) {
+            console.error("Failed to save item:", error);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await removeTitle(title.id);
+            onDelete(title.id);
+        } catch (error) {
+            console.error("Failed to delete item:", error);
+        }
     };
 
     return (
@@ -31,7 +64,7 @@ const ItemButtons = ({ isChecked, isEditing, setIsEditing, toggleChecked }) => {
                         <div>Not Seen</div>
                     )}
                 </div>
-                <div className="item-buttons-delete" >
+                <div className="item-buttons-delete" onClick={handleDelete}>
                     <img src={deleteIcon} alt="delete-icon" />
                     <div>Delete</div>
                 </div>

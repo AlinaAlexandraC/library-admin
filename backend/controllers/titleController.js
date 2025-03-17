@@ -15,26 +15,38 @@ export const addTitleToUserList = async (req, res) => {
         const decodedToken = await admin.auth().verifyIdToken(token);
         const firebaseUid = decodedToken.uid;
 
-        const { title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status } = req.body;
+        const { titles } = req.body;
 
-        if (!title) {
-            return res.status(400).json({ message: "Title is required." });
+        if (!titles || titles.length === 0) {
+            return res.status(400).json({ message: "No titles provided." });
         }
 
         let user = await User.findOne({ firebaseUid });
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        const newTitle = new Title({ title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status });
-        const savedTitle = await newTitle.save();
+        const savedTitles = [];
 
-        if (!user.titlesList) {
-            user.titlesList = [];
+        for (let titleData of titles) {
+            const { title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status } = titleData;
+
+            if (!title) {
+                continue;
+            }
+
+            const newTitle = new Title({ title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status });
+            const savedTitle = await newTitle.save();
+            savedTitles.push(savedTitle);
+
+            if (!user.titlesList) {
+                user.titlesList = [];
+            }
+
+            user.titlesList.push({ title_id: savedTitle._id, dateAdded: new Date() });
         }
 
-        user.titlesList.push({ title_id: savedTitle._id, dateAdded: new Date() });
         await user.save();
 
-        res.status(201).json({ success: true, message: "Title added successfully!", title: savedTitle });
+        res.status(201).json({ success: true, message: "Title added successfully!", title: savedTitles });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -47,9 +59,9 @@ export const getTitles = async (req, res) => {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
-        }    
+        }
 
-        const token = authHeader.split(" ")[1];        
+        const token = authHeader.split(" ")[1];
         const decodedToken = await admin.auth().verifyIdToken(token);
         const firebaseUid = decodedToken.uid;
 

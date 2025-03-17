@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser'
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -18,6 +19,7 @@ import titleRoutes from './routes/titleRoutes.js';
 dotenv.config();
 
 const app = express();
+app.use(cookieParser());
 
 // Middleware
 
