@@ -21,12 +21,6 @@ dotenv.config();
 const app = express();
 app.use(cookieParser());
 
-app.use(express.static("build"));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "build", "index.html"));
-});
-
 // Middleware
 
 const allowedOrigins = ['https://library-admin-1.onrender.com', 'http://localhost:3000'];
