@@ -1,4 +1,4 @@
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(express.static("build"));
 
 app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "build", "index.html"));
+  res.sendFile(path.resolve(__dirname, "build", "index.html"));
 });
 
 // Middleware
@@ -32,21 +32,27 @@ app.get("*", (req, res) => {
 const allowedOrigins = ['https://library-admin-1.onrender.com', 'http://localhost:3000'];
 
 app.use(
-    cors({
-      origin: allowedOrigins, 
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-      allowedHeaders: ["Content-Type", "Authorization"]
-    })
-  );
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  })
+);
 
 app.use(express.json());
 
 // Connect to MongoDB
 
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch((error) => console.log("MongoDB connection error:", error));
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.log("MongoDB connection error:", error));
 
 // Routes
 
@@ -61,7 +67,7 @@ app.use("/api/titles", authenticateToken, titleRoutes);
 // Root route
 
 app.get("/", (req, res) => {
-    res.send("Otaku Library API is running...");
+  res.send("Otaku Library API is running...");
 });
 
 // Start the server
