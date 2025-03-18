@@ -43,8 +43,11 @@ const Randomizer = ({ selectedFilters }) => {
                         ) : error ? (
                             <p>{error}</p>
                         ) : (titles.map((title, index) => (
-                            <div key={index} className={`element-${index}`}>{title.title}</div>
-                        )))}                        
+                            <div className="randomizer-title-container">
+                                <div className="decoration"></div>
+                                <div key={index} className={`randomizer-element-${index}`}>{index + 1}. {title.title}</div>
+                            </div>
+                        )))}
                     </div>
                     <hr />
                     <div className="randomizer-display">
@@ -53,9 +56,6 @@ const Randomizer = ({ selectedFilters }) => {
                             <div className="title-info-randomizer">
                                 <img src={icon} alt="icon" className="randomizer-icon" />
                                 <div className="title">{titles[random]?.title || "-"}</div>
-                                <div className="genre">{titles[random]?.genre || "-"}</div>
-                                <div className="no-of-seasons">{titles[random]?.no_of_seasons || "-"}</div>
-                                <div className="no-of-episodes">{titles[random]?.no_of_pages || "-"}</div>
                             </div>
                         )}
                         <button onClick={randomizeTitle} className="random btn">Get Random Title</button>

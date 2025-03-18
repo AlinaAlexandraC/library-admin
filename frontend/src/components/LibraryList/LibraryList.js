@@ -47,7 +47,7 @@ const LibraryList = () => {
         const calculateItemsPerPage = () => {
             if (containerRef.current) {
                 const listHeight = containerRef.current.clientHeight;
-                const itemHeight = 61;
+                const itemHeight = 100;
                 const searchBarHeight = 50;
                 const newItemsPerPage = Math.max(1, Math.floor((listHeight - searchBarHeight) / itemHeight));
                 setItemsPerPage(newItemsPerPage);

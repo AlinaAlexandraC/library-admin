@@ -38,14 +38,15 @@
 
 .titles-list-from-folder {
     height: 70%;
-    border: 1px solid;
-    border-radius: 10px;
     overflow: scroll;
+    font-size: 14px;
 }
 
-ul {
+.titles-list-from-folder ul {
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .titles-list-from-folder::-webkit-scrollbar {
@@ -56,5 +57,37 @@ ul {
     list-style: none;
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+}
+
+.extracted-title-container {
+    height: 60px;
+    margin: 6px 3px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+}
+
+.decoration {
+    background-color: blue;
+    width: 10px;
+    height: 100%;
+    border-radius: 10px 0 0 10px;
+}
+
+.extracted-title {
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    width: calc(100% - 45px);
+}
+
+.extracted-title-button {
+    padding: 0;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0 10px;
 }

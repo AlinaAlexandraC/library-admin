@@ -3,6 +3,7 @@ import bookIcon from "../assets/icons/book.svg";
 import seriesIcon from "../assets/icons/series.svg";
 import movieIcon from "../assets/icons/movie.svg";
 import mangaIcon from "../assets/icons/manga.svg";
+import unknownIcon from "../assets/icons/unknown.svg";
 
 const getIcon = (type) => {
     switch (type) {
@@ -17,7 +18,7 @@ const getIcon = (type) => {
         case 'Manga':
             return mangaIcon;
         default:
-            return animeIcon;
+            return unknownIcon;
     }
 };
 

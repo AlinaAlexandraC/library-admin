@@ -120,9 +120,10 @@ const AddTitlesFromFolder = () => {
                         <div className="titles-list-from-folder">
                             <ul>
                                 {titleFormData.map((title, index) => (
-                                    <li key={index}>
-                                        <div>{index + 1}. {title}</div>
-                                        <button type="button" onClick={() => setTitleFormData(titleFormData.filter((_, i) => i !== index))}>x</button>
+                                    <li key={index} className="extracted-title-container">
+                                        <div className="decoration"></div>
+                                        <div className="extracted-title">{index + 1}. {title}</div>
+                                        <button type="button" onClick={() => setTitleFormData(titleFormData.filter((_, i) => i !== index))} className="extracted-title-button">x</button>
                                     </li>
                                 ))}
                             </ul>
