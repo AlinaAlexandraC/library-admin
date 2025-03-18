@@ -74,7 +74,7 @@ const AddTitlesFromFolder = () => {
                 numberOfChapters: "",
                 status: false,
             }));
-            
+
             const response = await addTitle({ titles });
 
             if (response.success) {
@@ -102,7 +102,13 @@ const AddTitlesFromFolder = () => {
     return (
         <div className="add-titles-from-folder-container">
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="add-titles-from-folder-wrapper" onSubmit={handleSubmit}>
+                <form className="add-titles-from-folder-wrapper"
+                    onSubmit={handleSubmit}
+                    onTouchEnd={(e) => {
+                        if (!e.defaultPrevented) {
+                            handleSubmit(e);
+                        }
+                    }}>
                     <div className="add-titles-from-folder-title">Import titles from a folder</div>
                     {!folderSelected && (
                         <div className="select-folder-container" onClick={handleFolderSelection}>

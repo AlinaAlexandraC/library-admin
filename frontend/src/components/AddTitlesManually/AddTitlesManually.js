@@ -29,7 +29,7 @@ const AddTitlesManually = () => {
         e.preventDefault();
 
         try {
-            const response = await addTitle({ titles: [titleFormData] });            
+            const response = await addTitle({ titles: [titleFormData] });
 
             if (response.success) {
                 setSuccess("Title added successfully!");
@@ -57,7 +57,13 @@ const AddTitlesManually = () => {
     return (
         <div className="add-titles-manually-container">
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="add-titles-manually-wrapper" onSubmit={handleSubmit}>
+                <form className="add-titles-manually-wrapper"
+                    onSubmit={handleSubmit}
+                    onTouchEnd={(e) => {
+                        if (!e.defaultPrevented) {
+                            handleSubmit(e);
+                        }
+                    }}>
                     <div className="add-titles-manually-title">Add a new title here</div>
                     <div className="add-titles-manually-input-container">
                         <div className="title-container">
