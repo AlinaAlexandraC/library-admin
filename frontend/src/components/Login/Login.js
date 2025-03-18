@@ -24,7 +24,9 @@ const Login = () => {
     useEffect(() => {
         const wakeUpBackend = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/health`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/health`, {
+                    mode: 'no-cors',
+                });
 
                 if (response.ok) {
                     setSuccess(null);
