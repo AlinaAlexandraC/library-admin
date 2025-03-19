@@ -4,7 +4,6 @@ import LibraryPagination from "../LibraryPagination/LibraryPagination";
 import { useEffect, useRef, useState } from "react";
 import fetchTitles from "../../utils/fetchTitles";
 import { useNavigate } from "react-router";
-import { editTitle } from "../../services/titleService";
 import Loader from "../Loader/Loader";
 import SearchBar from "../SearchBar/SearchBar";
 import AnimeItem from "../AnimeItem/AnimeItem";
@@ -72,24 +71,6 @@ const LibraryList = () => {
         setQuery(query);
     };
 
-    const handleSave = async (editedTitle) => {
-        try {
-            const response = await editTitle(editedTitle);
-            if (!response || response.error) {
-                throw new Error("Failed to update title");
-            }
-            setTitles((prevTitles) =>
-                prevTitles.map(title => title.id === editedTitle.id ? editedTitle : title)
-            );
-        } catch (error) {
-            console.error("Failed to save item:", error);
-        }
-    };
-
-    const onDelete = (id) => {
-        setTitles((prevTitles) => prevTitles.filter((title) => title.id !== id));
-    };
-
     return (
         <div className="library-list-container">
             <div className="library-list-wrapper">
@@ -98,7 +79,7 @@ const LibraryList = () => {
                     <Loader />
                 ) : error ? (
                     <p>{error}</p>
-                ) : (!displayedTitles || displayedTitles.length === 0) ? (
+                ) : (titles.length === 0) ? (
                     <div className="no-titles">
                         <div>No titles found</div>
                         <button className="no-titles-button btn" onClick={() => navigate("/form")}>Add a title</button>
@@ -107,7 +88,7 @@ const LibraryList = () => {
                     <ul className="library-list-titles" ref={containerRef}>
                         {displayedTitles.map((title, index) => (
                             <li key={index} className={`element-${index}`}>
-                                <AnimeItem title={title} onDelete={onDelete} handleSave={handleSave} />
+                                <AnimeItem title={title} setTitles={setTitles} />
                             </li>
                         ))}
                     </ul>

@@ -57,13 +57,7 @@ const AddTitlesManually = () => {
     return (
         <div className="add-titles-manually-container">
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="add-titles-manually-wrapper"
-                    onSubmit={handleSubmit}
-                    onTouchEnd={(e) => {
-                        if (!e.defaultPrevented) {
-                            handleSubmit(e);
-                        }
-                    }}>
+                <form className="add-titles-manually-wrapper" onSubmit={handleSubmit} >
                     <div className="add-titles-manually-title">Add a new title here</div>
                     <div className="add-titles-manually-input-container">
                         <div className="title-container">

@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import "./AnimeItem.css";
 import ItemButtons from "../ItemButtons/ItemButtons";
 
-const AnimeItem = ({ title, onDelete, handleSave }) => {
+const AnimeItem = ({ title, setTitles }) => {
     const handleRef = useRef(null);
     const [checks, setChecks] = useState(3);
     const [isEditing, setIsEditing] = useState(false);
     const [editedTitle, setEditedTitle] = useState({ ...title || {} });
-
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -49,18 +48,20 @@ const AnimeItem = ({ title, onDelete, handleSave }) => {
                     <div className="katana-middle"></div>
                 </div>
                 <div className="katana-blade">
-                    <div className="anime-information">
-                        {isEditing ? (
-                            <input type="text" name="title" value={title.title} onChange={handleChange} className="title-input" />
-                        ) : (
+                    {isEditing ? (
+                        <div className="anime-information">
+                            <input type="text" name="title" value={editedTitle.title} onChange={handleChange} className="katana-title-input" />
+                        </div>
+                    ) : (
+                        <div className="anime-information">
                             <span className="name">{title.title}</span>
-                        )}
-                        <div className="anime-details">{title.type}</div>
-                    </div>
-                    <div className="katana-shadow"></div>
+                                <div className="anime-details">{title.type || ""}</div>
+                            <div className="katana-shadow"></div>
+                        </div>
+                    )}
                 </div>
             </div>
-            <ItemButtons title={title} onDelete={onDelete} handleSave={handleSave} editedTitle={editedTitle} isEditing={isEditing} setIsEditing={setIsEditing} handleEdit={handleEdit} />
+            <ItemButtons title={title} setTitles={setTitles} editedTitle={editedTitle} setEditedTitle={setEditedTitle} isEditing={isEditing} setIsEditing={setIsEditing} handleEdit={handleEdit} />
         </div>
     );
 };

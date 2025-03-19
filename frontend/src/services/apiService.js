@@ -24,7 +24,11 @@ export const fetchData = async (endpoint, method = 'GET', body = null) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/${endpoint}`, options);
 
     if (!response.ok) {
-      throw new Error('Failed to fetch data');
+      if (response.status === 404) {
+        return [];
+      } else {
+        throw new Error('Failed to fetch data');
+      }
     }
 
     const data = await response.json();

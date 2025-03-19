@@ -6,15 +6,19 @@ import watchedIcon from "../../assets/icons/watched.svg";
 import { useState } from "react";
 import { editTitle, removeTitle } from "../../services/titleService";
 
-const ItemButtons = ({ title, onDelete, handleSave, editedTitle, isEditing, setIsEditing, handleEdit }) => {
-    const [isChecked, setIsChecked] = useState(title ? title.status : false);
+const ItemButtons = ({ title, setTitles, editedTitle, isEditing, setIsEditing, handleEdit }) => {
+    const [isChecked, setIsChecked] = useState(title.status);
 
     const toggleChecked = async () => {
         const newChecked = !isChecked;
         setIsChecked(newChecked);
+
         try {
-            await editTitle({ ...title, checked: newChecked });
+            const updatedTitle = await editTitle({ ...title, status: newChecked });
+            setTitles((prevTitles) =>
+                prevTitles.map(title => title._id === updatedTitle._id ? updatedTitle : title));
         } catch (error) {
+            console.error("Error updating status:", error);
             setIsChecked(!newChecked);
         }
     };
@@ -22,12 +26,15 @@ const ItemButtons = ({ title, onDelete, handleSave, editedTitle, isEditing, setI
     const handleSaveClick = async () => {
         try {
             const response = await editTitle(editedTitle);
+
             if (!response || response.error) {
                 throw new Error("Failed to update title");
             }
 
             setIsEditing(false);
-            handleSave(editedTitle);
+            setTitles((prevTitles) =>
+                prevTitles.map(title => title._id === response.updatedTitle._id ? response.updatedTitle : title)
+            );
         } catch (error) {
             console.error("Failed to save item:", error);
         }
@@ -35,8 +42,13 @@ const ItemButtons = ({ title, onDelete, handleSave, editedTitle, isEditing, setI
 
     const handleDelete = async () => {
         try {
-            await removeTitle(title.id);
-            onDelete(title.id);
+            const response = await removeTitle(title._id);
+
+            if (!response || response.error) {
+                throw new Error("Failed to delete title");
+            }
+
+            setTitles((prevTitles) => prevTitles.filter(titleToRemove => titleToRemove._id !== title._id));
         } catch (error) {
             console.error("Failed to delete item:", error);
         }
@@ -47,8 +59,9 @@ const ItemButtons = ({ title, onDelete, handleSave, editedTitle, isEditing, setI
             <div className="item-buttons-connector"></div>
             <div className="item-buttons">
                 {isEditing ? (
-                    <div className="item-buttons-save" >
+                    <div className="item-buttons-save" onClick={handleSaveClick}>
                         <img src={saveIcon} alt="save-icon" />
+                        <div>Save</div>
                     </div>
                 ) : (
                     <div className="item-buttons-edit" onClick={handleEdit}>
@@ -57,12 +70,8 @@ const ItemButtons = ({ title, onDelete, handleSave, editedTitle, isEditing, setI
                     </div>
                 )}
                 <div className={`item-buttons-status ${isChecked ? "checked" : ""}`} onClick={toggleChecked}>
-                    <img src={watchedIcon} alt="status-icon" className="" />
-                    {isChecked ? (
-                        <div>Seen</div>
-                    ) : (
-                        <div>Not Seen</div>
-                    )}
+                    <img src={watchedIcon} alt="status-icon" />
+                    <div>{isChecked ? "Seen" : "Not Seen"}</div>
                 </div>
                 <div className="item-buttons-delete" onClick={handleDelete}>
                     <img src={deleteIcon} alt="delete-icon" />

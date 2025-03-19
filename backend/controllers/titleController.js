@@ -83,35 +83,32 @@ export const getTitles = async (req, res) => {
     }
 };
 
-// Get a single title by its ID
-
-export const getTitleById = async (req, res) => {
-    try {
-        const title = await Title.findById(req.params.id);
-        if (!title) return res.status(404).json({ message: "No titles found." });
-        res.status(200).json(title);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
-
 // Update a title
 
 export const updateTitle = async (req, res) => {
     try {
-        const { firebaseUid, title_id, updatedData } = req.body;
-        const user = await User.findOne({ firebaseUid });
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
+        }
+
+        const token = authHeader.split(" ")[1];
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        const firebaseUid = decodedToken.uid;
+
+        const { title_id, updatedData } = req.body;
+
+        const user = await User.findOne({ firebaseUid }).populate("titlesList.title_id");
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        const titleIndex = user.titlesList.findIndex(item => item.title_id.toString() === title_id);
+        const titleEntry = user.titlesList.find(entry => entry.title_id._id.toString() === title_id);
+        if (!titleEntry) return res.status(404).json({ message: "Title not found in user's list." });
 
-        if (titleIndex === -1) return res.status(404).json({ message: "Title not found in list." });
+        const updatedTitle = await Title.findByIdAndUpdate(title_id, updatedData, { new: true });
+        if (!updatedTitle) return res.status(404).json({ message: "Title not found." });
 
-        Object.assign(user.titlesList[titleIndex], updatedData);
-        await user.save();
-
-        res.status(200).json(user);
+        res.status(200).json({ message: "Title updated successfully", updatedTitle });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -121,14 +118,23 @@ export const updateTitle = async (req, res) => {
 
 export const deleteTitle = async (req, res) => {
     try {
-        const { firebaseUid, title_id } = req.body;
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
+        }
+
+        const token = authHeader.split(" ")[1];
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        const firebaseUid = decodedToken.uid;
+
+        const { title_id } = req.body;
         const user = await User.findOne({ firebaseUid });
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
         user.titlesList = user.titlesList.filter(item => item.title_id.toString() !== title_id);
         await user.save();
-        res.status(200).json(user);
+        res.status(200).json({ message: "Title deleted successfully", user });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

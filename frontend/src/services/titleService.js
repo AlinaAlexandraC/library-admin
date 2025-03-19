@@ -46,20 +46,22 @@ export const editTitle = async (titleData) => {
         if (!token) throw new Error("User is not authenticated");
 
         const response = await fetch(API_URL_EDIT, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(titleData)
+            body: JSON.stringify({
+                title_id: titleData._id,
+                updatedData: titleData,
+            }),
         });
 
         if (!response.ok) {
             throw new Error('Failed to update title');
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         throw new Error(error.message || "An error occured");
     }
@@ -75,14 +77,14 @@ export const removeTitle = async (id) => {
         const token = await user.getIdToken();
 
         if (!token) throw new Error("User is not authenticated");
-        
+
         const response = await fetch(API_URL_DELETE, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ id }),
+            body: JSON.stringify({ title_id: id }),
         });
 
         if (!response.ok) {
