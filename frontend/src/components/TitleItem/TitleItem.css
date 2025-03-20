@@ -25,6 +25,10 @@
     justify-content: space-evenly;
 }
 
+.title {
+    font-weight: 600;
+}
+
 .other-details {
     padding: 0 10px;
     display: flex;

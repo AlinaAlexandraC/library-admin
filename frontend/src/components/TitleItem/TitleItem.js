@@ -1,10 +1,7 @@
-import { useState } from "react";
 import "./TitleItem.css";
 import ItemButtons from "../ItemButtons/ItemButtons";
 
 const TitleItem = ({ title, setTitles, openModal }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedTitle, setEditedTitle] = useState({ ...title || {} });
 
     return (
         <div className="title-item-container">

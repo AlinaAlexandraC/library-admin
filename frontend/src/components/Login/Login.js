@@ -71,7 +71,7 @@ const Login = () => {
 
                 await loginUser(formData);
                 setSuccess("Welcome! Redirecting to library...");
-                setTimeout(() => navigate(`/library`), 2000);
+                setTimeout(() => navigate(`/lists`), 2000);
             } else {
                 setError("Login failed: No user data received.");
             }
