@@ -86,13 +86,13 @@ const AddTitlesManually = () => {
                                     <div className="seasons-number">
                                         <div className="seasons-container">
                                             <label>No. of seasons</label>
-                                            <input type="number" placeholder="no. of seasons" className="seasons-input" name="numberOfSeasons" value={titleFormData.numberOfSeasons} onChange={handleChange} />
+                                            <input type="number" placeholder="no of seasons" className="seasons-input" name="numberOfSeasons" value={titleFormData.numberOfSeasons} onChange={handleChange} />
                                         </div>
                                     </div>
                                     <div className="episodes-number">
                                         <div className="episodes-container">
                                             <label>No. of episodes</label>
-                                            <input type="number" placeholder="no. of episodes" className="episodes-input" name="numberOfEpisodes" value={titleFormData.numberOfEpisodes} onChange={handleChange} />
+                                            <input type="number" placeholder="no of episodes" className="episodes-input" name="numberOfEpisodes" value={titleFormData.numberOfEpisodes} onChange={handleChange} />
                                         </div>
                                     </div>
                                 </div>
@@ -107,7 +107,7 @@ const AddTitlesManually = () => {
                         {titleFormData.type === "Manga" && (
                             <div className="manga-container">
                                 <label>No. of chapters</label>
-                                <input type="number" placeholder="no. of chapters" className="chapters-input" name="numberOfChapters" value={titleFormData.numberOfChapters} onChange={handleChange} />
+                                <input type="number" placeholder="no of chapters" className="chapters-input" name="numberOfChapters" value={titleFormData.numberOfChapters} onChange={handleChange} />
                             </div>
                         )}
                         {titleFormData.type === "Series" && (
@@ -115,13 +115,13 @@ const AddTitlesManually = () => {
                                 <div className="seasons-number">
                                     <div className="seasons-container">
                                         <label>No. of seasons</label>
-                                        <input type="number" placeholder="no. of seasons" className="seasons-input" name="numberOfSeasons" value={titleFormData.numberOfSeasons} onChange={handleChange} />
+                                        <input type="number" placeholder="no of seasons" className="seasons-input" name="numberOfSeasons" value={titleFormData.numberOfSeasons} onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div className="episodes-number">
                                     <div className="episodes-container">
                                         <label>No. of episodes</label>
-                                        <input type="number" placeholder="no. of episodes" className="episodes-input" name="numberOfEpisodes" value={titleFormData.numberOfEpisodes} onChange={handleChange} />
+                                        <input type="number" placeholder="no of episodes" className="episodes-input" name="numberOfEpisodes" value={titleFormData.numberOfEpisodes} onChange={handleChange} />
                                     </div>
                                 </div>
                             </div>

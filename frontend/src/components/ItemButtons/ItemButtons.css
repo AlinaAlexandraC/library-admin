@@ -1,21 +1,11 @@
 .item-buttons-container {
-    width: fit-content;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 150px;
     height: 100%;
     filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.2));
 }
 
-.item-buttons-connector {
-    border-top: 15px solid transparent;
-    border-right: 35px solid #f8f8f8;
-    border-bottom: 15px solid transparent;
-}
-
 .item-buttons {
     border-radius: 5px;
-    width: calc(100% - 15px);
     background-color: #f8f8f8;
     height: 100%;
 }
@@ -47,10 +37,6 @@
     opacity: 0.5;
 }
 
-.library-item-status {
-    background-color: #d6efe9;
-}
-
 .checked img {
     opacity: 1;
 }
@@ -59,15 +45,11 @@
     height: 28px;
 }
 
-@media (max-width: 767px) {
-    .item-buttons-connector {
-        border-top: 10px solid transparent;
-        border-right: 25px solid #f8f8f8;
-        border-bottom: 10px solid transparent;
+@media (max-width: 768px) {
+    .item-buttons-container {
+        width: auto;
     }
-}
 
-@media (max-width: 1412px) {
     .item-buttons-edit div,
     .item-buttons-save div,
     .item-buttons-status div,

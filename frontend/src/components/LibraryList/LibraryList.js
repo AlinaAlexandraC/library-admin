@@ -1,12 +1,12 @@
 import "./LibraryList.css";
-import LibraryItem from "../LibraryItem/LibraryItem";
 import LibraryPagination from "../LibraryPagination/LibraryPagination";
 import { useEffect, useRef, useState } from "react";
 import fetchTitles from "../../utils/fetchTitles";
 import { useNavigate } from "react-router";
 import Loader from "../Loader/Loader";
 import SearchBar from "../SearchBar/SearchBar";
-import AnimeItem from "../AnimeItem/AnimeItem";
+import TitleItem from "../TitleItem/TitleItem";
+import EditItem from "../EditItem/EditItem";
 
 const LibraryList = () => {
     const [titles, setTitles] = useState([]);
@@ -18,6 +18,7 @@ const LibraryList = () => {
     const [currentPage, setCurrentPage] = useState(() => {
         return parseInt(localStorage.getItem("libraryCurrentPage")) || 1;
     });
+    const [modalItem, setModalItem] = useState(null);
 
     const containerRef = useRef(null);
     const navigate = useNavigate();
@@ -71,6 +72,14 @@ const LibraryList = () => {
         setQuery(query);
     };
 
+    const openModal = (item) => {
+        setModalItem(item);
+    };
+
+    const closeModal = () => {
+        setModalItem(null);
+    };
+
     return (
         <div className="library-list-container">
             <div className="library-list-wrapper">
@@ -88,13 +97,19 @@ const LibraryList = () => {
                     <ul className="library-list-titles" ref={containerRef}>
                         {displayedTitles.map((title, index) => (
                             <li key={index} className={`element-${index}`}>
-                                <AnimeItem title={title} setTitles={setTitles} />
+                                <TitleItem title={title} setTitles={setTitles} openModal={openModal} />
                             </li>
                         ))}
                     </ul>
                 )}
             </div>
             <LibraryPagination totalPages={totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+            {modalItem && (
+                <>
+                    <div className="overlay" onClick={closeModal}></div>
+                    <EditItem title={modalItem} onClose={closeModal} setTitles={setTitles} />
+                </>
+            )}
         </div>
     );
 };
