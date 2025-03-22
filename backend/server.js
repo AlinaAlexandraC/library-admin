@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 
 // Firebase Authentication
 
@@ -54,6 +55,17 @@ app.use("/api/titles", authenticateToken, titleRoutes);
 
 app.get("/", (req, res) => {
   res.send("Otaku Library API is running...");
+});
+
+// Serve frontend static files 
+
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "client", "build")));
+
+// Catch-all route for frontend routing
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
 // Start the server
