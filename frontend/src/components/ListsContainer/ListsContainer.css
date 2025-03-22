@@ -18,3 +18,9 @@
     background-color: brown;
     border-radius: 10px;
 }
+
+.link:active {
+    color: inherit;
+    text-decoration: none;
+    cursor: default;
+}

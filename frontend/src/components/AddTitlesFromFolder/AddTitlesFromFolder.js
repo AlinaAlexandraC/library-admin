@@ -7,21 +7,12 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import { addTitle } from "../../services/titleService";
 
-
 const AddTitlesFromFolder = () => {
-    const [titleFormData, setTitleFormData] = useState({
-        title: "",
-        type: "",
-        genre: "",
-        author: "",
-        numberOfSeasons: "",
-        numberOfEpisodes: "",
-        numberOfChapters: "",
-        status: false,
-    });
+    const [titleFormData, setTitleFormData] = useState([]);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const [folderSelected, setFolderSelected] = useState(false);
+    const [selectedType, setSelectedType] = useState("");
     const navigate = useNavigate();
 
     const handleFolderSelection = async () => {
@@ -66,7 +57,7 @@ const AddTitlesFromFolder = () => {
         try {
             const titles = titleFormData.map(title => ({
                 title: title,
-                type: "",
+                type: selectedType || "",
                 genre: "",
                 author: "",
                 numberOfSeasons: "",
@@ -99,6 +90,16 @@ const AddTitlesFromFolder = () => {
         }
     };
 
+    const handleChange = (event) => {
+        const { value } = event.target;
+        setSelectedType(value);
+    };
+
+    const reselectFolder = () => {
+        setTitleFormData([]);
+        setFolderSelected(false);
+    };
+
     return (
         <div className="add-titles-from-folder-container">
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
@@ -112,6 +113,13 @@ const AddTitlesFromFolder = () => {
                     )}
                     {titleFormData.length > 0 && (
                         <div className="titles-list-from-folder">
+                            <div className="titles-type">
+                                <select name="type" id="type" className="type-select" value={selectedType} onChange={handleChange}>
+                                    {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
+                                        <option key={index} value={option}>{option}</option>
+                                    ))}
+                                </select>
+                            </div>
                             <ul>
                                 {titleFormData.map((title, index) => (
                                     <li key={index} className="extracted-title-container">
@@ -126,7 +134,11 @@ const AddTitlesFromFolder = () => {
                     <div className="buttons-container">
                         <div className="buttons">
                             <button type="submit" className="add-titles-manually-button btn">Add to list</button>
-                            <button type="button" className="see-library-button btn" onClick={() => navigate("/library")}>See list</button>
+                            {folderSelected ? (
+                                <button type="button" className="see-library-button btn" onClick={reselectFolder}>Select another folder</button>
+                            ) : (
+                                <button type="button" className="see-library-button btn" onClick={() => navigate("/library")}>See list</button>
+                            )}
                         </div>
                         <label className={`${error ? "error" : "success"}`}>{error || success}</label>
                     </div>

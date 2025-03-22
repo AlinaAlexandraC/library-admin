@@ -1,15 +1,15 @@
 .randomizer-outer-container {
-    height: calc(100vh - 165px);
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .randomizer-inner-container {
+    height: 80vh;
     background-color: #3c3d80;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100% - 50px);
     width: 90vw;
     max-width: 1300px;
     border-radius: 10px;
@@ -37,7 +37,6 @@
 
 .randomizer-titles-list {
     overflow: scroll;
-    height: calc(100% - 40px);
     font-size: 14px;
 }
 

@@ -1,5 +1,4 @@
 .filters-bar-container {
-    height: 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,18 +6,17 @@
     margin: 10px 0;
     user-select: none;
     width: 100%;
-    gap: 5px;
 }
 
 .filters-bar-wrapper {
     width: 90vw;
     max-width: 1300px;
     background-color: #ededed;
-    height: 100%;
+    height: 60px;
+    border-radius: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 5px;
 }
 
 .added-filters {

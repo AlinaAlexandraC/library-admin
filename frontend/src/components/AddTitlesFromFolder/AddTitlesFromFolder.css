@@ -1,5 +1,4 @@
 .add-titles-from-folder-container {
-    height: calc(100dvh - 90px);
     display: flex;
     justify-content: center;
     align-items: center;
