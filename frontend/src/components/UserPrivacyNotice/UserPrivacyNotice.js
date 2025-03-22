@@ -101,7 +101,7 @@ const UserPrivacyNotice = () => {
                         </section>
                     </div>
                     <div className="return-button">
-                        <Link to="/registration" className="link-to-registration">
+                        <Link to="/registration" className="link-to-registration link">
                             <div className="return btn">Go back to registration</div>
                         </Link>
                     </div>

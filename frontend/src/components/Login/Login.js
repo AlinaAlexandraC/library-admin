@@ -107,7 +107,7 @@ const Login = () => {
                             <input type="checkbox" className="remember-me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
                             <label className="remember-me-label">Remember me</label>
                         </div>
-                        {/* <Link to="/forgot-password">Forgot Password</Link> */}
+                        <Link to="/forgot-password">Forgot Password</Link>
                     </div>
                     <button type="submit" className="login-button btn" >Sign in</button>
                 </form>
