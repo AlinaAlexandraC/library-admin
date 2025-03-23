@@ -13,6 +13,8 @@ import UserAgreement from './components/UserAgreement/UserAgreement';
 import UserPrivacyNotice from './components/UserPrivacyNotice/UserPrivacyNotice';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import LibraryLists from './pages/LibraryLists';
+import { useEffect, useState } from "react";
+import ServerStatusModal from './components/ServerStatusModal/ServerStatusModal';
 
 const router = createBrowserRouter([
   {
@@ -88,11 +90,44 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [serverStatus, setServerStatus] = useState("Waking up the server... Please wait ⏳");
+  const [showModal, setShowModal] = useState(true);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      setShowModal(false);
+      return;
+    }
+
+    const wakeUpBackend = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/health`);
+
+        if (response.ok) {
+          setServerStatus(null);
+          setShowModal(false);
+        } else {
+          setServerStatus("Waking up the server... Please wait ⏳");
+        }
+      } catch (error) {
+        console.error("Error waking up backend:", error);
+        setServerStatus("Failed to connect to the server. Try again later.");
+      }
+    };
+
+    wakeUpBackend();
+
+    const interval = setInterval(wakeUpBackend, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
         <RouterProvider router={router} />
       </header>
+      <ServerStatusModal message={serverStatus} showModal={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }

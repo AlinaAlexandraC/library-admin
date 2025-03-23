@@ -22,31 +22,6 @@ const Login = () => {
     };
 
     useEffect(() => {
-        const wakeUpBackend = async () => {
-            try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/health`, {
-                    mode: 'no-cors',
-                });
-
-                if (response.ok) {
-                    setSuccess(null);
-                } else {
-                    setSuccess("Waking up the server... Please wait ⏳");
-                }
-            } catch (error) {
-                console.error("Error waking up backend:", error);
-                setError("Failed to connect to the server. Try again later.");
-            }
-        };
-
-        wakeUpBackend();
-
-        const interval = setInterval(wakeUpBackend, 10000);
-
-        return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
         const storedEmail = localStorage.getItem("rememberedEmail");
         if (storedEmail) {
             setFormData((prevFormData) => ({ ...prevFormData, email: storedEmail }));
