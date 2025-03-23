@@ -1,12 +1,12 @@
-.lists-container {
-    height: calc(100dvh - 90px);
+.default-lists-container {
+    height: 80vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
 }
 
-.lists-wrapper {
+.default-lists-wrapper {
     height: 80vh;
     display: flex;
     flex-direction: column;
@@ -15,7 +15,7 @@
     width: 90vw;
     max-width: 1300px;
     min-width: 250px;
-    background-color: brown;
+    background-color: #ededed;
     border-radius: 10px;
 }
 

@@ -70,7 +70,6 @@ const EditItem = ({ title, onClose, setTitles }) => {
                     />
                 </>
             )}
-
             <div className="modal-actions">
                 <button onClick={handleSave} className="save-btn btn">Save</button>
                 <button onClick={onClose} className="cancel-btn btn">Cancel</button>

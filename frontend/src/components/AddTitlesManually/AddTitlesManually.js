@@ -72,6 +72,14 @@ const AddTitlesManually = () => {
                                 ))}
                             </select>
                         </div>
+                        <div className="otaku-list-select">
+                            <label>OtakuList</label>
+                            <select name="type" className="type" value={titleFormData.type} onChange={handleChange}>
+                                {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
+                                    <option key={index} value={option}>{option}</option>
+                                ))}
+                            </select>
+                        </div>
                         {titleFormData.type === "Anime" && (
                             <div className="anime-container">
                                 <div className="genre-container">

@@ -12,7 +12,7 @@ import MyAccountPage from './pages/MyAccountPage';
 import UserAgreement from './components/UserAgreement/UserAgreement';
 import UserPrivacyNotice from './components/UserPrivacyNotice/UserPrivacyNotice';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
-import LibraryLists from './pages/LibraryLists';
+import LibraryLists from './pages/LibraryLists/LibraryLists';
 import { useEffect, useState } from "react";
 import ServerStatusModal from './components/ServerStatusModal/ServerStatusModal';
 
