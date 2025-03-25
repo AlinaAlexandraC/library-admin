@@ -1,8 +1,8 @@
 import { getAuth } from "firebase/auth";
 
-const API_URL_ADD = 'http://localhost:5000/api/titles/add';
-const API_URL_EDIT = 'http://localhost:5000/api/titles/update';
-const API_URL_DELETE = 'http://localhost:5000/api/titles/remove';
+const API_URL_ADD = `${process.env.REACT_APP_API_URL}/api/titles/add`;
+const API_URL_EDIT = `${process.env.REACT_APP_API_URL}/api/titles/update`;
+const API_URL_DELETE = `${process.env.REACT_APP_API_URL}/api/titles/remove`;
 
 export const addTitle = async (titleData) => {
     try {
