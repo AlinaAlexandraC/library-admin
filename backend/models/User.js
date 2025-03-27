@@ -14,15 +14,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    titlesList: [
-        {
-            title_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Title' },
-            dateAdded: {
-                type: Date,
-                default: Date.now
-            }
-        }
-    ],
+    lists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'List' }],
     firebaseUid: {
         type: String,
         required: true,

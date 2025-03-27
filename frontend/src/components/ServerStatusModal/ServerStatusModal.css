@@ -16,7 +16,7 @@
     text-align: center;
 }
 
-button {
+.server-status-close-button {
     margin-top: 10px;
     padding: 8px 16px;
     background-color: #007bff;

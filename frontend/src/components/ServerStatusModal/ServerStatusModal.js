@@ -7,7 +7,7 @@ const ServerStatusModal = ({ message, showModal, onClose }) => {
         <div className="server-status-modal-container overlay">
             <div className="modal">
                 <p>{message}</p>
-                <button onClick={onClose}>Close</button>
+                <button className="server-status-close-button" onClick={onClose}>Close</button>
             </div>
         </div>
     );

@@ -17,6 +17,8 @@ const AddTitlesManually = () => {
         numberOfChapters: "",
         status: false,
     });
+    const [userLists, setUserLists] = useState([]);
+    const [selectedOtakuList, setSelectedOtakuList] = useState("");
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
@@ -27,9 +29,24 @@ const AddTitlesManually = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
+        setSuccess(null);
 
         try {
-            const response = await addTitle({ titles: [titleFormData] });
+            let targetList;
+
+            if (selectedOtakuList) {
+                targetList = selectedOtakuList;
+            }
+
+            else {
+                targetList = titleFormData.type ? titleFormData.type : "Unknown";
+            }
+
+            const response = await addTitle({
+                listName: targetList,
+                titles: [titleFormData]
+            });
 
             if (response.success) {
                 setSuccess("Title added successfully!");
@@ -68,15 +85,21 @@ const AddTitlesManually = () => {
                             <label>Type</label>
                             <select name="type" className="type" value={titleFormData.type} onChange={handleChange}>
                                 {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
-                                    <option key={index} value={option}>{option}</option>
+                                    <option key={index} value={option === "Select type" ? "" : option}>{option}</option>
                                 ))}
                             </select>
                         </div>
                         <div className="otaku-list-select">
                             <label>OtakuList</label>
-                            <select name="type" className="type" value={titleFormData.type} onChange={handleChange}>
-                                {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
-                                    <option key={index} value={option}>{option}</option>
+                            <select
+                                name="customList"
+                                className="custom-list"
+                                value={selectedOtakuList}
+                                onChange={(e) => setSelectedOtakuList(e.target.value)}
+                            >
+                                <option value="">Select a custom list</option>
+                                {userLists.map((list) => (
+                                    <option key={list._id} value={list.name}>{list.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -143,6 +166,10 @@ const AddTitlesManually = () => {
                         <label className={`${error ? "error" : "success"}`}>{error ? error : success}</label>
                     </div>
                 </form>
+                <p className="list-instruction">
+                    Titles will be added to:{" "}
+                    <strong>{selectedOtakuList || (titleFormData.type ? titleFormData.type : "Unknown")}</strong> list
+                </p>
                 <div className="instruction">Only fields marked with * are mandatory. Adding more details will increase filtering.</div>
             </Form>
         </div>

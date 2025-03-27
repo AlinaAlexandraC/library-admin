@@ -1,9 +1,9 @@
 .library-list-container {
+    height: calc(100vh - 215px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 215px);
 }
 
 .library-list-wrapper {

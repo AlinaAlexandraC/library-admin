@@ -36,11 +36,11 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "/library",
+    path: "/lists/:listId",
     element: <PrivateRoute><Layout /></PrivateRoute>,
     children: [
       {
-        path: "/library",
+        path: "/lists/:listId",
         element: <LibraryPage />
       }
     ]

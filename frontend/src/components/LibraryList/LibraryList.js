@@ -2,14 +2,14 @@ import "./LibraryList.css";
 import LibraryPagination from "../LibraryPagination/LibraryPagination";
 import { useEffect, useRef, useState } from "react";
 import fetchTitles from "../../utils/fetchTitles";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Loader from "../Loader/Loader";
 import SearchBar from "../SearchBar/SearchBar";
 import TitleItem from "../TitleItem/TitleItem";
 import EditItem from "../EditItem/EditItem";
 
-const LibraryList = () => {
-    const [titles, setTitles] = useState([]);
+const LibraryList = ({ titlesForList }) => {
+    const [titles, setTitles] = useState(titlesForList || []);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -23,9 +23,15 @@ const LibraryList = () => {
     const containerRef = useRef(null);
     const navigate = useNavigate();
 
+    const { listId } = useParams();
+
     useEffect(() => {
-        fetchTitles(setTitles, setError, setLoading);
-    }, []);
+        if (!titlesForList) {
+            fetchTitles(listId, setTitles, setError, setLoading);
+        }     
+        console.log(listId);
+        
+    }, [listId, titlesForList]);
 
     useEffect(() => {
         if (query.trim() === "") {

@@ -1,34 +1,79 @@
 import User from "../models/User.js";
 import Title from "../models/Title.js";
-import admin from "../config/firebase.js";
+import List from "../models/List.js";
 
 // Add a title to the user's list
 
 export const addTitleToUserList = async (req, res) => {
     try {
         const firebaseUid = req.user.uid;
-        const { titles } = req.body;
+        const { titles, listName } = req.body;
 
         if (!titles || titles.length === 0) return res.status(400).json({ message: "No titles provided." });
 
-        let user = await User.findOne({ firebaseUid });
+        let user = await User.findOne({ firebaseUid }).populate('lists');
         if (!user) return res.status(404).json({ message: "User not found." });
 
         const savedTitles = [];
+
+        let list;
+
+        if (["Anime", "Movie", "Manga", "Series", "Book", "Unknown"].includes(listName)) {
+            list = await List.findOne({ name: listName });
+
+            if (!list) {
+                list = new List({
+                    name: listName,
+                    userId: user._id,
+                    titles: []
+                });
+
+                await list.save();
+            }
+        } else {
+            list = await List.findOne({ userId: user._id, name: listName });
+            if (!list) {
+                list = new List({
+                    userId: user._id,
+                    name: listName,
+                    titles: []
+                });
+
+                await list.save();
+            }
+        }
 
         for (let titleData of titles) {
             const { title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status } = titleData;
 
             if (!title) continue;
 
-            const newTitle = new Title({ title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status });
-            const savedTitle = await newTitle.save();
-            savedTitles.push(savedTitle);
+            const existingTitle = await Title.findOne({ title: title });
+            let newTitle;
 
-            user.titlesList.push({ title_id: savedTitle._id, dateAdded: new Date() });
+            if (existingTitle) {
+                newTitle = existingTitle;
+            } else {
+                newTitle = new Title({ title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status });
+                newTitle = await newTitle.save();
+            }
+
+            const titleAlreadyInList = list.titles.some(item => item.title_id.toString() === newTitle._id.toString());
+
+            if (!titleAlreadyInList) {
+                list.titles.push({ title_id: newTitle._id, dateAdded: new Date() });
+            }
+
+            savedTitles.push(newTitle);
         }
 
-        await user.save();
+        await list.save();
+
+        if (!user.lists.includes(list._id)) {
+            user.lists.push(list._id);
+            await user.save();
+        }
+
         res.status(201).json({ success: true, message: "Title added successfully!", title: savedTitles });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -40,13 +85,19 @@ export const addTitleToUserList = async (req, res) => {
 export const getTitles = async (req, res) => {
     try {
         const firebaseUid = req.user.uid;
+        const { listId } = req.params;
 
-        const user = await User.findOne({ firebaseUid }).populate('titlesList.title_id');
+        const user = await User.findOne({ firebaseUid }).populate('lists.titles.title_id');
 
         if (!user) return res.status(404).json({ message: "User not found." });
-        if (user.titlesList.length === 0) return res.status(404).json({ message: "No titles found for this user." });
 
-        const titles = user.titlesList.map(item => item.title_id);
+        const list = user.lists.find(list => list._id.toString() === listId);
+
+        if (!list || list.titles.length === 0) {
+            return res.status(404).json({ message: "No titles found for this list." });
+        }
+
+        const titles = list.titles.map(item => item.title_id);
 
         res.status(200).json(titles);
     } catch (error) {
@@ -61,11 +112,16 @@ export const updateTitle = async (req, res) => {
         const firebaseUid = req.user.uid;
         const { title_id, updatedData } = req.body;
 
-        const user = await User.findOne({ firebaseUid }).populate("titlesList.title_id");
+        const user = await User.findOne({ firebaseUid }).populate("lists.titles.title_id");
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        const titleEntry = user.titlesList.find(entry => entry.title_id._id.toString() === title_id);
+        let titleEntry;
+        for (let list of user.lists) {
+            titleEntry = list.titles.find(entry => entry.title_id._id.toString() === title_id);
+            if (titleEntry) break;
+        }
+
         if (!titleEntry) return res.status(404).json({ message: "Title not found in user's list." });
 
         const updatedTitle = await Title.findByIdAndUpdate(title_id, updatedData, { new: true });
@@ -88,8 +144,12 @@ export const deleteTitle = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        user.titlesList = user.titlesList.filter(item => item.title_id.toString() !== title_id);
-        await user.save();
+        for (let list of user.lists) {
+            list.titles = list.titles.filter(item => item.title_id.toString() !== title_id);
+            await list.save();
+        }
+
+        await Title.findByIdAndDelete(title_id);
 
         res.status(200).json({ message: "Title deleted successfully", user });
     } catch (error) {

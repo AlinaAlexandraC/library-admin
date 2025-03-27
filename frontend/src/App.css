@@ -1,3 +1,7 @@
+.App {
+    transition: all 0.3s ease-in-out;
+}
+
 .btn {
     background-color: #151e72;
     color: #fff;
@@ -12,12 +16,14 @@
     font-weight: 600;
 }
 
+a,
 .link {
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
+a,
 .link:visited {
-    color: black;
+    color: black !important;
 }
 
 label {

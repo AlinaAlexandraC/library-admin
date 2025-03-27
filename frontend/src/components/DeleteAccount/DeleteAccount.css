@@ -32,7 +32,7 @@
     color: white;
     cursor: pointer;
     border-radius: 4px;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .delete-account-container button:hover {

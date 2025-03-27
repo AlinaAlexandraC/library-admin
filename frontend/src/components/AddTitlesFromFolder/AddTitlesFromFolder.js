@@ -113,12 +113,23 @@ const AddTitlesFromFolder = () => {
                     )}
                     {titleFormData.length > 0 && (
                         <div className="titles-list-from-folder">
-                            <div className="titles-type">
-                                <select name="type" id="type" className="type-select" value={selectedType} onChange={handleChange}>
-                                    {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
-                                        <option key={index} value={option}>{option}</option>
-                                    ))}
-                                </select>
+                            <div className="dropdown-lists">
+                                <div className="select-folder-titles-type-select">
+                                    <label>Type</label>
+                                    <select name="type" id="type" className="type-select" value={selectedType} onChange={handleChange}>
+                                        {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
+                                            <option key={index} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="select-folder-otaku-list-select">
+                                    <label>OtakuList</label>
+                                    <select name="type" className="type" value={titleFormData.type} onChange={handleChange}>
+                                        {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
+                                            <option key={index} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <ul>
                                 {titleFormData.map((title, index) => (

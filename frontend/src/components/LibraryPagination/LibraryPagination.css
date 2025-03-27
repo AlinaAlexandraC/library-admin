@@ -7,7 +7,7 @@
     background: #151e72;
     border-radius: 0 0 10px 10px;
     user-select: none;
-    position: sticky;
+    position: absolute;
     bottom: 0;
     z-index: 10;
 }

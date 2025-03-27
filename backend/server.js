@@ -14,6 +14,7 @@ import authenticateToken from './middleware/authMiddleware.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import titleRoutes from './routes/titleRoutes.js';
+import listRoutes from './routes/listRoutes.js';
 
 // Load enviroment variables
 
@@ -50,6 +51,7 @@ app.get('/api/health', (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", authenticateToken, userRoutes);
 app.use("/api/titles", authenticateToken, titleRoutes);
+app.use("/api/lists", authenticateToken, listRoutes);
 
 // Root route
 
