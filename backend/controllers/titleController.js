@@ -87,11 +87,15 @@ export const getTitles = async (req, res) => {
         const firebaseUid = req.user.uid;
         const { listId } = req.params;
 
-        const user = await User.findOne({ firebaseUid }).populate('lists.titles.title_id');
+        const user = await User.findOne({ firebaseUid })
+            .populate({
+                path: "lists",
+                populate: { path: "titles.title_id" },
+            });
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        const list = user.lists.find(list => list._id.toString() === listId);
+        const list = user.lists.find(list => list.name.toLowerCase() === listId.toLowerCase());
 
         if (!list || list.titles.length === 0) {
             return res.status(404).json({ message: "No titles found for this list." });

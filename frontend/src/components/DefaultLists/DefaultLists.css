@@ -11,7 +11,23 @@
     border-radius: 10px;
 }
 
-/* .link.disabled {
+.list-link {
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.list-link:visited {
+    color: black !important;
+}
+
+.list-link:active {
+    color: inherit;
+    text-decoration: none;
+    cursor: default;
+}
+
+.list-link.disabled {
     pointer-events: none;
     opacity: 0.5;
-} */
+}

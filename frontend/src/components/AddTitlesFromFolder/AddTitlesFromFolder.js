@@ -4,8 +4,9 @@ import formImage from "../../assets/images/form-vertical.jpg";
 import formImageHorizontal from "../../assets/images/form-horizontal.jpg";
 import folderIcon from "../../assets/icons/folder.svg";
 import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addTitle } from "../../services/titleService";
+import fetchLists from "../../utils/fetchLists";
 
 const AddTitlesFromFolder = () => {
     const [titleFormData, setTitleFormData] = useState([]);
@@ -13,7 +14,14 @@ const AddTitlesFromFolder = () => {
     const [success, setSuccess] = useState(null);
     const [folderSelected, setFolderSelected] = useState(false);
     const [selectedType, setSelectedType] = useState("");
+    const [targetList, setTargetList] = useState("");
+    const [userLists, setUserLists] = useState([]);
+    const [selectedOtakuList, setSelectedOtakuList] = useState("");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchLists(setUserLists);
+    }, []);
 
     const handleFolderSelection = async () => {
         if (!('showDirectoryPicker' in window)) {
@@ -43,8 +51,8 @@ const AddTitlesFromFolder = () => {
         }
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
         if (titleFormData.length === 0) {
             setError("No titles to add. Please select a valid folder.");
@@ -53,7 +61,9 @@ const AddTitlesFromFolder = () => {
             }, 2000);
             return;
         }
-
+        
+        const finalTargetList = selectedOtakuList || (selectedType || "Unknown");
+        
         try {
             const titles = titleFormData.map(title => ({
                 title: title,
@@ -66,7 +76,10 @@ const AddTitlesFromFolder = () => {
                 status: false,
             }));
 
-            const response = await addTitle({ titles });
+            const response = await addTitle({
+                listName: finalTargetList,
+                titles: titles
+            });
 
             if (response.success) {
                 setSuccess("Titles added successfully!");
@@ -124,9 +137,15 @@ const AddTitlesFromFolder = () => {
                                 </div>
                                 <div className="select-folder-otaku-list-select">
                                     <label>OtakuList</label>
-                                    <select name="type" className="type" value={titleFormData.type} onChange={handleChange}>
-                                        {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
-                                            <option key={index} value={option}>{option}</option>
+                                    <select
+                                        name="customList"
+                                        className="custom-list"
+                                        value={selectedOtakuList}
+                                        onChange={(e) => setSelectedOtakuList(e.target.value)}
+                                    >
+                                        <option value="">Select a custom list</option>
+                                        {userLists.map((list, index) => (
+                                            <option key={list._id || index} value={list.name}>{list.name}</option>
                                         ))}
                                     </select>
                                 </div>

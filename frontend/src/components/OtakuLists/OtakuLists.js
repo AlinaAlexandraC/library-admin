@@ -7,31 +7,17 @@ import icon from '../../assets/icons/manga.svg';
 import { fetchData } from '../../services/apiService';
 import LibraryPagination from '../LibraryPagination/LibraryPagination';
 import { Link } from 'react-router';
+import DeleteListModal from '../DeleteListModal/DeleteListModal';
+import fetchLists from '../../utils/fetchLists';
 
 const OtakuLists = () => {
     const [userLists, setUserLists] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    const [editingList, setEditingList] = useState(null);
-    const [newListName, setNewListName] = useState("");
+    const [showAddListModal, setShowAddListModal] = useState(false);
+    const [showDeleteListModal, setShowDeleteListModal] = useState(false);
+    const [currentList, setCurrentList] = useState(null);
 
     useEffect(() => {
-        const fetchLists = async () => {
-            try {
-                const lists = await fetchData("lists/");
-                const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
-
-                if (Array.isArray(lists)) {
-                    const customLists = lists.filter(list => !defaultListNames.includes(list.name));
-                    setUserLists(customLists);
-                } else {
-                    console.error("Lists is not an array", lists);
-                }
-            } catch (error) {
-                console.error("Failed to fetch lists", error);
-            }
-        };
-
-        fetchLists();
+        fetchLists(setUserLists);
     }, []);
 
     const handleAddList = async (newListName) => {
@@ -39,14 +25,17 @@ const OtakuLists = () => {
 
         try {
             const newList = await fetchData("lists/create", "POST", { name: newListName });
-            setUserLists([...userLists, newList]);
-            setShowModal(false);
+            setUserLists(prevLists => [...prevLists, newList]);
+            setShowAddListModal(false);
         } catch (error) {
             console.error("Failed to create list:", error);
         }
     };
 
-    const handleEditList = async (listId, currentName) => {
+    const handleEditList = async (e, listId, currentName) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         const newName = prompt("Enter new list name:", currentName);
 
         if (!newName || newName.trim() === "") return;
@@ -54,32 +43,20 @@ const OtakuLists = () => {
         try {
             const updatedList = await fetchData("lists/update", "PATCH", { listId, name: newName });
 
-            setUserLists(userLists.map(list => list._id === listId ? updatedList : list));
+            setUserLists(prevLists =>
+                prevLists.map(list => list._id === listId ? updatedList : list)
+            );
         } catch (error) {
             console.error("Failed to update list:", error);
         }
     };
 
-    const handleDeleteList = async (listId) => {
-        const deleteType = prompt(
-            "Do you want to delete the list and all titles inside it? Type 'all' to delete both, or 'list' to just delete the list."
-        );
+    const openDeleteModal = (e, listId, listName, titleCount) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-        if (!deleteType) return;
-
-        const deleteTitles = deleteType.toLowerCase() === 'all';
-
-        try {
-            const response = await fetchData("lists/delete", "DELETE", { listId, deleteTitles });
-
-            if (response.status === 200) {
-                setUserLists(userLists.filter(list => list._id !== listId));
-            } else {
-                console.error("Failed to delete list:", response.message || 'Unknown error');
-            }
-        } catch (error) {
-            console.error("Failed to delete list:", error);
-        }
+        setCurrentList({ listId, listName, titleCount });
+        setShowDeleteListModal(true);
     };
 
     return (
@@ -87,16 +64,16 @@ const OtakuLists = () => {
             <div className="otaku-lists-wrapper">
                 {userLists.length > 0 ? (
                     <>
-                        <button className='otaku-lists-button btn' onClick={() => setShowModal(true)}>Create a list</button>
+                        <button className='otaku-lists-button btn' onClick={() => setShowAddListModal(true)}>Create a list</button>
                         <div className="otaku-lists">
-                            {userLists.map((list) => (
-                                <Link to={`/lists/${list.name}`} key={list._id}>
+                            {userLists.map((list, index) => (
+                                <Link to={`/titles/${list.name}`} key={list._id || index} className='list-link'>
                                     <ListItem listIcon={icon} >
                                         <div className="list-details-container">
                                             <span>{list.name}</span>
                                             <div className="buttons-cotainer">
-                                                <button onClick={() => handleDeleteList(list._id)}>x</button>
-                                                <button onClick={() => handleEditList(list._id, list.name)}>edit</button>
+                                                <button onClick={(e) => openDeleteModal(e, list._id, list.name, list.titleCount)}>x</button>
+                                                <button onClick={(e) => handleEditList(e, list._id, list.name)}>edit</button>
                                             </div>
                                         </div>
                                     </ListItem>
@@ -106,21 +83,32 @@ const OtakuLists = () => {
                     </>
                 ) : (
                     <div className="no-lists">
-                        <img src={noListIcon} className='no-lists-image' />
+                        <img src={noListIcon} className='no-lists-image' alt='no-list-icon' />
                         <p>No lists</p>
-                        <button className='no-lists-button btn' onClick={() => setShowModal(true)}>Create a list</button>
+                        <button className='no-lists-button btn' onClick={() => setShowAddListModal(true)}>Create a list</button>
                     </div>
                 )}
                 <LibraryPagination />
             </div>
-            {
-                showModal && (
-                    <>
-                        <div className="overlay" onClick={() => setShowModal(false)}></div>
-                        <AddListModal onSave={handleAddList} onClose={() => setShowModal(false)} />
-                    </>
-                )
-            }
+            {showAddListModal && (
+                <>
+                    <div className="overlay" onClick={() => setShowAddListModal(false)}></div>
+                    <AddListModal onSave={handleAddList} onClose={() => setShowAddListModal(false)} />
+                </>
+            )}
+            {showDeleteListModal && (
+                <>
+                    <div className="overlay" onClick={() => setShowDeleteListModal(false)}></div>
+                    <DeleteListModal
+                        listName={currentList.listName}
+                        listId={currentList.listId}
+                        titleCount={currentList.titleCount}
+                        onClose={() => setShowDeleteListModal(false)}
+                        userLists={userLists}
+                        setUserLists={setUserLists}
+                    />
+                </>
+            )}
         </div >
     );
 };

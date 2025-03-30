@@ -9,7 +9,13 @@ export const getUserLists = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        res.status(200).json(user.lists);
+        const listsSummary = user.lists ? user.lists.map(list => ({
+            _id: list._id,
+            name: list.name,
+            titleCount: list.titles?.length || 0
+        })) : [];
+
+        res.status(200).json(listsSummary);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -92,6 +98,51 @@ export const deleteList = async (req, res) => {
         const firebaseUid = req.user.uid;
         const { listId, deleteTitles } = req.body;
 
+        if (!listId) return res.status(400).json({ message: "Missing listId" });
+
+        const user = await User.findOne({ firebaseUid }).populate('lists');
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const listToDelete = user.lists.find(list => list._id.toString() === listId);
+
+        if (!listToDelete) return res.status(404).json({ message: "List not found" });
+
+        if (!deleteTitles && listToDelete.titles.length > 0) {
+            const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
+            let defaultList = user.lists.find(list => defaultListNames.includes(list.name));
+
+            if (!defaultList) {
+                const type = listToDelete.name;
+                defaultList = new List({ userId: user._id, name: type, titles: [] });
+                await defaultList.save();
+                user.lists.push(defaultList._id);
+                await user.save();
+            }
+
+            listToDelete.titles.forEach(title => {
+                defaultList.titles.push(title);
+            });
+
+            await defaultList.save();
+        }
+
+        await List.findByIdAndDelete(listId);
+
+        user.lists = user.lists.filter(list => list._id.toString() !== listId);
+        await user.save();
+
+        res.status(200).json({ message: (listToDelete.titles.length > 0) ? "List deleted, titles moved to default list." : "List deleted", success: true });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const deleteListAndTitles = async (req, res) => {
+    try {
+        const firebaseUid = req.user.uid;
+        const { listId } = req.body;
+
         const user = await User.findOne({ firebaseUid });
 
         if (!user) return res.status(404).json({ message: "User not found" });
@@ -100,42 +151,14 @@ export const deleteList = async (req, res) => {
 
         if (!listToDelete) return res.status(404).json({ message: "List not found" });
 
-        if (deleteTitles) {
-            if (listToDelete.titles && listToDelete.titles.length > 0) {
+        await List.findByIdAndDelete(listId);
 
-                await List.findByIdAndDelete(listId);
-                for (let list of user.lists) {
-                    list.titles = list.titles.filter(title => title.listId.toString() !== listId);
-                    await list.save();
-                }
+        await Promise.all(user.lists.map(async (list) => {
+            list.titles = list.titles.filter(title => title.listId.toString() !== listId);
+            return list.save();
+        }));
 
-                return res.status(200).json({ message: "List and titles deleted successfully." });
-            } else {
-                await List.findByIdAndDelete(listId);
-                return res.status(200).json({ message: "List and titles deleted successfully." });
-            }
-
-        } else {
-            const defaultList = user.lists.find(list => list.name === "Default");
-
-            if (!defaultList) {
-                return res.status(400).json({ message: "No default list found." });
-            }
-
-            if (listToDelete.titles && listToDelete.titles.length > 0) {
-                listToDelete.titles.forEach(title => {
-                    defaultList.titles.push(title);
-                });
-
-                await defaultList.save();
-            }
-
-            user.lists = user.lists.filter(list => list._id.toString() !== listId);
-
-            await user.save();
-
-            return res.status(200).json({ message: "List deleted, titles moved to default list." });
-        }
+        res.status(200).json({ message: "List and titles deleted successfully.", success: true });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

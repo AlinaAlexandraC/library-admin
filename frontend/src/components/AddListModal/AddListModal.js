@@ -24,7 +24,7 @@ const AddListModal = ({ onSave, onClose }) => {
                 <button onClick={handleSave} className="save-btn">Create List</button>
                 <button onClick={onClose} className="cancel-btn">Cancel</button>
             </div>
-            {error && <p className="error"> {error}</p>}
+            {error && <p className="error">{error}</p>}
         </div >
     );
 };

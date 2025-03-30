@@ -1,10 +1,11 @@
 import "./AddTitlesManually.css";
 import Form from "../Form/Form.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addTitle } from "../../services/titleService.js";
 import { useNavigate } from "react-router";
 import formImage from "../../assets/images/form-vertical.jpg";
 import formImageHorizontal from "../../assets/images/form-horizontal.jpg";
+import fetchLists from "../../utils/fetchLists.js";
 
 const AddTitlesManually = () => {
     const [titleFormData, setTitleFormData] = useState({
@@ -22,6 +23,10 @@ const AddTitlesManually = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchLists(setUserLists);
+    }, []);
 
     const handleChange = (e) => {
         setTitleFormData({ ...titleFormData, [e.target.name]: e.target.value });
@@ -98,8 +103,8 @@ const AddTitlesManually = () => {
                                 onChange={(e) => setSelectedOtakuList(e.target.value)}
                             >
                                 <option value="">Select a custom list</option>
-                                {userLists.map((list) => (
-                                    <option key={list._id} value={list.name}>{list.name}</option>
+                                {userLists.map((list, index) => (
+                                    <option key={list._id || index} value={list.name}>{list.name}</option>
                                 ))}
                             </select>
                         </div>

@@ -2,8 +2,6 @@ import { fetchData } from "../services/apiService";
 
 const fetchTitles = async (listId, setTitles, setError, setLoading) => {
     try {
-        setLoading(true);
-
         const titles = await fetchData(`titles/${listId}`);
 
         if (!Array.isArray(titles)) {

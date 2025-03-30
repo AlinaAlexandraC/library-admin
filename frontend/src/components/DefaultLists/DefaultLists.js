@@ -20,52 +20,54 @@ const DefaultLists = () => {
         unknown: []
     });
 
-    const fetchListTitles = async (listName) => {
+    const fetchListsSummary = async () => {
         try {
-            const titles = await fetchData(`titles/${listName}`);
-            return titles;
+            const lists = await fetchData("lists/");
+            return lists.reduce((acc, list) => {
+                acc[list.name.toLowerCase()] = list.titleCount > 0;
+                return acc;
+            }, {});
         } catch (error) {
-            console.error(`Failed to fetch titles for ${listName}`, error);
-            return [];
+            console.error("Failed to fetch lists summary", error);
+            return {};
         }
     };
 
     useEffect(() => {
-        const fetchAllTitles = async () => {
+        const fetchSummary = async () => {
+            const listsData = await fetchListsSummary();
             setDefaultLists({
-                anime: await fetchListTitles('anime'),
-                book: await fetchListTitles('book'),
-                manga: await fetchListTitles('manga'),
-                movie: await fetchListTitles('movie'),
-                series: await fetchListTitles('series'),
-                unknown: await fetchListTitles('unknown')
+                anime: listsData["anime"] || false,
+                book: listsData["book"] || false,
+                manga: listsData["manga"] || false,
+                movie: listsData["movie"] || false,
+                series: listsData["series"] || false,
+                unknown: listsData["unknown"] || false
             });
         };
 
-        fetchAllTitles();
+        fetchSummary();
     }, []);
-
-    const isListEmpty = (list) => list.length === 0;
 
     return (
         <div className="default-lists-container">
             <div className="default-lists-wrapper">
-                <Link to="/lists/anime" className={`link ${isListEmpty(defaultLists.anime) ? 'disabled' : ''}`}>
+                <Link to="/titles/anime" className={`list-link ${!defaultLists.anime ? 'disabled' : ''}`}>
                     <ListItem listIcon={animeIcon}>Animes</ListItem>
                 </Link>
-                <Link to="/lists/book" className={`link ${isListEmpty(defaultLists.book) ? 'disabled' : ''}`}>
+                <Link to="/titles/book" className={`list-link ${!defaultLists.book ? 'disabled' : ''}`}>
                     <ListItem listIcon={bookIcon}>Books</ListItem>
                 </Link>
-                <Link to="/lists/manga" className={`link ${isListEmpty(defaultLists.manga) ? 'disabled' : ''}`}>
+                <Link to="/titles/manga" className={`list-link ${!defaultLists.manga ? 'disabled' : ''}`}>
                     <ListItem listIcon={mangaIcon}>Mangas</ListItem>
                 </Link>
-                <Link to="/lists/movie" className={`link ${isListEmpty(defaultLists.movie) ? 'disabled' : ''}`}>
+                <Link to="/titles/movie" className={`list-link ${!defaultLists.movie ? 'disabled' : ''}`}>
                     <ListItem listIcon={movieIcon}>Movies</ListItem>
                 </Link>
-                <Link to="/lists/series" className={`link ${isListEmpty(defaultLists.series) ? 'disabled' : ''}`}>
+                <Link to="/titles/series" className={`list-link ${!defaultLists.series ? 'disabled' : ''}`}>
                     <ListItem listIcon={seriesIcon}>Series</ListItem>
                 </Link>
-                <Link to="/lists/unknown" className={`link ${isListEmpty(defaultLists.unknown) ? 'disabled' : ''}`}>
+                <Link to="/titles/unknown" className={`list-link ${!defaultLists.unknown ? 'disabled' : ''}`}>
                     <ListItem listIcon={unknownIcon}>Unknown</ListItem>
                 </Link>
             </div>

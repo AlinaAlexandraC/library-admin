@@ -28,9 +28,7 @@ const LibraryList = ({ titlesForList }) => {
     useEffect(() => {
         if (!titlesForList) {
             fetchTitles(listId, setTitles, setError, setLoading);
-        }     
-        console.log(listId);
-        
+        }
     }, [listId, titlesForList]);
 
     useEffect(() => {
