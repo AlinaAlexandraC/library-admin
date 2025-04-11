@@ -20,6 +20,7 @@ const AddTitlesManually = () => {
     });
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
+    const [selectedType, setSelectedType] = useState("");
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const navigate = useNavigate();
@@ -38,19 +39,24 @@ const AddTitlesManually = () => {
         setSuccess(null);
 
         try {
-            let targetList;
+            let targetListId;
 
             if (selectedOtakuList) {
-                targetList = selectedOtakuList;
-            }
-
-            else {
-                targetList = titleFormData.type ? titleFormData.type : "Unknown";
+                const selectedList = userLists.find(list => list.name === selectedOtakuList);
+                
+                targetListId = selectedList ? selectedList._id : null;
+            } else {
+                if (selectedType) {
+                    targetListId = selectedType;
+                } else {
+                    targetListId = "Unknown";
+                }
             }
 
             const response = await addTitle({
-                listName: targetList,
-                titles: [titleFormData]
+                listId: targetListId,
+                titles: [titleFormData],
+                selectedType: selectedType,
             });
 
             if (response.success) {
@@ -65,12 +71,15 @@ const AddTitlesManually = () => {
                     numberOfChapters: "",
                     status: false,
                 });
+                setSelectedOtakuList("");
+                setSelectedType("");
                 setTimeout(() => setSuccess(""), 2000);
             } else {
                 setError("Process failed. Try again later");
                 setTimeout(() => setError(""), 2000);
             }
         } catch (error) {
+            console.error("Error during title submission:", error);
             setError(error.message || "Process failed. Try again later");
             setTimeout(() => setError(""), 2000);
         }
@@ -88,7 +97,7 @@ const AddTitlesManually = () => {
                         </div>
                         <div className="type-container">
                             <label>Type</label>
-                            <select name="type" className="type" value={titleFormData.type} onChange={handleChange}>
+                            <select name="type" className="type" value={titleFormData.type} onChange={(e) => { setSelectedType(e.target.value); handleChange(e); }}>
                                 {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
                                     <option key={index} value={option === "Select type" ? "" : option}>{option}</option>
                                 ))}
@@ -103,8 +112,8 @@ const AddTitlesManually = () => {
                                 onChange={(e) => setSelectedOtakuList(e.target.value)}
                             >
                                 <option value="">Select a custom list</option>
-                                {userLists.map((list, index) => (
-                                    <option key={list._id || index} value={list.name}>{list.name}</option>
+                                {userLists.map(list => (
+                                    <option key={list._id} value={list.name}>{list.name}</option>
                                 ))}
                             </select>
                         </div>

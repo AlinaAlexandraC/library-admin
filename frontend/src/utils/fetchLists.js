@@ -7,9 +7,7 @@ const fetchLists = async (setUserLists) => {
 
         if (Array.isArray(lists)) {
             const customLists = lists.filter(list => !defaultListNames.includes(list.name));
-            setUserLists(customLists);
-        } else {
-            console.error("Lists is not an array", lists);
+            setUserLists(customLists);            
         }
     } catch (error) {
         console.error("Failed to fetch lists", error);

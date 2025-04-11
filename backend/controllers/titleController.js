@@ -7,7 +7,7 @@ import List from "../models/List.js";
 export const addTitleToUserList = async (req, res) => {
     try {
         const firebaseUid = req.user.uid;
-        const { titles, listName } = req.body;
+        const { titles, listId, selectedType } = req.body;
 
         if (!titles || titles.length === 0) return res.status(400).json({ message: "No titles provided." });
 
@@ -15,31 +15,29 @@ export const addTitleToUserList = async (req, res) => {
         if (!user) return res.status(404).json({ message: "User not found." });
 
         const savedTitles = [];
-
         let list;
 
-        if (["Anime", "Movie", "Manga", "Series", "Book", "Unknown"].includes(listName)) {
-            list = await List.findOne({ name: listName });
+        const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
 
-            if (!list) {
-                list = new List({
-                    name: listName,
-                    userId: user._id,
-                    titles: []
-                });
-
-                await list.save();
-            }
+        if (!defaultListNames.includes(listId)) {
+            list = await List.findOne({ _id: listId, userId: user._id });
         } else {
-            list = await List.findOne({ userId: user._id, name: listName });
+            const listName = selectedType != "" ? selectedType : "Unknown";
+
+            list = await List.findOne({ name: listName, userId: user._id });
+
             if (!list) {
                 list = new List({
-                    userId: user._id,
                     name: listName,
-                    titles: []
+                    userId: user._id
                 });
 
                 await list.save();
+
+                if (!user.lists.includes(list._id)) {
+                    user.lists.push(list._id);
+                    await user.save();
+                }
             }
         }
 
@@ -68,11 +66,6 @@ export const addTitleToUserList = async (req, res) => {
         }
 
         await list.save();
-
-        if (!user.lists.includes(list._id)) {
-            user.lists.push(list._id);
-            await user.save();
-        }
 
         res.status(201).json({ success: true, message: "Title added successfully!", title: savedTitles });
     } catch (error) {
@@ -116,22 +109,29 @@ export const updateTitle = async (req, res) => {
         const firebaseUid = req.user.uid;
         const { title_id, updatedData } = req.body;
 
-        const user = await User.findOne({ firebaseUid }).populate("lists.titles.title_id");
+        const user = await User.findOne({ firebaseUid })
+            .populate({
+                path: "lists",
+                populate: { path: "titles.title_id" },
+            });
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
         let titleEntry;
+        
         for (let list of user.lists) {
             titleEntry = list.titles.find(entry => entry.title_id._id.toString() === title_id);
+
             if (titleEntry) break;
         }
 
         if (!titleEntry) return res.status(404).json({ message: "Title not found in user's list." });
 
         const updatedTitle = await Title.findByIdAndUpdate(title_id, updatedData, { new: true });
+
         if (!updatedTitle) return res.status(404).json({ message: "Title not found." });
 
-        res.status(200).json({ message: "Title updated successfully", updatedTitle });
+        res.status(200).json({ updatedTitle });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -144,12 +144,19 @@ export const deleteTitle = async (req, res) => {
         const firebaseUid = req.user.uid;
         const { title_id } = req.body;
 
-        const user = await User.findOne({ firebaseUid });
+        const user = await User.findOne({ firebaseUid })
+            .populate({
+                path: "lists",
+                populate: {
+                    path: "titles.title_id"
+                }
+            });
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
         for (let list of user.lists) {
-            list.titles = list.titles.filter(item => item.title_id.toString() !== title_id);
+            list.titles = list.titles.filter(item => item.title_id);
+
             await list.save();
         }
 

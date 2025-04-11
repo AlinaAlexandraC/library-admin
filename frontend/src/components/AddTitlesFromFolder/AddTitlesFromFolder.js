@@ -5,8 +5,8 @@ import formImageHorizontal from "../../assets/images/form-horizontal.jpg";
 import folderIcon from "../../assets/icons/folder.svg";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-import { addTitle } from "../../services/titleService";
 import fetchLists from "../../utils/fetchLists";
+import { fetchData } from "../../services/apiService";
 
 const AddTitlesFromFolder = () => {
     const [titleFormData, setTitleFormData] = useState([]);
@@ -14,13 +14,13 @@ const AddTitlesFromFolder = () => {
     const [success, setSuccess] = useState(null);
     const [folderSelected, setFolderSelected] = useState(false);
     const [selectedType, setSelectedType] = useState("");
-    const [targetList, setTargetList] = useState("");
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchLists(setUserLists);
+
     }, []);
 
     const handleFolderSelection = async () => {
@@ -61,9 +61,15 @@ const AddTitlesFromFolder = () => {
             }, 2000);
             return;
         }
-        
-        const finalTargetList = selectedOtakuList || (selectedType || "Unknown");
-        
+
+        let selectedOtakuListId;
+
+        if (selectedOtakuList) {
+            selectedOtakuListId = userLists.find(list => list.name === selectedOtakuList);
+        }
+
+        const finalTargetList = selectedOtakuListId ? selectedOtakuListId._id : (selectedType || "Unknown");
+
         try {
             const titles = titleFormData.map(title => ({
                 title: title,
@@ -76,9 +82,10 @@ const AddTitlesFromFolder = () => {
                 status: false,
             }));
 
-            const response = await addTitle({
-                listName: finalTargetList,
-                titles: titles
+            const response = await fetchData("titles/add", "POST", {
+                titles: titles,
+                listId: finalTargetList,
+                selectedType: selectedType || ""
             });
 
             if (response.success) {
@@ -89,6 +96,7 @@ const AddTitlesFromFolder = () => {
 
                 setTitleFormData([]);
                 setFolderSelected(false);
+                setSelectedOtakuList("");
             } else {
                 setError("Error adding titles. Try again later.");
                 setTimeout(() => {
@@ -144,8 +152,8 @@ const AddTitlesFromFolder = () => {
                                         onChange={(e) => setSelectedOtakuList(e.target.value)}
                                     >
                                         <option value="">Select a custom list</option>
-                                        {userLists.map((list, index) => (
-                                            <option key={list._id || index} value={list.name}>{list.name}</option>
+                                        {userLists.map(list => (
+                                            <option key={list._id} value={list.name}>{list.name}</option>
                                         ))}
                                     </select>
                                 </div>

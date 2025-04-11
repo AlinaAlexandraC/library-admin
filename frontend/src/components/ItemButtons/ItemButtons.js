@@ -11,11 +11,13 @@ const ItemButtons = ({ title, setTitles, openModal }) => {
     const toggleChecked = async () => {
         const newChecked = !isChecked;
         setIsChecked(newChecked);
-
+    
         try {
             const updatedTitle = await editTitle({ ...title, status: newChecked });
+    
             setTitles((prevTitles) =>
-                prevTitles.map(title => title._id === updatedTitle._id ? updatedTitle : title));
+                prevTitles.map(t => t._id === updatedTitle._id ? updatedTitle : t)
+            );
         } catch (error) {
             console.error("Error updating status:", error);
             setIsChecked(!newChecked);
@@ -25,7 +27,7 @@ const ItemButtons = ({ title, setTitles, openModal }) => {
     const handleDelete = async () => {
         try {
             await removeTitle(title._id);
-            setTitles((prevTitles) => prevTitles.filter(titleToRemove => titleToRemove._id !== title._id));
+            setTitles((prevTitles) => prevTitles.filter(t => t._id !== title._id));
         } catch (error) {
             console.error("Failed to delete item:", error);
         }

@@ -12,7 +12,8 @@ export const getUserLists = async (req, res) => {
         const listsSummary = user.lists ? user.lists.map(list => ({
             _id: list._id,
             name: list.name,
-            titleCount: list.titles?.length || 0
+            titleCount: list.titles?.length || 0,
+            titles: list.titles || []
         })) : [];
 
         res.status(200).json(listsSummary);

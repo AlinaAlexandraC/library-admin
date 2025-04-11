@@ -26,6 +26,7 @@ const OtakuLists = () => {
         try {
             const newList = await fetchData("lists/create", "POST", { name: newListName });
             setUserLists(prevLists => [...prevLists, newList]);
+            
             setShowAddListModal(false);
         } catch (error) {
             console.error("Failed to create list:", error);
