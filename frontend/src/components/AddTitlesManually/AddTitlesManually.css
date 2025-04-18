@@ -1,0 +1,69 @@
+.add-titles-manually-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-titles-manually-wrapper {
+    height: 100%;
+    padding-top: 20px;
+    width: 70%;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.add-titles-manually-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.add-titles-manually-input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 70%;
+    padding: 15px 0;
+}
+
+.title-container,
+.type-container,
+.genre-container,
+.book-container,
+.manga-container,
+.seasons-container,
+.episodes-container,
+.otaku-list-select {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.anime-container {
+    height: 35%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.title-length {
+    display: flex;
+    justify-content: space-between;
+}
+
+.seasons-number,
+.episodes-number {
+    width: 48%;
+}
+
+.list-instruction {
+    font-size: 12px;
+    margin-top: 0;
+}
+
+.instruction {
+    text-align: center;
+    font-size: 12px;
+    padding-bottom: 5px;
+}

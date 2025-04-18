@@ -1,0 +1,32 @@
+.library-pagination {
+    display: flex;
+    justify-content: center;
+    width: 90vw;
+    max-width: 1300px;
+    height: 50px;
+    background: #151e72;
+    border-radius: 0 0 10px 10px;
+    user-select: none;
+    position: absolute;
+    bottom: 0;
+    z-index: 10;
+}
+
+.left-arrow-icon,
+.right-arrow-icon {
+    width: 25px;
+    cursor: pointer;
+}
+
+.page-number {
+    border: 1px solid #fff;
+    margin: 5px;
+    width: calc(50px - 12px);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+}

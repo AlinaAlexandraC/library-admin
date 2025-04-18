@@ -1,0 +1,63 @@
+.add-list-modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 350px;
+    text-align: center;
+}
+
+.add-list-modal-container h3 {
+    display: flex;
+    padding: 0 calc(10% - 10px);
+}
+
+.add-list-modal-container input {
+    width: 80%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: inherit;
+}
+
+.modal-actions {
+    padding: 0 calc(10% - 10px);
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.save-btn,
+.cancel-btn {
+    color: #fff;
+    height: 36px;
+    min-width: 140px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+.save-btn {
+    background: #388E3C;
+}
+
+.cancel-btn {
+    background: #e53935;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}

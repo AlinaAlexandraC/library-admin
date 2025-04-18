@@ -1,0 +1,59 @@
+.my-account-container {
+    height: calc(100vh - 90px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.my-account-wrapper {
+    width: 70%;
+    height: 80%;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.my-account-details {
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0;
+}
+
+.my-account-title {
+    width: 70%;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.first-name-container,
+.last-name-container,
+.email-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-bottom: 1px solid #3c3d80;
+}
+
+.user-first-name,
+.user-last-name,
+.user-email {
+    padding: 6px 0;
+}
+
+.user-first-name-input,
+.user-last-name-input,
+.user-email-input {
+    border: 0;
+    border-radius: 5px 5px 0 0;
+    background-color: #fff;
+}
+
+.user-first-name-input:focus,
+.user-last-name-input:focus,
+.user-email-input:focus {
+    outline: none;
+    box-shadow: 0 -2px 0 0 #3c3d80 inset;
+}

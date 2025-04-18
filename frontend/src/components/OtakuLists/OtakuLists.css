@@ -1,0 +1,123 @@
+.otaku-lists-wrapper {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 90vw;
+    max-width: 1300px;
+    min-width: 250px;
+    background-color: #ededed;
+    border-radius: 10px;
+    position: relative;
+}
+
+.list-link {
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.list-link:visited {
+    color: black !important;
+}
+
+.list-link:active {
+    color: inherit;
+    text-decoration: none;
+    cursor: default;
+}
+
+.list-details-container {
+    width: calc(100% - 100px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.otaku-lists-button {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    border-radius: 5px 5px 0 0;
+}
+
+.otaku-lists {
+    height: calc(100% - 86px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 6px;
+}
+
+.list-name-input {
+    width: calc(100% - 120px);
+    border: 0;
+    border-radius: 5px 5px 0 0;
+    background-color: #fff;
+    border-bottom: 1px solid #3c3d80;
+}
+
+.list-name-input:focus {
+    outline: none;
+    box-shadow: 0 -2px 0 0 #3c3d80 inset;
+}
+
+.no-lists {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.no-lists-image {
+    width: 200px;
+    height: 200px;
+    margin: 10px 0;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.no-lists p {
+    font-weight: 600;
+}
+
+.list-buttons-container {
+    width: 86px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.delete-list,
+.save-list-name,
+.edit-list-name {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    cursor: pointer;
+}
+
+.delete-list img,
+.save-list-name img,
+.edit-list-name img {
+    width: 25px;
+}
+
+.delete-list,
+.delete-list:hover {
+    background-color: #9f4c4c;
+}
+
+.save-list-name,
+.save-list-name:hover {
+    background-color: #699f4c;
+}
+
+.edit-list-name,
+.edit-list-name:hover {
+    background-color: #7ed0ec;
+}

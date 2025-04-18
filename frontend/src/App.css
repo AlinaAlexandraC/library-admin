@@ -1,0 +1,74 @@
+.App {
+    transition: all 0.3s ease-in-out;
+}
+
+.btn {
+    background-color: #151e72;
+    color: #fff;
+    border-radius: 30px;
+    height: 36px;
+    width: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.link {
+    text-decoration: none;
+}
+
+.link:visited {
+    color: black;
+}
+
+label {
+    font-size: 15px;
+}
+
+input {
+    height: 25px;
+    padding: 1px 7px;
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+select {
+    height: 30px;
+    padding: 1px 7px;
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+.error,
+.success {
+    height: 30px;
+    font-weight: 600;
+    display: inline-block;
+    word-wrap: break-word;
+    text-align: center;
+}
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    padding-top: 10px;
+}

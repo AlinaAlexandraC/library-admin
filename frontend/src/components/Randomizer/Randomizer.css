@@ -1,0 +1,120 @@
+.randomizer-outer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.randomizer-inner-container {
+    height: 80vh;
+    background-color: #3c3d80;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90vw;
+    max-width: 1300px;
+    border-radius: 10px;
+}
+
+.randomizer-wrapper {
+    display: flex;
+    width: 80%;
+    height: 70%;
+    border-radius: 20px;
+    background-color: #f8f8f8;
+    overflow: hidden;
+    box-shadow: 0px 0px 8px 2px;
+}
+
+.randomizer-titles-list,
+.randomizer-display {
+    width: 50%;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.randomizer-titles-list {
+    overflow: scroll;
+    font-size: 14px;
+}
+
+.randomizer-titles-list::-webkit-scrollbar {
+    display: none;
+}
+
+.randomizer-display span {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.randomizer-icon {
+    width: 200px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.title-info-randomizer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.title-info-randomizer div {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.randomizer-title-container {
+    width: calc(100% - 12px);
+    height: auto;
+    margin: 3px;
+    display: flex;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.decoration {
+    background-color: blue;
+    width: 10px;
+    border-radius: 10px 0 0 10px;
+}
+
+.element-index {
+    padding: 0;
+}
+
+[class^="randomizer-element"] {
+    width: calc(100% - 10px);
+    padding: 5px 10px;
+    min-height: 60px;
+    overflow-wrap: break-word;
+}
+
+@media only screen and (max-width: 730px) {
+    .randomizer-wrapper {
+        flex-direction: column;
+        height: 70vh;
+    }
+
+    .randomizer-titles-list,
+    .randomizer-display,
+    hr {
+        width: calc(100% - 40px);
+    }
+
+    .randomizer-icon {
+        display: none;
+    }
+
+    .title-info-randomizer div {
+        height: 40px;
+    }
+
+    [class^="randomizer-element"] {
+        width: calc(100% - 30px);
+    }
+}

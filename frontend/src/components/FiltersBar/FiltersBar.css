@@ -1,0 +1,130 @@
+.filters-bar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    user-select: none;
+    width: 100%;
+}
+
+.filters-bar-wrapper {
+    width: 90vw;
+    max-width: 1300px;
+    background-color: #ededed;
+    height: 60px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.added-filters {
+    background-color: rebeccapurple;
+    width: 90vw;
+    max-width: 1300px;
+    border-radius: 5px;
+}
+
+.filters-bar-options {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 0;
+}
+
+.filter {
+    list-style: none;
+    background-color: #f8f8f8;
+    margin: 6px;
+    min-width: 90px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.arrow-down-icon-black {
+    width: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.arrow-down-icon-black.flipped {
+    transform: scaleY(-1);
+}
+
+.options-box {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: -6px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    z-index: 1000;
+    display: none;
+    width: 200px;
+}
+
+.options-box.show {
+    display: block;
+}
+
+.options-box>ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 5px;
+}
+
+.option {
+    padding: 8px 16px;
+    cursor: pointer;
+    display: flex;
+}
+
+.option:hover {
+    background-color: #f0f0f0;
+}
+
+[class^="option"] li {
+    display: flex;
+    align-items: center;
+}
+
+[class^="option"] div {
+    padding: 1px 7px;
+}
+
+.filter-reset {
+    height: calc(100% - 12px);
+    margin: 6px;
+    min-width: 120px;
+    font-size: 15px;
+    font-weight: 500;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    cursor: pointer;
+}
+
+.reset-icon {
+    width: 20px;
+}
+
+@media only screen and (max-width: 670px) {
+    .filters-bar-options {
+        font-size: 12px;
+    }
+
+    .filter {
+        min-width: 60px;
+    }
+}

@@ -1,0 +1,22 @@
+.not-found-container {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.not-found {
+    height: calc(400px - 130px);
+    padding: 0 100px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.not-found>span:first-of-type {
+    font-size: 50px;
+    font-weight: 700;
+}

@@ -1,0 +1,134 @@
+.add-titles-from-folder-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-titles-from-folder-wrapper {
+    height: 100%;
+    padding-top: 20px;
+    width: 85%;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.add-titles-from-folder-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.dropdown-lists {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.select-folder-titles-type-select,
+.select-folder-otaku-list-select {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 48%;
+}
+
+.select-folder-container {
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid;
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+    align-self: center;
+}
+
+.folder-icon {
+    width: 120px;
+}
+
+.titles-list-from-folder {
+    height: 70%;
+    overflow: scroll;
+    font-size: 14px;
+}
+
+.titles-list-from-folder ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.titles-list-from-folder::-webkit-scrollbar {
+    display: none;
+}
+
+.titles-list-from-folder li {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+}
+
+.extracted-title-container {
+    height: 60px;
+    margin: 6px 3px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+}
+
+.decoration {
+    background-color: blue;
+    width: 10px;
+    height: 100%;
+    border-radius: 10px 0 0 10px;
+}
+
+.extracted-title {
+    padding: 0 10px;
+    width: calc(100% - 75px);
+}
+
+.extracted-title-index {
+    padding: 0;
+}
+
+.extracted-title-filename {
+    overflow-wrap: break-word;
+    width: 100%;
+}
+
+.extracted-title-button {
+    padding: 0;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+@media only screen and (max-width: 730px) {
+    .dropdown-lists {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .select-folder-titles-type-select,
+    .select-folder-otaku-list-select {
+        width: 100%;
+    }
+
+    .buttons-container {
+        margin-top: 20px;
+    }
+
+    .titles-list-from-folder {
+        max-height: 200px;
+    }
+}
