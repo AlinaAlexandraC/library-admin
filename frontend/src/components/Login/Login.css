@@ -27,6 +27,12 @@
     font-size: 12px;
 }
 
+.login-email-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 .password-validation {
     display: flex;
     justify-content: space-between;

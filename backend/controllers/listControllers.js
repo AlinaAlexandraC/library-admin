@@ -142,18 +142,18 @@ export const deleteListAndTitles = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        const listToDelete = user.lists.find(list => list._id.toString() === listId);
+        const listIndex = user.lists.findIndex(list => list._id.toString() === listId);
 
-        if (!listToDelete) return res.status(404).json({ message: "List not found" });
+        if (listIndex === -1) return res.status(404).json({ message: "List not found" });
+
+        user.lists.splice(listIndex, 1);
+        await user.save();
 
         await List.findByIdAndDelete(listId);
 
-        await Promise.all(user.lists.map(async (list) => {
-            list.titles = list.titles.filter(title => title.listId.toString() !== listId);
-            return list.save();
-        }));
+        await Title.deleteMany({ listId });
 
-        res.status(200).json({ message: "List and titles deleted successfully.", success: true });
+        res.status(200).json({ message: "List and its titles deleted successfully.", success: true });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

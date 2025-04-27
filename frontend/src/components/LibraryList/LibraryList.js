@@ -7,9 +7,11 @@ import Loader from "../Loader/Loader";
 import SearchBar from "../SearchBar/SearchBar";
 import TitleItem from "../TitleItem/TitleItem";
 import EditItem from "../EditItem/EditItem";
+import FiltersBar from "../FiltersBar/FiltersBar";
 
-const LibraryList = ({ }) => {
+const LibraryList = () => {
     const [titles, setTitles] = useState([]);
+    const [filteredTitles, setFilteredTitles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -70,9 +72,9 @@ const LibraryList = ({ }) => {
 
     useEffect(() => {
         localStorage.setItem("libraryCurrentPage", currentPage);
-    }, [currentPage]);    
+    }, [currentPage]);
 
-    const activeList = (query ? searchResults : sortedTitles).filter(Boolean);
+    const activeList = searchResults.length > 0 ? searchResults : filteredTitles.length > 0 ? filteredTitles : sortedTitles;
     const totalPages = Math.ceil(activeList.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const displayedTitles = activeList.slice(startIndex, startIndex + itemsPerPage);
@@ -91,6 +93,7 @@ const LibraryList = ({ }) => {
 
     return (
         <div className="library-list-container">
+            <FiltersBar titles={titles} setFilteredTitles={setFilteredTitles} />
             <div className="library-list-wrapper">
                 <div className="library-list-name">✨ {listId.toUpperCase()} ✨</div>
                 <SearchBar onSearch={handleSearch} />

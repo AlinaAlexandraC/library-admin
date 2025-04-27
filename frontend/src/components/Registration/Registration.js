@@ -12,6 +12,7 @@ const Registration = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
+        confirmPassword: "",
         firstName: "",
         lastName: "",
     });
@@ -50,6 +51,14 @@ const Registration = () => {
             return;
         }
 
+        if (formData.password !== formData.confirmPassword) {
+            setError("Passwords must match");
+            setTimeout(() => {
+                setError("");
+            }, 2000);
+            return;
+        }
+
         try {
             await registerUser(formData);
             setSuccess("Registration successful! Redirecting to login...");
@@ -85,8 +94,20 @@ const Registration = () => {
                         <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
                     </div>
                     <div className="registration-password-container">
-                        <label>Password</label>
-                        <Password formData={formData} handleChange={handleChange} />
+                        <Password
+                            label="Password"
+                            name="password"
+                            value={formData.password}
+                            handleChange={handleChange}
+                        />
+                    </div>
+                    <div className="registration-repeat-password-container">
+                        <Password
+                            label="Confirm Password"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            handleChange={handleChange}
+                        />
                     </div>
                     <div className="registration-terms">
                         By selecting <strong>Create account</strong>, you agree to our <Link to='/user-agreement'>User Agreement</Link> and acknowledge reading our <Link to='/user-privacy-notice'>User Privacy Notice</Link>.

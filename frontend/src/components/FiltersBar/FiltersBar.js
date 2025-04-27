@@ -1,10 +1,15 @@
 import "./FiltersBar.css";
 import arrowDownIconB from "../../assets/icons/arrow-down-black.svg";
 import resetIcon from "../../assets/icons/reset.svg";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
-const FiltersBar = ({ selectedFilters, setSelectedFilters }) => {
+const FiltersBar = ({ titles, setFilteredTitles }) => {
     const [openFilter, setOpenFilter] = useState(false);
+    const [selectedFilters, setSelectedFilters] = useState({
+        genre: [],
+        watched: [],
+    });
+
     const genreArrowRef = useRef(null);
     const statusArrowRef = useRef(null);
 
@@ -30,37 +35,47 @@ const FiltersBar = ({ selectedFilters, setSelectedFilters }) => {
         });
     };
 
-    // TODO: fix this part; the filters should be gathered in an array that should be displayed in the new section and only when applyFilters button is clicked, it should be filtered
-    // TODO: in the dropdown lists, I should select as many types and only then to have the dropdown closed
-    // TODO: if I click on the span next to checkbox, it should mark the box as well
-    const applyFilters = () => {
-        // const { type, genre, watched } = selectedFilters;
+    useEffect(() => {
+        console.log("Selected Filters:", selectedFilters);
+        console.log("Titles:", titles);
 
-        // const filteredTitles = ["titles"].filter((title) => {
+        if (!titles || !Array.isArray(titles)) return;
 
-        //     const typeMatches = type.length === 0 || type.includes(title.type);
-        //     const genreMatches = genre.length === 0 || genre.includes(title.genre);
-        //     const watchedMatches = watched.length === 0 || watched.includes(title.watched);
+        const { genre, watched } = selectedFilters;
 
-        //     return typeMatches && genreMatches && watchedMatches;
-        // });
+        const filteredTitles = titles.filter((title) => {
+            // Genre matching
+            const genreMatches = genre.length === 0 || (title.genre && genre.includes(title.genre));
 
-        setOpenFilter(null);
-    };
+            // Status matching based on the "watched" filter
+            const statusMatches =
+                watched.length === 0 ||
+                (watched.includes("Checked") && title.status === true) ||
+                (watched.includes("Not Checked") && title.status === false);
+
+            console.log(`Title "${title.title}" matches status: ${statusMatches}`);
+
+            return genreMatches && statusMatches;
+        });
+
+        setFilteredTitles(filteredTitles);
+    }, [selectedFilters, titles, setFilteredTitles]);
 
     const removeFilters = () => {
         setSelectedFilters({
-            type: [],
             genre: [],
             watched: []
         });
         setOpenFilter(null);
+        if (titles && Array.isArray(titles)) {
+            setFilteredTitles(titles);
+        }
     };
 
     return (
         <div className="filters-bar-container">
             <div className="filters-bar-wrapper">
-                <ul className="filters-bar-options">                    
+                <ul className="filters-bar-options">
                     <li className="filter" onClick={() => {
                         toggleOptions("genre");
                         rotateArrow(genreArrowRef, openFilter !== "genre");
@@ -86,10 +101,15 @@ const FiltersBar = ({ selectedFilters, setSelectedFilters }) => {
                         <img src={arrowDownIconB} alt="arrow-down" className="arrow-down-icon-black" ref={statusArrowRef} />
                         <div className={`options-box ${openFilter === "status" ? "show" : ""}`}>
                             <ul>
-                                {["Checked", "Not Checked"].map((watched, index) => (
+                                {["Checked", "Not Checked"].map((status, index) => (
                                     <li key={index} className={`option-${index}`}>
-                                        <input type="checkbox" className="option-checkbox" checked={selectedFilters.watched.includes(watched)} onChange={() => handleCheckboxChange("watched", watched)} />
-                                        <div>{watched}</div>
+                                        <input
+                                            type="checkbox"
+                                            className="option-checkbox"
+                                            checked={selectedFilters.watched.includes(status)}
+                                            onChange={() => handleCheckboxChange("watched", status)}
+                                        />
+                                        <div>{status}</div>
                                     </li>
                                 ))}
                             </ul>

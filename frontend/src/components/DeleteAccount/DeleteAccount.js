@@ -22,6 +22,7 @@ const DeleteAccount = ({ onClose }) => {
                 setError("");
 
                 await fetchData("users/delete", "DELETE");
+                localStorage.removeItem("rememberedEmail");
                 navigate("/");
                 onClose();
             } catch (error) {

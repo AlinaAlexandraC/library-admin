@@ -77,10 +77,18 @@ const Login = () => {
                             </div>
                         </Link>
                     </div>
-                    <label>Email address</label>
-                    <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
-                    <label>Password</label>
-                    <Password formData={formData} handleChange={handleChange} />
+                    <div className="login-email-container">
+                        <label>Email address</label>
+                        <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
+                    </div>
+                    <div className="registration-password-container">
+                        <Password
+                            label="Password"
+                            name="password"
+                            value={formData.password}
+                            handleChange={handleChange}
+                        />
+                    </div>
                     <div className="password-validation">
                         <div className="remember-me-container">
                             <input type="checkbox" className="remember-me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
