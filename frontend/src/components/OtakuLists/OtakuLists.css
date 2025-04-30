@@ -1,11 +1,17 @@
+.otaku-lists-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
 .otaku-lists-wrapper {
-    height: 80vh;
+    height: 1200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 90vw;
     max-width: 1300px;
-    min-width: 250px;
     background-color: #ededed;
     border-radius: 10px;
     position: relative;
@@ -28,7 +34,7 @@
 }
 
 .list-details-container {
-    width: calc(100% - 100px);
+    width: calc(100% - 86px);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -43,6 +49,7 @@
 
 .otaku-lists {
     height: calc(100% - 86px);
+    margin-top: 46px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

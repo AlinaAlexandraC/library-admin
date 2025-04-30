@@ -8,21 +8,21 @@ import SearchBar from "../SearchBar/SearchBar";
 import TitleItem from "../TitleItem/TitleItem";
 import EditItem from "../EditItem/EditItem";
 import FiltersBar from "../FiltersBar/FiltersBar";
+import noTitles from "../../assets/images/no-titles.jpg";
 
 const LibraryList = () => {
     const [titles, setTitles] = useState([]);
     const [filteredTitles, setFilteredTitles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchResults, setSearchResults] = useState([]);
     const [query, setQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(() => {
         return parseInt(localStorage.getItem("libraryCurrentPage")) || 1;
     });
+    const itemsPerPage = 10;
     const [modalItem, setModalItem] = useState(null);
 
-    const containerRef = useRef(null);
     const navigate = useNavigate();
 
     const { listId } = useParams();
@@ -55,22 +55,6 @@ const LibraryList = () => {
     }, [query, titles]);
 
     useEffect(() => {
-        const calculateItemsPerPage = () => {
-            if (containerRef.current) {
-                const listHeight = containerRef.current.clientHeight;
-                const itemHeight = 100;
-                const searchBarHeight = 50;
-                const newItemsPerPage = Math.max(1, Math.floor((listHeight - searchBarHeight) / itemHeight));
-                setItemsPerPage(newItemsPerPage);
-            }
-        };
-
-        calculateItemsPerPage();
-        window.addEventListener("resize", calculateItemsPerPage);
-        return () => window.removeEventListener("resize", calculateItemsPerPage);
-    }, [titles]);
-
-    useEffect(() => {
         localStorage.setItem("libraryCurrentPage", currentPage);
     }, [currentPage]);
 
@@ -96,24 +80,27 @@ const LibraryList = () => {
             <FiltersBar titles={titles} setFilteredTitles={setFilteredTitles} />
             <div className="library-list-wrapper">
                 <div className="library-list-name">✨ {listId.toUpperCase()} ✨</div>
-                <SearchBar onSearch={handleSearch} />
                 {loading ? (
                     <Loader />
-                ) : error ? (
-                    <p>{error}</p>
                 ) : (titles.length === 0) ? (
                     <div className="no-titles">
                         <div>No titles found</div>
+                        <img src={noTitles} alt="no-titles" className="no-titles-image" />
                         <button className="no-titles-button btn" onClick={() => navigate("/form")}>Add a title</button>
                     </div>
+                ) : error ? (
+                    <p>{error}</p>
                 ) : (
-                    <ul className="library-list-titles" ref={containerRef}>
-                        {displayedTitles.map((title, index) => (
-                            <li key={index} className={`element-${index}`}>
-                                <TitleItem title={title} index={startIndex + index + 1} setTitles={setTitles} openModal={openModal} />
-                            </li>
-                        ))}
-                    </ul>
+                    <div>
+                        <SearchBar onSearch={handleSearch} />
+                        <ul className="library-list-titles" >
+                            {displayedTitles.map((title, index) => (
+                                <li key={index} className={`element-${index}`}>
+                                    <TitleItem title={title} index={startIndex + index + 1} setTitles={setTitles} openModal={openModal} />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 )}
             </div>
             <LibraryPagination totalPages={totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />

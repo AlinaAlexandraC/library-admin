@@ -3,6 +3,7 @@ import "./Randomizer.css";
 import getIcon from "../../utils/getIcon";
 import fetchTitles from "../../utils/fetchTitles";
 import Loader from "../Loader/Loader";
+import { fetchData } from "../../services/apiService";
 
 const Randomizer = ({ selectedFilters }) => {
     const [titles, setTitles] = useState([]);
@@ -12,10 +13,27 @@ const Randomizer = ({ selectedFilters }) => {
     const [icon, setIcon] = useState(iconDefault);
     const [header, setHeader] = useState("You should watch this:");
     const [random, setRandom] = useState(null);
+    const [isListSelected, setIsListSelected] = useState(false);
+    const [userLists, setUserLists] = useState([]);
+
+    const fetchLists = async () => {
+        try {
+            const lists = await fetchData("lists/");
+            setUserLists(lists);
+        } catch (error) {
+            console.error("Failed to fetch lists summary", error);
+            return {};
+        }
+    };
 
     useEffect(() => {
+        fetchLists();
         fetchTitles("Unknown", setTitles, setError, setLoading);
     }, []);
+
+    const handleListSelection = () => {
+
+    };
 
     const randomizeTitle = () => {
         const random = titles.length > 0 ? Math.floor(Math.random() * titles.length) : 0;
@@ -48,21 +66,38 @@ const Randomizer = ({ selectedFilters }) => {
                         <button onClick={randomizeTitle} className="random btn">Get Random Title</button>
                     </div>
                     <hr />
-                    <div className="randomizer-titles-list">
-                        {loading ? (
-                            <Loader />
-                        ) : error ? (
-                            <p>{error}</p>
-                        ) : (titles.map((title, index) => (
-                            <div key={index} className="randomizer-title-container">
-                                <div className="decoration"></div>
-                                <div className={`randomizer-element-${index}`}>
-                                    <span className="element-index">{index + 1}.</span>
-                                    <span>{title.title}</span>
+                    {!isListSelected ? (
+                        <div className="randomizer-list-selection">
+                            {loading ? (
+                                <Loader />
+                            ) : error ? (
+                                <p>{error}</p>
+                            ) : (userLists.map((list, index) => (
+                                <div key={index} className="randomizer-lists-container">
+                                    <div className={`randomizer-element-${index}`}>
+                                        <span className="element-index">{index + 1}.</span>
+                                        <span>{list.name}</span>
+                                    </div>
                                 </div>
-                            </div>
-                        )))}
-                    </div>
+                            )))}
+                        </div>
+                    ) : (
+                        <div className="randomizer-titles-list">
+                            {loading ? (
+                                <Loader />
+                            ) : error ? (
+                                <p>{error}</p>
+                            ) : (titles.map((title, index) => (
+                                <div key={index} className="randomizer-title-container">
+                                    <div className="decoration"></div>
+                                    <div className={`randomizer-element-${index}`}>
+                                        <span className="element-index">{index + 1}.</span>
+                                        <span>{title.title}</span>
+                                    </div>
+                                </div>
+                            )))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

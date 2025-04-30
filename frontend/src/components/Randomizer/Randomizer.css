@@ -26,7 +26,8 @@
 }
 
 .randomizer-titles-list,
-.randomizer-display {
+.randomizer-display,
+.randomizer-list-selection {
     width: 50%;
     margin: 20px;
     display: flex;
@@ -35,12 +36,14 @@
     align-items: center;
 }
 
-.randomizer-titles-list {
+.randomizer-titles-list,
+.randomizer-list-selection {
     overflow: scroll;
     font-size: 14px;
 }
 
-.randomizer-titles-list::-webkit-scrollbar {
+.randomizer-titles-list::-webkit-scrollbar,
+.randomizer-list-selection::-webkit-scrollbar {
     display: none;
 }
 

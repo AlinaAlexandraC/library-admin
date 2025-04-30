@@ -10,6 +10,7 @@
     z-index: 1000;
     width: 350px;
     text-align: center;
+    user-select: none;
 }
 
 .delete-account-container h3 {

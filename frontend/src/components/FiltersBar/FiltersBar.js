@@ -36,27 +36,35 @@ const FiltersBar = ({ titles, setFilteredTitles }) => {
     };
 
     useEffect(() => {
-        console.log("Selected Filters:", selectedFilters);
-        console.log("Titles:", titles);
+        console.log("Titles", titles);
 
         if (!titles || !Array.isArray(titles)) return;
 
         const { genre, watched } = selectedFilters;
 
         const filteredTitles = titles.filter((title) => {
-            // Genre matching
             const genreMatches = genre.length === 0 || (title.genre && genre.includes(title.genre));
 
-            // Status matching based on the "watched" filter
-            const statusMatches =
-                watched.length === 0 ||
-                (watched.includes("Checked") && title.status === true) ||
-                (watched.includes("Not Checked") && title.status === false);
+            console.log(`"${title.title}" has status:`, title.status, typeof title.status);
+            console.log("Selected watched filters:", watched);
 
-            console.log(`Title "${title.title}" matches status: ${statusMatches}`);
+            let statusMatches = true;
+
+            if (watched.length > 0) {
+                if (watched.includes("Checked") && title.status === true) {
+                    statusMatches = true;
+                } else if (watched.includes("Not Checked") && title.status === false) {
+                    statusMatches = true;
+                } else {
+                    statusMatches = false;
+                }
+            }
 
             return genreMatches && statusMatches;
         });
+
+        console.log(filteredTitles);
+
 
         setFilteredTitles(filteredTitles);
     }, [selectedFilters, titles, setFilteredTitles]);
