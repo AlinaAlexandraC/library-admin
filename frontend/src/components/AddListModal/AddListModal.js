@@ -8,6 +8,19 @@ const AddListModal = ({ onSave, onClose }) => {
     const handleSave = () => {
         if (!listName.trim()) {
             setError("List name cannot be empty");
+            setTimeout(() => {
+                setError("");
+            }, 3000);
+            return;
+        }
+
+        const reservedNames = ["Anime", "Book", "Manga", "Movie", "Series", "Unknown"];
+
+        if (reservedNames.map(name => name.toLowerCase()).includes(listName.trim().toLowerCase())) {
+            setError("This list name is reserved and cannot be used.");
+            setTimeout(() => {
+                setError("");
+            }, 3000);
             return;
         }
 

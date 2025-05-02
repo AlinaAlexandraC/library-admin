@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import formImage from "../../assets/images/form-vertical.jpg";
 import formImageHorizontal from "../../assets/images/form-horizontal.jpg";
-import fetchLists from "../../utils/fetchLists.js";
+import fetchCustomLists from "../../utils/fetchCustomLists.js";
 import { fetchData } from "../../services/apiService.js";
 
 const AddTitlesManually = () => {
@@ -26,7 +26,7 @@ const AddTitlesManually = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchLists(setUserLists);
+        fetchCustomLists(setUserLists);
     }, []);
 
     const handleChange = (e) => {

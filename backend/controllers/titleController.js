@@ -11,7 +11,11 @@ export const addTitleToUserList = async (req, res) => {
 
         if (!titles || titles.length === 0) return res.status(400).json({ message: "No titles provided." });
 
-        let user = await User.findOne({ firebaseUid }).populate('lists');
+        let user = await User.findOne({ firebaseUid }).populate({
+            path: "lists",
+            populate: { path: "titles.title_id" },
+        });
+
         if (!user) return res.status(404).json({ message: "User not found." });
 
         const savedTitles = [];
@@ -40,6 +44,9 @@ export const addTitleToUserList = async (req, res) => {
                 }
             }
         }
+
+        list.titles = list.titles.filter(entry => entry.title_id != null);
+        await list.save();
 
         for (let titleData of titles) {
             const { title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status } = titleData;
@@ -88,7 +95,8 @@ export const getTitles = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        const list = user.lists.find(list => list.name.toLowerCase() === listId.toLowerCase());
+        const list = user.lists.find(list => list.name.toLowerCase() === listId.toLowerCase())
+            || user.lists.find(list => list._id.toString() === listId);
 
         if (!list || list.titles.length === 0) {
             return res.status(404).json({ message: "No titles found for this list." });
@@ -109,7 +117,7 @@ export const getTitles = async (req, res) => {
 export const updateTitle = async (req, res) => {
     try {
         const firebaseUid = req.user.uid;
-        const { title_id, updatedData } = req.body;
+        const { title_id, updatedData, newListId } = req.body;
 
         const user = await User.findOne({ firebaseUid })
             .populate({
@@ -119,21 +127,81 @@ export const updateTitle = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        let titleEntry;
+        const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
+
+        let currentList = null;
+        let titleEntry = null;
+        const changes = [];
 
         for (let list of user.lists) {
-            titleEntry = list.titles.find(entry => entry.title_id._id.toString() === title_id);
-
-            if (titleEntry) break;
+            const foundEntry = list.titles.find(entry =>
+                entry.title_id && entry.title_id._id.toString() === title_id
+            );
+            if (foundEntry) {
+                currentList = list;
+                titleEntry = foundEntry;
+                break;
+            }
         }
 
-        if (!titleEntry) return res.status(404).json({ message: "Title not found in user's list." });
+        if (!titleEntry || !currentList)
+            return res.status(404).json({ message: "Title not found in user's list." });
 
         const updatedTitle = await Title.findByIdAndUpdate(title_id, updatedData, { new: true });
 
         if (!updatedTitle) return res.status(404).json({ message: "Title not found." });
 
-        res.status(200).json({ updatedTitle });
+        currentList.titles = currentList.titles.filter(
+            entry => entry.title_id._id.toString() !== title_id
+        );
+        await currentList.save();
+
+        let targetList = null;
+
+        if (newListId) {
+            targetList = user.lists.find(list => list._id.toString() === newListId);
+            if (!targetList) {
+                return res.status(404).json({ message: "Target custom list not found." });
+            }
+            changes.push(`Moved to custom list "${targetList.name}".`);
+        } else if (
+            updatedTitle.type &&
+            defaultListNames.includes(updatedTitle.type)
+        ) {
+            targetList = user.lists.find(list => list.name === updatedTitle.type);
+
+            if (!targetList) {
+                targetList = new List({ name: updatedTitle.type, userId: user._id, titles: [] });
+                await targetList.save();
+                user.lists.push(targetList._id);
+                await user.save();
+            }
+            changes.push(`Moved to default list "${targetList.name}".`);
+        } else {
+            targetList = user.lists.find(list => list.name === "Unknown");
+
+            if (!targetList) {
+                targetList = new List({ name: "Unknown", userId: user._id, titles: [] });
+                await targetList.save();
+                user.lists.push(targetList._id);
+                await user.save();
+            }
+            changes.push(`Moved to "Unknown" list.`);
+        }
+
+        const alreadyInTarget = targetList.titles.some(
+            entry => entry.title_id.toString() === updatedTitle._id.toString()
+        );
+        if (!alreadyInTarget) {
+            targetList.titles.push({ title_id: updatedTitle._id, dateAdded: new Date() });
+            await targetList.save();
+        }
+
+        res.status(200).json({
+            success: true,
+            updatedTitle,
+            message: changes.length > 0 ? changes.join(" ") : "Title updated with no list move."
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

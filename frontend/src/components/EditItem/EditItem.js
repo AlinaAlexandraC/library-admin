@@ -1,9 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./EditItem.css";
 import { fetchData } from "../../services/apiService";
 
 const EditItem = ({ title, onClose, setTitles }) => {
     const [editedTitle, setEditedTitle] = useState({ ...title });
+    const [customLists, setCustomLists] = useState([]);
+    const [currentListId, setCurrentListId] = useState(title.listId || null);
+
+    useEffect(() => {
+        const fetchLists = async () => {
+            try {
+                const lists = await fetchData("lists");
+
+                const reserved = ["Anime", "Book", "Manga", "Movie", "Series", "Unknown"];
+                const filtered = lists.filter(list => !reserved.includes(list.name));
+                setCustomLists(filtered);
+
+                const currentList = lists.find(list =>
+                    list.titles?.some(t => t.title_id._id === title._id)
+                );
+
+                if (currentList) {
+                    setCurrentListId(currentList._id);
+                    setEditedTitle(prev => ({
+                        ...prev,
+                        listName: currentList.name,
+                    }));
+                }
+            } catch (error) {
+                console.error("Failed to fetch lists:", error);
+            }
+        };
+
+        fetchLists();
+    }, [title._id]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -14,11 +44,22 @@ const EditItem = ({ title, onClose, setTitles }) => {
     };
 
     const handleSave = async () => {
-        try {            
-            const response = await fetchData("titles/update", "PATCH", {
+        try {
+            const payload = {
                 title_id: editedTitle._id,
                 updatedData: editedTitle,
-            });  
+            };
+
+            const selectedCustomList = customLists.find(list => list.name === editedTitle.listName);
+            const selectedListId = selectedCustomList?._id;
+
+            const listChanged = selectedListId && selectedListId !== currentListId;
+
+            if (listChanged) {
+                payload.newListId = selectedListId;
+            }
+
+            const response = await fetchData("titles/update", "PATCH", payload);
 
             setTitles((prevTitles) =>
                 prevTitles.map(title => title._id === response.updatedTitle._id ? response.updatedTitle : title)
@@ -38,6 +79,18 @@ const EditItem = ({ title, onClose, setTitles }) => {
             <select name="type" id="type" className="type-select" value={editedTitle.type} onChange={handleChange}>
                 {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
                     <option key={index} value={option}>{option}</option>
+                ))}
+            </select>
+            <select
+                name="list"
+                value={editedTitle.listName || ""}
+                onChange={(e) => setEditedTitle(prev => ({ ...prev, listName: e.target.value }))}
+            >
+                <option value="">Select a custom list</option>
+                {customLists.map(list => (
+                    <option key={list._id} value={list.name}>
+                        {list.name}
+                    </option>
                 ))}
             </select>
             {editedTitle.type === "Anime" && (

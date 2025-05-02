@@ -5,7 +5,7 @@ import formImageHorizontal from "../../assets/images/form-horizontal.jpg";
 import folderIcon from "../../assets/icons/folder.svg";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-import fetchLists from "../../utils/fetchLists";
+import fetchCustomLists from "../../utils/fetchCustomLists";
 import { fetchData } from "../../services/apiService";
 
 const AddTitlesFromFolder = () => {
@@ -19,7 +19,7 @@ const AddTitlesFromFolder = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchLists(setUserLists);
+        fetchCustomLists(setUserLists);
     }, []);    
 
     const handleFolderSelection = async () => {

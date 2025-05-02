@@ -24,7 +24,6 @@ const LibraryList = () => {
     const [modalItem, setModalItem] = useState(null);
 
     const navigate = useNavigate();
-
     const { listId } = useParams();
 
     useEffect(() => {
@@ -37,15 +36,11 @@ const LibraryList = () => {
         if (query.trim() === "") {
             setSearchResults([]);
         } else {
-            const filtered = titles.filter(
-                (title) => {
-                    const lowerQuery = query.toLowerCase();
-                    return (
-                        (title.title && title.title.toLowerCase().includes(lowerQuery)) ||
-                        (title.author && title.author.toLowerCase().includes(lowerQuery))
-                    );
-                });
-
+            const lowerQuery = query.toLowerCase();
+            const filtered = titles.filter((title) =>
+                (title.title && title.title.toLowerCase().includes(lowerQuery)) ||
+                (title.author && title.author.toLowerCase().includes(lowerQuery))
+            );
             setSearchResults(filtered);
         }
 
@@ -62,6 +57,13 @@ const LibraryList = () => {
     const totalPages = Math.ceil(activeList.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const displayedTitles = activeList.slice(startIndex, startIndex + itemsPerPage);
+
+    useEffect(() => {
+        const newTotalPages = Math.ceil(activeList.length / itemsPerPage);
+        if (currentPage > newTotalPages) {
+            setCurrentPage(Math.max(newTotalPages, 1));
+        }
+    }, [activeList.length, itemsPerPage, currentPage]);
 
     const handleSearch = (query) => {
         setQuery(query);
@@ -103,7 +105,11 @@ const LibraryList = () => {
                     </div>
                 )}
             </div>
-            <LibraryPagination totalPages={totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
+            <LibraryPagination
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+            />
             {modalItem && (
                 <>
                     <div className="overlay" onClick={closeModal}></div>

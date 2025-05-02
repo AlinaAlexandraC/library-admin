@@ -8,7 +8,7 @@ import { fetchData } from '../../services/apiService';
 import LibraryPagination from '../LibraryPagination/LibraryPagination';
 import { Link } from 'react-router';
 import DeleteListModal from '../DeleteListModal/DeleteListModal';
-import fetchLists from '../../utils/fetchLists';
+import fetchCustomLists from '../../utils/fetchCustomLists';
 import deleteIcon from '../../assets/icons/deleteList.svg';
 import saveIcon from '../../assets/icons/saveList.svg';
 import editIcon from '../../assets/icons/editList.svg';
@@ -22,7 +22,7 @@ const OtakuLists = () => {
     const [listName, setListName] = useState("");
 
     useEffect(() => {
-        fetchLists(setUserLists);
+        fetchCustomLists(setUserLists);
     }, []);
 
     const handleAddList = async (newListName) => {

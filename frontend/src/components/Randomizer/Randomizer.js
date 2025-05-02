@@ -16,18 +16,20 @@ const Randomizer = ({ selectedFilters }) => {
     const [isListSelected, setIsListSelected] = useState(false);
     const [userLists, setUserLists] = useState([]);
 
-    const fetchLists = async () => {
-        try {
-            const lists = await fetchData("lists/");
-            setUserLists(lists);
-        } catch (error) {
-            console.error("Failed to fetch lists summary", error);
-            return {};
-        }
-    };
+    useEffect(() => {
+        const fetchLists = async () => {
+            try {
+                const data = await fetchData("lists");
+                setUserLists(data);
+            } catch (error) {
+                console.error("Failed to fetch user lists:", error);
+            }
+        };
+
+        fetchLists();
+    }, []);
 
     useEffect(() => {
-        fetchLists();
         fetchTitles("Unknown", setTitles, setError, setLoading);
     }, []);
 

@@ -1,6 +1,6 @@
 import { fetchData } from "../services/apiService";
 
-const fetchLists = async (setUserLists) => {
+const fetchCustomLists = async (setUserLists) => {
     try {
         const lists = await fetchData("lists/");
         const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
@@ -14,4 +14,4 @@ const fetchLists = async (setUserLists) => {
     }
 };
 
-export default fetchLists;
+export default fetchCustomLists;

@@ -6,9 +6,20 @@ export const getUserLists = async (req, res) => {
     try {
         const firebaseUid = req.user.uid;
 
-        const user = await User.findOne({ firebaseUid }).populate("lists");
+        const user = await User.findOne({ firebaseUid }).populate({
+            path: "lists",
+            populate: { path: "titles.title_id" },
+        });
 
         if (!user) return res.status(404).json({ message: "User not found" });
+
+        for (let list of user.lists) {
+            const originalCount = list.titles.length;
+            list.titles = list.titles.filter(entry => entry.title_id != null);
+            if (list.titles.length !== originalCount) {
+                await list.save();
+            }
+        }
 
         const listsSummary = user.lists ? user.lists.map(list => ({
             _id: list._id,
@@ -29,6 +40,12 @@ export const createList = async (req, res) => {
         const { name } = req.body;
 
         if (!name) return res.status(400).json({ message: "List name is required." });
+
+        const reservedNames = ["Anime", "Book", "Manga", "Movie", "Series", "Unknown"];
+
+        if (reservedNames.includes(name.trim().toLowerCase())) {
+            return res.status(400).json({ message: "This list name is reserved and cannot be used." });
+        }
 
         const user = await User.findOne({ firebaseUid });
 
@@ -80,7 +97,7 @@ export const deleteList = async (req, res) => {
 
         const user = await User.findOne({ firebaseUid }).populate({
             path: "lists",
-            populate: { path: "titles" }
+            populate: { path: "titles.title_id" }
         });
 
         if (!user) return res.status(404).json({ message: "User not found" });
@@ -112,7 +129,7 @@ export const deleteList = async (req, res) => {
                 }
 
                 defaultList.titles.push({ title_id: title.title_id, dateAdded: new Date() });
-                
+
                 await defaultList.save();
             }
         }
@@ -142,16 +159,17 @@ export const deleteListAndTitles = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        const listIndex = user.lists.findIndex(list => list._id.toString() === listId);
+        const list = await List.findById(listId).populate("titles.title_id");
+        if (!list) return res.status(404).json({ message: "List not found" });
 
-        if (listIndex === -1) return res.status(404).json({ message: "List not found" });
+        const titleIds = list.titles.map(t => t.title_id?._id).filter(Boolean);
 
-        user.lists.splice(listIndex, 1);
-        await user.save();
+        await Title.deleteMany({ _id: { $in: titleIds } });
 
         await List.findByIdAndDelete(listId);
 
-        await Title.deleteMany({ listId });
+        user.lists = user.lists.filter(l => l._id.toString() !== listId);
+        await user.save();
 
         res.status(200).json({ message: "List and its titles deleted successfully.", success: true });
     } catch (error) {
