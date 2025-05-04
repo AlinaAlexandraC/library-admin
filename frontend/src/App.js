@@ -15,7 +15,9 @@ import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import LibraryLists from './pages/LibraryLists/LibraryLists';
 import { useEffect, useState } from "react";
 import ServerStatusModal from './components/ServerStatusModal/ServerStatusModal';
-
+import useSessionRefreshWatcher from './utils/useSessionRefreshWatcher';
+import SessionRefreshModal from './components/SessionRefreshModal/SessionRefreshModal';
+ 
 const router = createBrowserRouter([
   {
     path: "/",
@@ -91,11 +93,14 @@ const router = createBrowserRouter([
 
 function App() {
   const [serverStatus, setServerStatus] = useState("Waking up the server... Please wait ⏳");
-  const [showModal, setShowModal] = useState(true);
+  const [showServerModal, setShowServerModal] = useState(true);
+  const [showSessionModal, setShowSessionModal] = useState(false);
+
+  useSessionRefreshWatcher(setShowSessionModal);
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") {
-      setShowModal(false);
+      setShowServerModal(false);
       return;
     }
 
@@ -107,7 +112,7 @@ function App() {
 
         if (response.ok) {
           setServerStatus(null);
-          setShowModal(false);
+          setShowServerModal(false);
 
           if (timeoutId) clearTimeout(timeoutId);
         } else {
@@ -131,7 +136,14 @@ function App() {
       <header className="App-header">
         <RouterProvider router={router} />
       </header>
-      <ServerStatusModal message={serverStatus} showModal={showModal} onClose={() => setShowModal(false)} />
+      {showSessionModal &&
+        <SessionRefreshModal
+          message="Your session is about to expire, do you want to stay logged in?"
+          onClose={() => setShowSessionModal(false)}
+        />
+      }
+
+      <ServerStatusModal message={serverStatus} showModal={showServerModal} onClose={() => setShowServerModal(false)} />
     </div>
   );
 }

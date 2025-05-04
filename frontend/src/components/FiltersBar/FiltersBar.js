@@ -36,17 +36,12 @@ const FiltersBar = ({ titles, setFilteredTitles }) => {
     };
 
     useEffect(() => {
-        console.log("Titles", titles);
-
         if (!titles || !Array.isArray(titles)) return;
 
         const { genre, watched } = selectedFilters;
 
         const filteredTitles = titles.filter((title) => {
             const genreMatches = genre.length === 0 || (title.genre && genre.includes(title.genre));
-
-            console.log(`"${title.title}" has status:`, title.status, typeof title.status);
-            console.log("Selected watched filters:", watched);
 
             let statusMatches = true;
 
@@ -62,9 +57,6 @@ const FiltersBar = ({ titles, setFilteredTitles }) => {
 
             return genreMatches && statusMatches;
         });
-
-        console.log(filteredTitles);
-
 
         setFilteredTitles(filteredTitles);
     }, [selectedFilters, titles, setFilteredTitles]);

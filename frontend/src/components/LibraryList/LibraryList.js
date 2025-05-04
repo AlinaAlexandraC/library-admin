@@ -113,7 +113,7 @@ const LibraryList = () => {
             {modalItem && (
                 <>
                     <div className="overlay" onClick={closeModal}></div>
-                    <EditItem title={modalItem} onClose={closeModal} setTitles={setTitles} />
+                    <EditItem title={modalItem} onClose={closeModal} setTitles={setTitles} refreshTitles={() => fetchTitles(listId, setTitles, setError, setLoading)} />
                 </>
             )}
         </div>

@@ -137,6 +137,7 @@ export const updateTitle = async (req, res) => {
             const foundEntry = list.titles.find(entry =>
                 entry.title_id && entry.title_id._id.toString() === title_id
             );
+
             if (foundEntry) {
                 currentList = list;
                 titleEntry = foundEntry;
@@ -151,56 +152,55 @@ export const updateTitle = async (req, res) => {
 
         if (!updatedTitle) return res.status(404).json({ message: "Title not found." });
 
-        currentList.titles = currentList.titles.filter(
-            entry => entry.title_id._id.toString() !== title_id
-        );
-        await currentList.save();
+        const currentListIsDefault = defaultListNames.includes(currentList.name);
+        const updatedTypeIsDefault = defaultListNames.includes(updatedTitle.type);
 
-        let targetList = null;
+        if (newListId && newListId !== currentList._id.toString()) {
+            const targetList = user.lists.find(list => list._id.toString() === newListId);
+            if (!targetList) return res.status(404).json({ message: "Target custom list not found." });
 
-        if (newListId) {
-            targetList = user.lists.find(list => list._id.toString() === newListId);
-            if (!targetList) {
-                return res.status(404).json({ message: "Target custom list not found." });
-            }
+            currentList.titles = currentList.titles.filter(
+                entry => entry.title_id._id.toString() !== title_id
+            );
+            await currentList.save();
+
+            targetList.titles.push({ title_id: updatedTitle._id, dateAdded: new Date() });
+            await targetList.save();
+
             changes.push(`Moved to custom list "${targetList.name}".`);
-        } else if (
-            updatedTitle.type &&
-            defaultListNames.includes(updatedTitle.type)
-        ) {
-            targetList = user.lists.find(list => list.name === updatedTitle.type);
 
+        } else if (
+            currentListIsDefault &&
+            updatedTypeIsDefault &&
+            currentList.name !== updatedTitle.type
+        ) {
+            currentList.titles = currentList.titles.filter(
+                entry => entry.title_id._id.toString() !== title_id
+            );
+            await currentList.save();
+
+            let targetList = user.lists.find(list => list.name === updatedTitle.type);
             if (!targetList) {
                 targetList = new List({ name: updatedTitle.type, userId: user._id, titles: [] });
                 await targetList.save();
                 user.lists.push(targetList._id);
                 await user.save();
             }
-            changes.push(`Moved to default list "${targetList.name}".`);
-        } else {
-            targetList = user.lists.find(list => list.name === "Unknown");
 
-            if (!targetList) {
-                targetList = new List({ name: "Unknown", userId: user._id, titles: [] });
-                await targetList.save();
-                user.lists.push(targetList._id);
-                await user.save();
-            }
-            changes.push(`Moved to "Unknown" list.`);
-        }
-
-        const alreadyInTarget = targetList.titles.some(
-            entry => entry.title_id.toString() === updatedTitle._id.toString()
-        );
-        if (!alreadyInTarget) {
             targetList.titles.push({ title_id: updatedTitle._id, dateAdded: new Date() });
             await targetList.save();
+
+            changes.push(`Moved to default list "${targetList.name}".`);
+        } else {
+            changes.push(`Type updated to "${updatedTitle.type}". List unchanged.`);
         }
+
+        console.log("changes", changes);
 
         res.status(200).json({
             success: true,
             updatedTitle,
-            message: changes.length > 0 ? changes.join(" ") : "Title updated with no list move."
+            message: changes.length > 0 ? changes.join(" ") : "Title updated successfully."
         });
     } catch (error) {
         res.status(400).json({ message: error.message });

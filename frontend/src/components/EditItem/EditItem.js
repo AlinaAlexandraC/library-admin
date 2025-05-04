@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./EditItem.css";
 import { fetchData } from "../../services/apiService";
 
-const EditItem = ({ title, onClose, setTitles }) => {
+const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
     const [editedTitle, setEditedTitle] = useState({ ...title });
     const [customLists, setCustomLists] = useState([]);
     const [currentListId, setCurrentListId] = useState(title.listId || null);
@@ -27,6 +27,9 @@ const EditItem = ({ title, onClose, setTitles }) => {
                         listName: currentList.name,
                     }));
                 }
+
+                console.log(currentList);
+
             } catch (error) {
                 console.error("Failed to fetch lists:", error);
             }
@@ -61,9 +64,13 @@ const EditItem = ({ title, onClose, setTitles }) => {
 
             const response = await fetchData("titles/update", "PATCH", payload);
 
-            setTitles((prevTitles) =>
-                prevTitles.map(title => title._id === response.updatedTitle._id ? response.updatedTitle : title)
-            );
+            if (listChanged) {
+                refreshTitles();
+            } else {
+                setTitles((prevTitles) =>
+                    prevTitles.map(title => title._id === response.updatedTitle._id ? response.updatedTitle : title)
+                );
+            }
 
             onClose();
         } catch (error) {

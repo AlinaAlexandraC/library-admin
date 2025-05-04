@@ -6,7 +6,7 @@ import mangaIcon from "../../assets/icons/manga.svg";
 import movieIcon from "../../assets/icons/movie.svg";
 import seriesIcon from "../../assets/icons/series.svg";
 import unknownIcon from "../../assets/icons/unknown.svg";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../services/apiService";
 
@@ -19,6 +19,7 @@ const DefaultLists = () => {
         series: [],
         unknown: []
     });
+    const location = useLocation();
 
     const fetchListsSummary = async () => {
         try {
@@ -47,7 +48,7 @@ const DefaultLists = () => {
         };
 
         fetchSummary();
-    }, []);
+    }, [location]);
 
     return (
         <div className="default-lists-container">
