@@ -1,0 +1,32 @@
+# List Manager
+
+A full-stack list-management application for tracking and organizing titles (e.g., books, movies, anime). Users can create, manage, and edit personalized lists.
+Built with React, Express, MongoDB Atlas, and Firebase Authentication.
+
+Deployed on [Render](https://library-admin-1.onrender.com/).
+
+# Features
+
+🔐 User Authentication: Secure sign-up and login via Firebase Authentication.
+📝 Custom Lists: Create and manage personalized lists (e.g., "Watch Later - Anime").
+📑 Default Lists: Predefined list types for quick organization (e.g., Books, Movies).
+📂 Title Management: Add titles individually or in bulk by selecting a folder.
+🎲 Random Picker: Pick a random title from any list when you can’t decide.
+✏️ Edit and Delete Titles: Easily manage and modify your lists.
+
+# Tech Stack
+
+🔧 Frontend: React.js
+🖥️ Backend: Express.js (Node.js)
+💾 Database: MongoDB Atlas
+🔑 Authentication: Firebase Auth
+⚙️ Environment Configuration: dotenv
+🌐 Deployment: Render (for hosting the app)
+🐙 Version Control: GitHub
+
+# Usage
+
+1. Sign up or log in to the app using Firebase Authentication.
+2. Create personalized lists and add titles individually or in bulk.
+3. Use the random title picker when you need help deciding what to watch or read.
+4. Edit or delete titles as needed from your lists.
