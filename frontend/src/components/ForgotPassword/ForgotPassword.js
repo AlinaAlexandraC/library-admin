@@ -1,64 +1,84 @@
-// import "./ForgotPassword.css";
-// import Form from "../Form/Form";
-// import formImage from "../../assets/images/login-vertical.jpg";
-// import formImageHorizontal from "../../assets/images/login-horizontal.jpg";
-// import { useState } from "react";
-// import { fetchSignInMethodsForEmail, getAuth, sendPasswordResetEmail } from "firebase/auth";
-// import { auth } from "../../firebase";
+import "./ForgotPassword.css";
+import Form from "../Form/Form";
+import formImage from "../../assets/images/login-vertical.jpg";
+import formImageHorizontal from "../../assets/images/login-horizontal.jpg";
+import { useState } from "react";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { fetchData } from "../../services/apiService";
+import { useNavigate } from "react-router";
 
-// const ForgotPassword = () => {
-//     const [email, setEmail] = useState("");
-//     const [message, setMessage] = useState("");
-//     const [error, setError] = useState("");
+const ForgotPassword = () => {
+    const [email, setEmail] = useState("");
+    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
+    const auth = getAuth();
+    const navigate = useNavigate();
 
-//     const handleResetPassword = async (e) => {
-//         e.preventDefault(e);
+    const validatePassword = (password) => {
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+={}[\]:;"'<>,.?/\\|-]{8,}$/;
+        return passwordRegex.test(password);
+    };
 
-//         try {
-//             const methods = await fetchSignInMethodsForEmail(auth, email);
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
 
-//             if (methods.length === 0) {
-//                 setError("Email is not registered. Please check the email address.");
-//                 setTimeout(() => {
-//                     setError("");
-//                 }, 2000);
-//                 return;
-//             }
+        const normalizedEmail = email.trim().toLowerCase();
 
-//             await sendPasswordResetEmail(auth, email);
-//             setMessage("Password reset email sent! Please check your inbox.");
-//             setTimeout(() => {
-//                 setMessage("");
-//             }, 2000);
-//         } catch (error) {
-//             setError("Error sending reset email. Please try again.");
-//             setTimeout(() => {
-//                 setError("");
-//             }, 2000);
-//         }
-//     };
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/check-email`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: normalizedEmail }),
+            });
 
-//     return (
-//         <div className="forgot-password-container">
-//             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-//                 <form className="forgot-password-wrapper" onSubmit={handleResetPassword}>
-//                     <div className="forgot-password-title">Forgot Password</div>
-//                     <div className="forgot-password-email-container">
-//                         <label htmlFor="email">Email address</label>
-//                         <input
-//                             type="email"
-//                             id="email"
-//                             value={email}
-//                             onChange={(e) => setEmail(e.target.value)}
-//                             required
-//                         />
-//                     </div>
-//                     <button type="submit" className="login-button btn" >Send Reset Link</button>
-//                 </form>
-//                 <div className={`${error ? "error" : "success"}`}>{error ? error : message}</div>
-//             </Form>
-//         </div>
-//     );
-// };
+            const data = await response.json();
 
-// export default ForgotPassword;
+            if (!data.emailExists) {
+                setError("No user found with that email address.");
+                setTimeout(() => setError(""), 3000);
+                return;
+            }
+
+            await sendPasswordResetEmail(auth, normalizedEmail, {
+                url: `https://library-admin-1.onrender.com/`,
+            });
+
+            setMessage("Password reset email sent! Please check your inbox.");
+            setTimeout(() => {
+                navigate("/");
+            }, 2000);
+        } catch (error) {
+            console.error("Error during password reset:", error);
+            setError(error.message || "Error sending reset email. Please try again.");
+            setTimeout(() => setError(""), 3000);
+        }
+    };
+
+
+    return (
+        <div className="forgot-password-container">
+            <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
+                <form className="forgot-password-wrapper" onSubmit={handleResetPassword}>
+                    <div className="forgot-password-title">Forgot Password</div>
+                    <div className="forgot-password-email-container">
+                        <label htmlFor="email">Email address</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="login-button btn" >Send Reset Link</button>
+                    <div className={`${error ? "error" : "success"}`}>{error ? error : message}</div>
+                    <div className="instruction">Password must be at least 8 characters long, contain one uppercase letter, and one number</div>
+                </form>
+            </Form>
+        </div>
+    );
+};
+
+export default ForgotPassword;

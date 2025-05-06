@@ -28,6 +28,10 @@ const router = createBrowserRouter([
     element: <RegistrationPage />
   },
   {
+    path: "/forgot-password",
+    element: <ForgotPassword />
+  },
+  {
     path: "/lists",
     element: <PrivateRoute><Layout /></PrivateRoute>,
     children: [

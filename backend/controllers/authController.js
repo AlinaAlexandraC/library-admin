@@ -88,3 +88,20 @@ export const logoutUser = async (req, res) => {
         res.status(500).json({ message: "Logout failed" });
     }
 };
+
+// Reset password
+
+export const checkIfEmailExists = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) return res.status(400).json({ message: "Email is required" });
+
+        const user = await User.findOne({ email: email.toLowerCase() });
+
+        return res.json({ emailExists: !!user });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error checking email' });
+    }
+};
