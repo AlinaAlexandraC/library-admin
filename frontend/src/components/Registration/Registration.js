@@ -41,13 +41,13 @@ const Registration = () => {
 
         if (!validateEmail(formData.email)) {
             setError("Invalid email");
-            setTimeout(() => setError(""), 2000);
+            setTimeout(() => setError(""), 3000);
             return;
         }
 
         if (!validatePassword(formData.password)) {
-            setError("Password must be at least 8 characters long, contain one uppercase letter, and one number");
-            setTimeout(() => setError(""), 2000);
+            setError("Password must be at least 8 characters and include a capital letter and a number.");
+            setTimeout(() => setError(""), 3000);
             return;
         }
 
@@ -55,7 +55,7 @@ const Registration = () => {
             setError("Passwords must match");
             setTimeout(() => {
                 setError("");
-            }, 2000);
+            }, 3000);
             return;
         }
 
@@ -70,7 +70,7 @@ const Registration = () => {
                 setError("Registration failed. Try again later!");
             }
 
-            setTimeout(() => setError(""), 2000);
+            setTimeout(() => setError(""), 3000);
         }
     };
 
@@ -113,9 +113,9 @@ const Registration = () => {
                         By selecting <strong>Create account</strong>, you agree to our <Link to='/user-agreement'>User Agreement</Link> and acknowledge reading our <Link to='/user-privacy-notice'>User Privacy Notice</Link>.
                     </div>
                     <button type="submit" className="registration-button btn">Create account</button>
-                    <div className="go-to-login">Already have an account? <Link to="/">Sign in</Link></div>
+                    <span className="go-to-login">Already have an account? <Link to="/">Sign in</Link></span>
+                    <div className={`${error ? "error" : "success"}`} id="password-validation">{error ? error : success}</div>
                 </form>
-                <div className={`${error ? "error" : "success"}`} id="password-validation">{error ? error : success}</div>
             </Form>
         </div>
     );

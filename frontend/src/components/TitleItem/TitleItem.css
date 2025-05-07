@@ -5,7 +5,7 @@
     margin: 0 10px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
-    height: 100px;
+    height: 120px;
     background-color: #f8f8f8;
 }
 
@@ -35,8 +35,9 @@
 }
 
 .other-details {
-    padding: 0 10px;
+    height: 30px;
     display: flex;
+    align-items: center;
 }
 
 @media (max-width: 768px) {

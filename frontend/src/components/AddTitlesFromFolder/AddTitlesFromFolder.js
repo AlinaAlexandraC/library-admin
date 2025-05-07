@@ -45,7 +45,7 @@ const AddTitlesFromFolder = () => {
             setError("Error accessing the folder. Try again later.");
             setTimeout(() => {
                 setError(null);
-            }, 2000);
+            }, 3000);
         }
     };
 
@@ -56,7 +56,7 @@ const AddTitlesFromFolder = () => {
             setError("No titles to add. Please select a valid folder.");
             setTimeout(() => {
                 setError(null);
-            }, 2000);
+            }, 3000);
             return;
         }
 
@@ -90,7 +90,7 @@ const AddTitlesFromFolder = () => {
                 setSuccess("Titles added successfully!");
                 setTimeout(() => {
                     setSuccess("");
-                }, 2000);
+                }, 3000);
 
                 setTitleFormData([]);
                 setFolderSelected(false);
@@ -99,13 +99,13 @@ const AddTitlesFromFolder = () => {
                 setError("Error adding titles. Try again later.");
                 setTimeout(() => {
                     setError(null);
-                }, 2000);
+                }, 3000);
             }
         } catch (error) {
             setError("Failed to connect to server");
             setTimeout(() => {
                 setError(null);
-            }, 2000);
+            }, 3000);
         }
     };
 

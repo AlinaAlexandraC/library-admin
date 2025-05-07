@@ -25,7 +25,7 @@
 }
 
 label {
-    font-size: 15px;
+    font-size: 13px;
 }
 
 input {
@@ -44,6 +44,7 @@ select {
 
 .error,
 .success {
+    font-size: 12px;
     height: 30px;
     font-weight: 600;
     display: inline-block;
@@ -71,4 +72,10 @@ select {
     justify-content: space-around;
     gap: 10px;
     padding-top: 10px;
+}
+
+@media only screen and (max-width: 490px) {
+    span {
+        font-size: 12px;
+    }
 }

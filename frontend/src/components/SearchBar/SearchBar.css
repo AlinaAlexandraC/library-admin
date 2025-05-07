@@ -22,3 +22,9 @@
 .search-bar-input:focus {
     outline: none;
 }
+
+@media only screen and (max-width: 490px) {
+    .search-bar-container {
+        height: 35px;
+    }
+}

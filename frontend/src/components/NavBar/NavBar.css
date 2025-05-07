@@ -51,7 +51,7 @@ span {
     padding: 0 10px;
 }
 
-.user-dropdown-button {    
+.user-dropdown-button {
     border-radius: 30px;
     font-weight: 600;
     color: #fff;
@@ -109,7 +109,7 @@ span {
     .nav-bar-header span {
         display: none;
     }
-
+    
     .nav-bar-library,
     .nav-bar-form,
     .nav-bar-randomizer,
@@ -120,7 +120,6 @@ span {
 }
 
 @media only screen and (max-width: 490px) {
-
     .nav-bar-library,
     .nav-bar-form,
     .nav-bar-randomizer,
@@ -131,7 +130,6 @@ span {
 }
 
 @media only screen and (max-width: 320px) {
-
     .nav-bar-library,
     .nav-bar-form,
     .nav-bar-randomizer,

@@ -53,6 +53,10 @@
     font-size: 20px;
 }
 
+.title {
+    font-size: 13px;
+}
+
 .randomizer-icon {
     width: 200px;
     border-radius: 50%;
@@ -68,7 +72,7 @@
 }
 
 .title-info-randomizer div {
-    margin-top: 20px;
+    margin: 20px 0;
     text-align: center;
 }
 
@@ -96,17 +100,28 @@
     padding: 5px 10px;
     min-height: 60px;
     overflow-wrap: break-word;
+    display: flex;
+    align-items: center;
+}
+
+[class^="randomizer-element"] span {
+    width: calc(100% - 30px);
 }
 
 @media only screen and (max-width: 730px) {
     .randomizer-wrapper {
         flex-direction: column;
-        height: 70vh;
+        height: 75vh;
+    }
+
+    .randomizer-list-selection {
+        height: 40vh;
     }
 
     .randomizer-titles-list,
     .randomizer-display,
-    hr {
+    hr,
+    .randomizer-list-selection {
         width: calc(100% - 40px);
 
     }
@@ -119,6 +134,7 @@
         height: 80px;
         display: flex;
         justify-content: center;
+        align-items: center;
     }
 
     [class^="randomizer-element"] {

@@ -128,3 +128,53 @@
 .edit-list-name:hover {
     background-color: #7ed0ec;
 }
+
+.rename-error-box {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3498db;
+    color: white;
+    width: 80%;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 16px;
+    text-align: center;
+    opacity: 1;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media only screen and (max-width: 490px) {
+    .list-details-container {
+        width: calc(100% - 70px);
+    }
+
+    .list-buttons-container {
+        width: 70px;
+    }
+
+    .save-list-name,
+    .edit-list-name,
+    .delete-list {
+        width: 30px;
+        height: 30px;
+    }
+
+    .delete-list img,
+    .save-list-name img,
+    .edit-list-name img {
+        width: 15px;
+    }
+}

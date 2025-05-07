@@ -73,15 +73,15 @@ const AddTitlesManually = () => {
                 });
                 setSelectedOtakuList("");
                 setSelectedType("");
-                setTimeout(() => setSuccess(""), 2000);
+                setTimeout(() => setSuccess(""), 3000);
             } else {
                 setError("Process failed. Try again later");
-                setTimeout(() => setError(""), 2000);
+                setTimeout(() => setError(""), 3000);
             }
         } catch (error) {
             console.error("Error during title submission:", error);
             setError(error.message || "Process failed. Try again later");
-            setTimeout(() => setError(""), 2000);
+            setTimeout(() => setError(""), 3000);
         }
     };
 

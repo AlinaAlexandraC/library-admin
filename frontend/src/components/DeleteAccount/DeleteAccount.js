@@ -27,11 +27,11 @@ const DeleteAccount = ({ onClose }) => {
                 onClose();
             } catch (error) {
                 setError("Error deleting the account. Please try again.");
-                setTimeout(() => setError(""), 2000);
+                setTimeout(() => setError(""), 3000);
             }
         } else {
             setError("Confirmation phrase doesn't match. Please type the exact phrase.");
-            setTimeout(() => setError(""), 2000);
+            setTimeout(() => setError(""), 3000);
         }
     };
 

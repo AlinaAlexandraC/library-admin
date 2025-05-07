@@ -4,8 +4,7 @@ import formImage from "../../assets/images/login-vertical.jpg";
 import formImageHorizontal from "../../assets/images/login-horizontal.jpg";
 import { useState } from "react";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { fetchData } from "../../services/apiService";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -13,11 +12,6 @@ const ForgotPassword = () => {
     const [error, setError] = useState("");
     const auth = getAuth();
     const navigate = useNavigate();
-
-    const validatePassword = (password) => {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+={}[\]:;"'<>,.?/\\|-]{8,}$/;
-        return passwordRegex.test(password);
-    };
 
     const handleResetPassword = async (e) => {
         e.preventDefault();
@@ -48,7 +42,7 @@ const ForgotPassword = () => {
             setMessage("Password reset email sent! Please check your inbox.");
             setTimeout(() => {
                 navigate("/");
-            }, 2000);
+            }, 3000);
         } catch (error) {
             console.error("Error during password reset:", error);
             setError(error.message || "Error sending reset email. Please try again.");
@@ -72,7 +66,14 @@ const ForgotPassword = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="login-button btn" >Send Reset Link</button>
+                    <div className="buttons-container">
+                        <button type="submit" className="send-reset-link btn" >Send Reset Link</button>
+                        <div className="return-to-login-button">
+                            <Link to="/" className="link">
+                                <div className="return-to-login btn">Go back to login</div>
+                            </Link>
+                        </div>
+                    </div>
                     <div className={`${error ? "error" : "success"}`}>{error ? error : message}</div>
                     <div className="instruction">Password must be at least 8 characters long, contain one uppercase letter, and one number</div>
                 </form>

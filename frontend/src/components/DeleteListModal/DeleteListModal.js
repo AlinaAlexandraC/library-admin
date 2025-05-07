@@ -28,13 +28,13 @@ const DeleteListModal = ({ listName, listId, titleCount, onClose, userLists, set
                 setError("Failed to delete the list. Please try again.");
                 setTimeout(() => {
                     setError("");
-                }, 2000);
+                }, 3000);
             }
         } catch (error) {
             setError(error.message || "Failed to delete the list.");
             setTimeout(() => {
                 setError("");
-            }, 2000);
+            }, 3000);
         }
     };
 

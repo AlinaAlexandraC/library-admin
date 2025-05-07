@@ -38,7 +38,7 @@ const MyAccount = () => {
     const handleSave = async () => {
         if (!firstName.trim() || !lastName.trim() || !email.trim()) {
             setError("Fields cannot be empty");
-            setTimeout(() => setError(null), 2000);
+            setTimeout(() => setError(null), 3000);
             setSuccess(null);
             return;
         }
@@ -54,12 +54,12 @@ const MyAccount = () => {
 
             setError(null);
             setSuccess("Details saved successfully");
-            setTimeout(() => setSuccess(null), 2000);
+            setTimeout(() => setSuccess(null), 3000);
             setIsEditing(false);
         } catch (error) {
             console.error("Failed to save item:", error);
             setError("Failed to save details. Please try again.");
-            setTimeout(() => setError(null), 2000);
+            setTimeout(() => setError(null), 3000);
         }
     };
 

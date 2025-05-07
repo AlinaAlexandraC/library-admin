@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Randomizer.css";
 import getIcon from "../../utils/getIcon";
-import fetchTitles from "../../utils/fetchTitles";
 import Loader from "../Loader/Loader";
 import { fetchData } from "../../services/apiService";
 import fetchCustomLists from "../../utils/fetchCustomLists";
@@ -68,7 +67,7 @@ const Randomizer = () => {
                 setDefaultLoading(false);
             } catch (error) {
                 setError("Failed to fetch titles for the selected list.");
-                setTimeout(() => setError(""), 2000);
+                setTimeout(() => setError(""), 3000);
                 setCustomLoading(false);
                 setDefaultLoading(false);
             }
@@ -82,11 +81,11 @@ const Randomizer = () => {
 
     useEffect(() => {
         console.log(titles.length);
-        
+
         if (titles.length > 0 && random !== null) {
             const randomTitle = titles[random];
             console.log(randomTitle);
-            
+
             if (randomTitle && randomTitle.title_id) {
                 const titleType = randomTitle.type || "defaultType";
                 setIcon(getIcon(titleType));
@@ -106,17 +105,6 @@ const Randomizer = () => {
         <div className="randomizer-outer-container">
             <div className="randomizer-inner-container">
                 <div className="randomizer-wrapper">
-                    <div className="randomizer-display">
-                        <span>{header}</span>
-                        {titles.length > 0 && (
-                            <div className="title-info-randomizer">
-                                <img src={icon} alt="icon" className="randomizer-icon" />
-                                <div className="title">{titles[random]?.title_id.title || "-"}</div>
-                            </div>
-                        )}
-                        <button onClick={randomizeTitle} className="random btn">Get Random Title</button>
-                    </div>
-                    <hr />
                     {!isListSelected ? (
                         <div className="randomizer-list-selection">
                             {loading ? (
@@ -145,21 +133,37 @@ const Randomizer = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="randomizer-titles-list">
-                            {loading ? (
-                                <Loader />
-                            ) : error ? (
-                                <p>{error}</p>
-                            ) : (titles.map((title, index) => (
-                                <div key={title._id || index} className="randomizer-title-container">
-                                    <div className="decoration"></div>
-                                    <div className={`randomizer-element-${index}`}>
-                                        <span className="element-index">{index + 1}.</span>
-                                        <span>{title?.title_id?.title || "Untitled"}</span>
+                        <>
+                            <div className="randomizer-display">
+                                <span>{header}</span>
+                                {titles.length > 0 && (
+                                    <div className="title-info-randomizer">
+                                        <img src={icon} alt="icon" className="randomizer-icon" />
+                                        <div className="title">{titles[random]?.title_id.title || "-"}</div>
                                     </div>
+                                )}
+                                <button onClick={randomizeTitle} className="random btn">Get Random Title</button>
+                            </div>
+                            <hr />
+                            <div className="randomizer-titles-list">
+                                {loading ? (
+                                    <Loader />
+                                ) : error ? (
+                                    <p>{error}</p>
+                                ) : (titles.map((title, index) => (
+                                    <div key={title._id || index} className="randomizer-title-container">
+                                        <div className="decoration"></div>
+                                        <div className={`randomizer-element-${index}`}>
+                                            <div className="element-index">{index + 1}.</div>
+                                            <span>{title?.title_id?.title || "Untitled"}</span>
+                                        </div>
+                                    </div>
+                                )))}
+                                <div className="select-another-list btn" onClick={() => setIsListSelected(!isListSelected)}>
+                                    Select another list
                                 </div>
-                            )))}
-                        </div>
+                            </div>
+                        </>
                     )}
                 </div>
             </div>

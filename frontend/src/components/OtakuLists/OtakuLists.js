@@ -20,6 +20,7 @@ const OtakuLists = () => {
     const [currentList, setCurrentList] = useState(null);
     const [editingListId, setEditingListId] = useState(null);
     const [listName, setListName] = useState("");
+    const [renameError, setRenameError] = useState("");
 
     useEffect(() => {
         fetchCustomLists(setUserLists);
@@ -42,7 +43,17 @@ const OtakuLists = () => {
         e.preventDefault();
         e.stopPropagation();
 
-        if (!newName || newName.trim() === "") return;
+        if (!newName || newName.trim() === "") {
+            setRenameError("A list name cannot be empty");
+            setTimeout(() => setRenameError(""), 5000);
+            return;
+        };
+
+        if (userLists.some(list => list.name.toLowerCase() === newName.trim().toLowerCase())) {
+            setRenameError("A list with this name already exists.");
+            setTimeout(() => setRenameError(""), 5000);
+            return;
+        }
 
         try {
             const updatedList = await fetchData("lists/update", "PATCH", { listId, name: newName });
@@ -76,21 +87,23 @@ const OtakuLists = () => {
                                     <ListItem listIcon={icon} >
                                         <div className="list-details-container">
                                             {editingListId === list._id ? (
-                                                <input
-                                                    type="text"
-                                                    value={listName}
-                                                    onChange={(e) => setListName(e.target.value)}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === "Enter") {
-                                                            handleEditList(e, list._id, listName);
-                                                        }
-                                                    }}
-                                                    className="list-name-input"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                    }}
-                                                />
+                                                <>
+                                                    <input
+                                                        type="text"
+                                                        value={listName}
+                                                        onChange={(e) => setListName(e.target.value)}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === "Enter") {
+                                                                handleEditList(e, list._id, listName);
+                                                            }
+                                                        }}
+                                                        className="list-name-input"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                        }}
+                                                    />
+                                                </>
                                             ) : (
                                                 <span>{list.name}</span>
                                             )}
@@ -131,7 +144,7 @@ const OtakuLists = () => {
             {showAddListModal && (
                 <>
                     <div className="overlay" onClick={() => setShowAddListModal(false)}></div>
-                    <AddListModal onSave={handleAddList} onClose={() => setShowAddListModal(false)} />
+                    <AddListModal onSave={handleAddList} onClose={() => setShowAddListModal(false)} existingLists={userLists.map(list => list.name)} />
                 </>
             )}
             {showDeleteListModal && (
@@ -146,6 +159,11 @@ const OtakuLists = () => {
                         setUserLists={setUserLists}
                     />
                 </>
+            )}
+            {renameError && (
+                <div className="rename-error-box">
+                    <p>{renameError}</p>
+                </div>
             )}
         </div >
     );

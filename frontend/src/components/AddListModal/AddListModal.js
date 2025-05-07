@@ -1,30 +1,34 @@
 import './AddListModal.css';
 import { useState } from "react";
 
-const AddListModal = ({ onSave, onClose }) => {
+const AddListModal = ({ onSave, onClose, existingLists }) => {
     const [listName, setListName] = useState("");
     const [error, setError] = useState("");
 
     const handleSave = () => {
-        if (!listName.trim()) {
+        const trimmedName = listName.trim();
+
+        if (!trimmedName) {
             setError("List name cannot be empty");
-            setTimeout(() => {
-                setError("");
-            }, 3000);
+            setTimeout(() => setError(""), 3000);
             return;
         }
 
         const reservedNames = ["Anime", "Book", "Manga", "Movie", "Series", "Unknown"];
 
-        if (reservedNames.map(name => name.toLowerCase()).includes(listName.trim().toLowerCase())) {
+        if (reservedNames.some(name => name.toLowerCase() === trimmedName.toLowerCase())) {
             setError("This list name is reserved and cannot be used.");
-            setTimeout(() => {
-                setError("");
-            }, 3000);
+            setTimeout(() => setError(""), 3000);
             return;
         }
 
-        onSave(listName);
+        if (existingLists.some(list => list.toLowerCase() === trimmedName.toLowerCase())) {
+            setError("A list with this name already exists.");
+            setTimeout(() => setError(""), 3000);
+            return;
+        }
+
+        onSave(trimmedName);
         setListName("");
         setError("");
     };
@@ -37,7 +41,7 @@ const AddListModal = ({ onSave, onClose }) => {
                 <button onClick={handleSave} className="save-btn">Create List</button>
                 <button onClick={onClose} className="cancel-btn">Cancel</button>
             </div>
-            {error && <p className="error">{error}</p>}
+             <div className="error">{error || ""}</div>
         </div >
     );
 };
