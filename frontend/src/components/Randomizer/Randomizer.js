@@ -80,11 +80,8 @@ const Randomizer = () => {
     };
 
     useEffect(() => {
-        console.log(titles.length);
-
         if (titles.length > 0 && random !== null) {
             const randomTitle = titles[random];
-            console.log(randomTitle);
 
             if (randomTitle && randomTitle.title_id) {
                 const titleType = randomTitle.type || "defaultType";

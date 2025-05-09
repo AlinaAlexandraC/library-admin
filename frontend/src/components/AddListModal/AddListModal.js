@@ -41,7 +41,7 @@ const AddListModal = ({ onSave, onClose, existingLists }) => {
                 <button onClick={handleSave} className="save-btn">Create List</button>
                 <button onClick={onClose} className="cancel-btn">Cancel</button>
             </div>
-             <div className="error">{error || ""}</div>
+            <div className="error">{error || ""}</div>
         </div >
     );
 };

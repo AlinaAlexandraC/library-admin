@@ -21,6 +21,10 @@ const OtakuLists = () => {
     const [editingListId, setEditingListId] = useState(null);
     const [listName, setListName] = useState("");
     const [renameError, setRenameError] = useState("");
+    const [currentPage, setCurrentPage] = useState(() => {
+        return parseInt(localStorage.getItem("otakuListsCurrentPage")) || 1;
+    });
+    const listsPerPage = 10;
 
     useEffect(() => {
         fetchCustomLists(setUserLists);
@@ -39,6 +43,22 @@ const OtakuLists = () => {
         }
     };
 
+    useEffect(() => {
+        localStorage.setItem("otakuListsCurrentPage", currentPage);
+    }, [currentPage]);
+
+    const indexOfLastList = currentPage * listsPerPage;
+    const indexOfFirstList = indexOfLastList - listsPerPage;
+    const currentLists = userLists.slice(indexOfFirstList, indexOfLastList);
+    const totalPages = Math.ceil(userLists.length / listsPerPage);
+
+    useEffect(() => {
+        const newTotalPages = Math.ceil(userLists.length / listsPerPage);
+        if (currentPage > newTotalPages) {
+            setCurrentPage(Math.max(newTotalPages, 1));
+        }
+    }, [userLists.length, listsPerPage, currentPage]);
+
     const handleEditList = async (e, listId, newName) => {
         e.preventDefault();
         e.stopPropagation();
@@ -49,7 +69,11 @@ const OtakuLists = () => {
             return;
         };
 
-        if (userLists.some(list => list.name.toLowerCase() === newName.trim().toLowerCase())) {
+        const nameExistsInOtherList = userLists.some(list =>
+            list._id !== listId && list.name.trim().toLowerCase() === newName.trim().toLowerCase()
+        );
+
+        if (nameExistsInOtherList) {
             setRenameError("A list with this name already exists.");
             setTimeout(() => setRenameError(""), 5000);
             return;
@@ -82,12 +106,14 @@ const OtakuLists = () => {
                     <>
                         <button className='otaku-lists-button btn' onClick={() => setShowAddListModal(true)}>Create a list</button>
                         <div className="otaku-lists">
-                            {userLists.map((list, index) => (
-                                <Link to={`/titles/${list.name}`} key={list._id || index} className='list-link'>
-                                    <ListItem listIcon={icon} >
-                                        <div className="list-details-container">
-                                            {editingListId === list._id ? (
-                                                <>
+                            {currentLists.map((list, index) => {
+                                const isEditing = editingListId === list._id;
+
+                                return (
+                                    <div key={list._id || index} className="list-wrapper">
+                                        {isEditing ? (
+                                            <ListItem listIcon={icon}>
+                                                <div className="list-details-container">
                                                     <input
                                                         type="text"
                                                         value={listName}
@@ -98,38 +124,51 @@ const OtakuLists = () => {
                                                             }
                                                         }}
                                                         className="list-name-input"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            e.stopPropagation();
-                                                        }}
                                                     />
-                                                </>
-                                            ) : (
-                                                <span>{list.name}</span>
-                                            )}
-                                            <div className="list-buttons-container">
-                                                {editingListId === list._id ? (
-                                                    <button onClick={(e) => handleEditList(e, list._id, listName)} className='save-list-name'>
-                                                        <img src={saveIcon} alt="save-icon" />
-                                                    </button>
-                                                ) : (
-                                                    <button onClick={(e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        setEditingListId(list._id);
-                                                        setListName(list.name);
-                                                    }} className='edit-list-name'>
-                                                        <img src={editIcon} alt="edit-icon" />
-                                                    </button>
-                                                )}
-                                                <button onClick={(e) => openDeleteModal(e, list._id, list.name, list.titleCount)} className='delete-list'>
-                                                    <img src={deleteIcon} alt="delete-icon" />
-                                                </button >
-                                            </div>
-                                        </div>
-                                    </ListItem>
-                                </Link>
-                            ))}
+                                                    <div className="list-buttons-container">
+                                                        <button onClick={(e) => handleEditList(e, list._id, listName)} className='save-list-name'>
+                                                            <img src={saveIcon} alt="save-icon" />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => openDeleteModal(e, list._id, list.name, list.titleCount)}
+                                                            className='delete-list'
+                                                        >
+                                                            <img src={deleteIcon} alt="delete-icon" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </ListItem>
+                                        ) : (
+                                            <Link to={`/titles/${list.name}`} className='list-link'>
+                                                <ListItem listIcon={icon}>
+                                                    <div className="list-details-container">
+                                                        <span>{list.name}</span>
+                                                        <div className="list-buttons-container">
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    e.stopPropagation();
+                                                                    setEditingListId(list._id);
+                                                                    setListName(list.name);
+                                                                }}
+                                                                className='edit-list-name'
+                                                            >
+                                                                <img src={editIcon} alt="edit-icon" />
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => openDeleteModal(e, list._id, list.name, list.titleCount)}
+                                                                className='delete-list'
+                                                            >
+                                                                <img src={deleteIcon} alt="delete-icon" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </ListItem>
+                                            </Link>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                     </>
                 ) : (
@@ -139,7 +178,11 @@ const OtakuLists = () => {
                         <button className='no-lists-button btn' onClick={() => setShowAddListModal(true)}>Create a list</button>
                     </div>
                 )}
-                <LibraryPagination />
+                <LibraryPagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                />
             </div>
             {showAddListModal && (
                 <>

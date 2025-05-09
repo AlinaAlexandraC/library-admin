@@ -50,7 +50,6 @@ const Login = () => {
                 setError("Login failed: No user data received. Please try again.");
             }
         } catch (error) {
-            console.log("Firebase Error:", error.code);
             if (error.code === "auth/too-many-requests") {
                 setError("Too many attempts. Please wait a moment and try again.");
             } else if (error.code === "auth/invalid-credential") {
@@ -100,8 +99,8 @@ const Login = () => {
                         <Link to="/forgot-password">Forgot Password</Link>
                     </div>
                     <button type="submit" className="login-button btn" >Sign in</button>
-                    <div className={`${error ? "error" : "success"}`}>{error ? error : success}</div>
                 </form>
+                <div className={`${error ? "error" : "success"}`}>{error ? error : success}</div>
             </Form>
         </div>
     );

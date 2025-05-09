@@ -8,16 +8,16 @@ const LibraryPagination = ({ totalPages, setCurrentPage, currentPage }) => {
             <img
                 src={leftArrowIcon}
                 alt="left-arrow-icon"
-                className="left-arrow-icon"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1} />
+                className={`left-arrow-icon ${currentPage === 1 ? "disabled" : ""}`}
+                onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+            />
             <div className="page-number">{currentPage}</div>
             <img
                 src={rightArrowIcon}
                 alt="right-arrow-icon"
-                className="right-arrow-icon"
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages} />
+                className={`right-arrow-icon ${currentPage === totalPages ? "disabled" : ""}`}
+                onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+            />
         </div>
     );
 };

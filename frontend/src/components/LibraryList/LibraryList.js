@@ -1,6 +1,6 @@
 import "./LibraryList.css";
 import LibraryPagination from "../LibraryPagination/LibraryPagination";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import fetchTitles from "../../utils/fetchTitles";
 import { useNavigate, useParams } from "react-router";
 import Loader from "../Loader/Loader";
@@ -9,6 +9,7 @@ import TitleItem from "../TitleItem/TitleItem";
 import EditItem from "../EditItem/EditItem";
 import FiltersBar from "../FiltersBar/FiltersBar";
 import noTitles from "../../assets/images/no-titles.jpg";
+import { fetchData } from "../../services/apiService";
 
 const LibraryList = () => {
     const [titles, setTitles] = useState([]);
@@ -30,7 +31,7 @@ const LibraryList = () => {
         fetchTitles(listId, setTitles, setError, setLoading);
     }, [listId]);
 
-    const sortedTitles = titles.sort((a, b) => a.title.localeCompare(b.title));
+    const sortedTitles = [...titles].sort((a, b) => a.title.localeCompare(b.title));
 
     useEffect(() => {
         if (query.trim() === "") {
@@ -48,6 +49,40 @@ const LibraryList = () => {
             setCurrentPage(1);
         }
     }, [query, titles]);
+
+    const handleToggleStatus = async (title) => {
+        const newStatus = !title.status;
+        setTitles((prev) =>
+            prev.map((item) =>
+                item._id === title._id ? { ...item, status: newStatus } : item
+            )
+        );
+
+        try {
+            await fetchData("titles/update", "PATCH", {
+                title_id: title._id,
+                updatedData: { status: newStatus },
+            });
+        } catch (error) {
+            console.error("Failed to toggle status:", error);
+            setTitles((prev) =>
+                prev.map((item) =>
+                    item._id === title._id ? { ...item, status: !newStatus } : item
+                )
+            );
+        }
+    };
+
+    const handleDeleteTitle = async (title) => {
+        try {
+            await fetchData("titles/remove", "DELETE", { title_id: title._id });
+            setTitles((prevTitles) =>
+                prevTitles.filter(item => item && item._id && item._id !== title._id)
+            );
+        } catch (error) {
+            console.error("Failed to delete item:", error);
+        }
+    };
 
     useEffect(() => {
         localStorage.setItem("libraryCurrentPage", currentPage);
@@ -98,7 +133,14 @@ const LibraryList = () => {
                         <ul className="library-list-titles" >
                             {displayedTitles.map((title, index) => (
                                 <li key={index} className={`element-${index}`}>
-                                    <TitleItem title={title} index={startIndex + index + 1} setTitles={setTitles} openModal={openModal} />
+                                    <TitleItem
+                                        title={title}
+                                        index={startIndex + index + 1}
+                                        setTitles={setTitles}
+                                        openModal={openModal}
+                                        onToggleStatus={handleToggleStatus}
+                                        onDelete={handleDeleteTitle}
+                                    />
                                 </li>
                             ))}
                         </ul>

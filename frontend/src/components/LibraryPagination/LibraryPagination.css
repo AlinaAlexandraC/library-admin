@@ -28,3 +28,9 @@
     font-size: 14px;
     font-weight: 600;
 }
+
+.library-pagination img.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: default;
+}

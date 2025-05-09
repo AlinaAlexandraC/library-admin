@@ -27,9 +27,6 @@ const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
                         listName: currentList.name,
                     }));
                 }
-
-                console.log(currentList);
-
             } catch (error) {
                 console.error("Failed to fetch lists:", error);
             }
@@ -64,13 +61,13 @@ const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
 
             const response = await fetchData("titles/update", "PATCH", payload);
 
-            if (listChanged) {
-                refreshTitles();
-            } else {
-                setTitles((prevTitles) =>
-                    prevTitles.map(title => title._id === response.updatedTitle._id ? response.updatedTitle : title)
-                );
-            }
+            setTitles(prevTitles =>
+                prevTitles.map(title =>
+                    title._id === response.updatedTitle._id ? response.updatedTitle : title
+                )
+            );
+
+            refreshTitles();
 
             onClose();
         } catch (error) {

@@ -1,7 +1,7 @@
 import "./TitleItem.css";
 import ItemButtons from "../ItemButtons/ItemButtons";
 
-const TitleItem = ({ title, index, setTitles, openModal }) => {
+const TitleItem = ({ title, index, setTitles, openModal, onToggleStatus, onDelete }) => {
 
     return (
         <div className="title-item-container">
@@ -31,7 +31,12 @@ const TitleItem = ({ title, index, setTitles, openModal }) => {
                     )}
                 </div>
             </div>
-            <ItemButtons title={title} setTitles={setTitles} openModal={openModal} />
+            <ItemButtons
+                title={title}
+                openModal={openModal}
+                onToggleStatus={onToggleStatus}
+                onDelete={onDelete}
+            />
         </div>
     );
 };

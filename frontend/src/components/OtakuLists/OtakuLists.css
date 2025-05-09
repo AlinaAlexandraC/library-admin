@@ -6,7 +6,7 @@
 }
 
 .otaku-lists-wrapper {
-    height: 1200px;
+    height: 960px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -159,6 +159,10 @@
 @media only screen and (max-width: 490px) {
     .list-details-container {
         width: calc(100% - 70px);
+    }
+
+    .otaku-lists-wrapper {
+        height: 660px;
     }
 
     .list-buttons-container {

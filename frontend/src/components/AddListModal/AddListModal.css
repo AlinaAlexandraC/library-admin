@@ -62,6 +62,6 @@
     z-index: 999;
 }
 
-.error {
+.add-list-modal-container .error {
     margin-top: 20px;
 }

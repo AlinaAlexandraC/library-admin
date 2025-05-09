@@ -195,8 +195,6 @@ export const updateTitle = async (req, res) => {
             changes.push(`Type updated to "${updatedTitle.type}". List unchanged.`);
         }
 
-        console.log("changes", changes);
-
         res.status(200).json({
             success: true,
             updatedTitle,
