@@ -12,6 +12,8 @@ const SessionRefreshModal = ({ message, onClose }) => {
         window.location.replace('/');
     };
 
+    // testing render
+
     return (
         <div className="session-refresh-modal-container">
             <div className="modal">
