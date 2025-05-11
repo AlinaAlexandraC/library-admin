@@ -2,7 +2,7 @@ import "./DeleteListModal.css";
 import { useState } from "react";
 import { fetchData } from "../../services/apiService";
 
-const DeleteListModal = ({ listName, listId, titleCount, onClose, userLists, setUserLists }) => {
+const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, setDeleteConfirmation }) => {
     const [deleteType, setDeleteType] = useState("list");
     const [error, setError] = useState("");
 
@@ -19,9 +19,13 @@ const DeleteListModal = ({ listName, listId, titleCount, onClose, userLists, set
             const response = await fetchData(endpoint, "DELETE", {
                 listId,
                 deleteTitles,
-            });            
+            });
 
             if (response.success) {
+                if (!deleteTitles) {
+                    setDeleteConfirmation("Titles were successfully moved to the default lists.");
+                    setTimeout(() => setDeleteConfirmation(""), 5000);
+                }
                 setUserLists(prevLists => prevLists.filter(list => list._id !== listId));
                 onClose();
             } else {

@@ -183,9 +183,9 @@ const AddTitlesManually = () => {
                 </form>
                 <p className="list-instruction">
                     Titles will be added to:{" "}
-                    <strong>{selectedOtakuList || (titleFormData.type ? titleFormData.type : "Unknown")}</strong> list
+                    <strong>{selectedOtakuList || (titleFormData.type ? titleFormData.type : "Unknown")}</strong> list.
                 </p>
-                <div className="instruction">Only fields marked with * are mandatory. Adding more details will increase filtering.</div>
+                <div className="instruction">Only fields marked with * are mandatory. Adding more details will increase filtering. Duplicated titles would be removed.</div>
             </Form>
         </div>
     );

@@ -11,6 +11,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
 }
 
 .add-titles-from-folder-title {
@@ -83,23 +84,26 @@
 }
 
 .extracted-title-container {
-    height: 60px;
+    min-height: 60px;
     margin: 6px 3px;
     border-radius: 10px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
+    position: relative;
 }
 
-.decoration {
+.extracted-title-container .decoration {
     background-color: blue;
     width: 10px;
     height: 100%;
     border-radius: 10px 0 0 10px;
+    position: absolute;
+    left: 0;
 }
 
 .extracted-title {
-    padding: 0 10px;
+    padding: 0 10px 0 20px;
     width: calc(100% - 75px);
 }
 
@@ -121,7 +125,26 @@
     margin: 0 10px;
 }
 
+.add-titles-from-folder-container .list-instruction {
+    font-size: 12px;
+    margin-top: 0;
+}
+
+.add-titles-from-folder-container .instruction {
+    text-align: center;
+    font-size: 12px;
+    padding-bottom: 5px;
+}
+
 @media only screen and (max-width: 730px) {
+    .add-titles-from-folder-container .form-image-horizontal {
+        display: none;
+    }
+
+    .titles-list-from-folder {
+        width: 250px;
+    }
+
     .dropdown-lists {
         flex-direction: column;
         gap: 10px;
@@ -132,11 +155,15 @@
         width: 100%;
     }
 
-    .buttons-container {
-        margin-top: 20px;
+    .add-titles-from-folder-wrapper .buttons-container {
+        margin-top: 10px;
     }
 
     .titles-list-from-folder {
-        max-height: 200px;
+        max-height: 350px;
+    }
+
+    .buttons {
+        width: 250px;
     }
 }

@@ -1,31 +1,36 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { auth } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 const useSessionRefreshWatcher = (setShowModal) => {
+    const timerIdRef = useRef(null);
+
+    const startTimer = () => {
+        clearTimeout(timerIdRef.current);
+
+        timerIdRef.current = setTimeout(() => {
+            setShowModal(true);
+            startTimer();
+        }, 55 * 60 * 1000);
+    };
+
     useEffect(() => {
-        let timeoutId;
-
-        const setupTimer = (user) => {
-            if (!user) return;
-
-            timeoutId = setTimeout(() => {
-                setShowModal(true);
-            }, 55 * 60 * 1000);
-        };
+        if (auth.currentUser) {
+            startTimer();
+        }
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            clearTimeout(timeoutId);
-            if (user) setupTimer(user);
+            clearTimeout(timerIdRef.current);
+            if (user) startTimer();
         });
 
         return () => {
             unsubscribe();
-            clearTimeout(timeoutId);
+            clearTimeout(timerIdRef.current);
         };
     }, [setShowModal]);
 
-    return;
+    return null;
 };
 
 export default useSessionRefreshWatcher;

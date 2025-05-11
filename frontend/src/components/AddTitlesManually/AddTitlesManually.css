@@ -57,12 +57,12 @@
     width: 48%;
 }
 
-.list-instruction {
+.add-titles-manually-container .list-instruction {
     font-size: 12px;
     margin-top: 0;
 }
 
-.instruction {
+.add-titles-manually-container .instruction {
     text-align: center;
     font-size: 12px;
     padding-bottom: 5px;

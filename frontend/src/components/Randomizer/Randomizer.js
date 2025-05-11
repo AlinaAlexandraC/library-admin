@@ -15,7 +15,6 @@ const Randomizer = () => {
     const [isListSelected, setIsListSelected] = useState(false);
     const [customLists, setCustomLists] = useState([]);
     const [defaultLists, setDefaultLists] = useState([]);
-    const [selectedList, setSelectedList] = useState("");
     const [customLoading, setCustomLoading] = useState(true);
     const [defaultLoading, setDefaultLoading] = useState(true);
     const loading = customLoading || defaultLoading;
@@ -51,9 +50,6 @@ const Randomizer = () => {
 
     const handleListSelection = async (event) => {
         const selectedListName = event.target.value;
-        setSelectedList(selectedListName);
-        setCustomLoading(false);
-        setDefaultLoading(false);
 
         if (selectedListName) {
             try {
@@ -65,6 +61,7 @@ const Randomizer = () => {
                 setIsListSelected(true);
                 setCustomLoading(false);
                 setDefaultLoading(false);
+                setRandom(null);
             } catch (error) {
                 setError("Failed to fetch titles for the selected list.");
                 setTimeout(() => setError(""), 3000);
@@ -110,7 +107,8 @@ const Randomizer = () => {
                                 <p>{error}</p>
                             ) : (
                                 <>
-                                    <select name="" onChange={handleListSelection}>
+                                    <hr />
+                                    <select name="" onChange={handleListSelection} disabled={customLists.length === 0}>
                                         <option value="">Select a custom list</option>
                                         {customLists.map(list => (
                                             <option key={list._id} value={list.name}>
@@ -118,14 +116,17 @@ const Randomizer = () => {
                                             </option>
                                         ))}
                                     </select>
-                                    <div className="">OR</div>
-                                    <select onChange={handleListSelection}>
+                                    <>
+                                        <div className="">OR</div>
+                                    </>
+                                    <select onChange={handleListSelection} disabled={defaultLists.length === 0}>
                                         <option value="">Select a default list</option>
                                         {defaultLists.map(list => (
                                             <option key={list._id} value={list.name}>{['Series', 'Unknown'].includes(list.name) ? list.name : `${list.name}s`}
                                             </option>
                                         ))}
                                     </select>
+                                    <hr />
                                 </>
                             )}
                         </div>
@@ -156,9 +157,9 @@ const Randomizer = () => {
                                         </div>
                                     </div>
                                 )))}
-                                <div className="select-another-list btn" onClick={() => setIsListSelected(!isListSelected)}>
-                                    Select another list
-                                </div>
+                            </div>
+                            <div className="select-another-list btn" onClick={() => setIsListSelected(!isListSelected)}>
+                                Select another list
                             </div>
                         </>
                     )}

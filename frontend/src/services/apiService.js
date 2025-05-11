@@ -27,7 +27,6 @@ export const fetchData = async (endpoint, method = 'GET', body = null) => {
     return response.data;
   } catch (error) {
     console.log(error.response?.data?.message);
-    console.error("Complete error:", error);
     throw new Error(error.response?.data?.message || 'An error occurred');
   }
 };

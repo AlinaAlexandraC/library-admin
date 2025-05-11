@@ -12,12 +12,12 @@ import { fetchData } from "../../services/apiService";
 
 const DefaultLists = () => {
     const [defaultLists, setDefaultLists] = useState({
-        anime: [],
-        book: [],
-        manga: [],
-        movie: [],
-        series: [],
-        unknown: []
+        anime: 0,
+        book: 0,
+        manga: 0,
+        movie: 0,
+        series: 0,
+        unknown: 0
     });
     const location = useLocation();
 
@@ -25,7 +25,7 @@ const DefaultLists = () => {
         try {
             const lists = await fetchData("lists/");
             return lists.reduce((acc, list) => {
-                acc[list.name.toLowerCase()] = list.titleCount > 0;
+                acc[list.name.toLowerCase()] = list.titleCount;
                 return acc;
             }, {});
         } catch (error) {
@@ -53,23 +53,23 @@ const DefaultLists = () => {
     return (
         <div className="default-lists-container">
             <div className="default-lists-wrapper">
-                <Link to="/titles/anime" className={`list-link ${!defaultLists.anime ? 'disabled' : ''}`}>
-                    <ListItem listIcon={animeIcon}>Animes</ListItem>
+                <Link to="/titles/anime" className={`list-link ${defaultLists.anime === 0 ? 'disabled' : ''}`}>
+                    <ListItem listIcon={animeIcon}>{`Animes (${defaultLists.anime})`}</ListItem>
                 </Link>
-                <Link to="/titles/book" className={`list-link ${!defaultLists.book ? 'disabled' : ''}`}>
-                    <ListItem listIcon={bookIcon}>Books</ListItem>
+                <Link to="/titles/book" className={`list-link ${defaultLists.book === 0 ? 'disabled' : ''}`}>
+                    <ListItem listIcon={bookIcon}>{`Books (${defaultLists.book})`}</ListItem>
                 </Link>
-                <Link to="/titles/manga" className={`list-link ${!defaultLists.manga ? 'disabled' : ''}`}>
-                    <ListItem listIcon={mangaIcon}>Mangas</ListItem>
+                <Link to="/titles/manga" className={`list-link ${defaultLists.manga === 0 ? 'disabled' : ''}`}>
+                    <ListItem listIcon={mangaIcon}>{`Mangas (${defaultLists.manga})`}</ListItem>
                 </Link>
-                <Link to="/titles/movie" className={`list-link ${!defaultLists.movie ? 'disabled' : ''}`}>
-                    <ListItem listIcon={movieIcon}>Movies</ListItem>
+                <Link to="/titles/movie" className={`list-link ${defaultLists.movie === 0 ? 'disabled' : ''}`}>
+                    <ListItem listIcon={movieIcon}>{`Movies (${defaultLists.movie})`}</ListItem>
                 </Link>
-                <Link to="/titles/series" className={`list-link ${!defaultLists.series ? 'disabled' : ''}`}>
-                    <ListItem listIcon={seriesIcon}>Series</ListItem>
+                <Link to="/titles/series" className={`list-link ${defaultLists.series === 0 ? 'disabled' : ''}`}>
+                    <ListItem listIcon={seriesIcon}>{`Series (${defaultLists.series})`}</ListItem>
                 </Link>
-                <Link to="/titles/unknown" className={`list-link ${!defaultLists.unknown ? 'disabled' : ''}`}>
-                    <ListItem listIcon={unknownIcon}>Unknown</ListItem>
+                <Link to="/titles/unknown" className={`list-link ${defaultLists.unknown === 0 ? 'disabled' : ''}`}>
+                    <ListItem listIcon={unknownIcon}>{`Unknown (${defaultLists.unknown})`}</ListItem>
                 </Link>
             </div>
         </div>

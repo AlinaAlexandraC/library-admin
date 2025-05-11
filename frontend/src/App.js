@@ -1,23 +1,25 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import AddTitlesPage from './pages/AddTitlesPage/AddTitlesPage';
-import LibraryPage from "./pages/LibraryPage";
+import { useEffect, useState, lazy, Suspense } from "react";
 import Layout from './pages/Layout';
-import NotFound from './pages/NotFound/NotFound';
-import RandomizerPage from './pages/RandomizerPage';
-import LoginPage from './pages/LoginPage';
-import RegistrationPage from './pages/RegistrationPage';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
-import MyAccountPage from './pages/MyAccountPage';
-import UserAgreement from './components/UserAgreement/UserAgreement';
-import UserPrivacyNotice from './components/UserPrivacyNotice/UserPrivacyNotice';
-import ForgotPassword from './components/ForgotPassword/ForgotPassword';
-import LibraryLists from './pages/LibraryLists/LibraryLists';
-import { useEffect, useState } from "react";
 import ServerStatusModal from './components/ServerStatusModal/ServerStatusModal';
 import useSessionRefreshWatcher from './utils/useSessionRefreshWatcher';
 import SessionRefreshModal from './components/SessionRefreshModal/SessionRefreshModal';
- 
+import Loader from './components/Loader/Loader';
+
+const AddTitlesPage = lazy(() => import('./pages/AddTitlesPage/AddTitlesPage'));
+const LibraryPage = lazy(() => import('./pages/LibraryPage'));
+const LibraryLists = lazy(() => import('./pages/LibraryLists/LibraryLists'));
+const RandomizerPage = lazy(() => import('./pages/RandomizerPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const RegistrationPage = lazy(() => import('./pages/RegistrationPage'));
+const ForgotPassword = lazy(() => import('./components/ForgotPassword/ForgotPassword'));
+const MyAccountPage = lazy(() => import('./pages/MyAccountPage'));
+const UserAgreement = lazy(() => import('./components/UserAgreement/UserAgreement'));
+const UserPrivacyNotice = lazy(() => import('./components/UserPrivacyNotice/UserPrivacyNotice'));
+const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -138,7 +140,9 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <RouterProvider router={router} />
+        <Suspense fallback={<Loader />}>
+          <RouterProvider router={router} />
+        </Suspense>
       </header>
       {showSessionModal &&
         <SessionRefreshModal

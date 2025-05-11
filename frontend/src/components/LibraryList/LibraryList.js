@@ -115,6 +115,14 @@ const LibraryList = () => {
     return (
         <div className="library-list-container">
             <FiltersBar titles={titles} setFilteredTitles={setFilteredTitles} />
+            <div className="legend">
+                <div className="color" style={{ backgroundColor: "#FF6B6B" }}>anime</div>
+                <div className="color" style={{ backgroundColor: "#3F51B5" }}>book</div>
+                <div className="color" style={{ backgroundColor: "#F59E0B" }}>manga</div>
+                <div className="color" style={{ backgroundColor: "#3CB371" }}>movie</div>
+                <div className="color" style={{ backgroundColor: "#00BCD4" }}>series</div>
+                <div className="color" style={{ backgroundColor: "blue" }}>unknown</div>
+            </div>
             <div className="library-list-wrapper">
                 <div className="library-list-name">✨ {listId.toUpperCase()} ✨</div>
                 {loading ? (

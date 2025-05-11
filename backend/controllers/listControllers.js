@@ -128,9 +128,12 @@ export const deleteList = async (req, res) => {
                     listsByName[type] = defaultList;
                 }
 
-                defaultList.titles.push({ title_id: title.title_id, dateAdded: new Date() });
+                const titleExists = defaultList.titles.some(t => t.title_id.toString() === title.title_id.toString());
 
-                await defaultList.save();
+                if (!titleExists) {
+                    defaultList.titles.push({ title_id: title.title_id, dateAdded: new Date() });
+                    await defaultList.save();
+                }
             }
         }
 

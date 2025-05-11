@@ -20,7 +20,7 @@ const AddTitlesFromFolder = () => {
 
     useEffect(() => {
         fetchCustomLists(setUserLists);
-    }, []);    
+    }, []);
 
     const handleFolderSelection = async () => {
         if (!('showDirectoryPicker' in window)) {
@@ -172,20 +172,25 @@ const AddTitlesFromFolder = () => {
                                 </ul>
                             </div>
                         )}
-                        <div className="buttons-container">
-                            <div className="buttons">
-                                <button type="submit" className="add-titles-from-folder-button btn">Add to list</button>
-                                {folderSelected ? (
-                                    <button type="button" className="select-another-button btn" onClick={reselectFolder}>Select another folder</button>
-                                ) : (
-                                    <button type="button" className="see-library-button btn" onClick={() => navigate("/lists")}>See list</button>
-                                )}
-                            </div>
-                            <label className={`${error ? "error" : "success"}`}>{error || success}</label>
+                        <div className="buttons">
+                            <button type="submit" className="add-titles-from-folder-button btn">Add to list</button>
+                            {folderSelected ? (
+                                <button type="button" className="select-another-button btn" onClick={reselectFolder}>Select another folder</button>
+                            ) : (
+                                <button type="button" className="see-library-button btn" onClick={() => navigate("/lists")}>See list</button>
+                            )}
                         </div>
+                        <label className={`${error ? "error" : "success"}`}>{error || success}</label>
                     </div>
                     {folderSelected && (
-                        <div className="instruction">Number of titles extracted: <strong>{titleFormData.length} titles</strong></div>
+                        <>
+                            <div className="instruction">Number of titles extracted: <strong>{titleFormData.length} titles</strong></div>
+                            <p className="list-instruction">
+                                Titles will be added to:{" "}
+                                <strong>{selectedOtakuList || (selectedType ? selectedType : "Unknown")}</strong> list.
+                            </p>
+                            <div className="instruction">Duplicated titles would be removed.</div>
+                        </>
                     )}
                 </form>
             </Form>
