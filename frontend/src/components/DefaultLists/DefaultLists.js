@@ -38,12 +38,12 @@ const DefaultLists = () => {
         const fetchSummary = async () => {
             const listsData = await fetchListsSummary();
             setDefaultLists({
-                anime: listsData["anime"] || false,
-                book: listsData["book"] || false,
-                manga: listsData["manga"] || false,
-                movie: listsData["movie"] || false,
-                series: listsData["series"] || false,
-                unknown: listsData["unknown"] || false
+                anime: listsData["anime"] || 0,
+                book: listsData["book"] || 0,
+                manga: listsData["manga"] || 0,
+                movie: listsData["movie"] || 0,
+                series: listsData["series"] || 0,
+                unknown: listsData["unknown"] || 0
             });
         };
 
