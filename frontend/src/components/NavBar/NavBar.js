@@ -6,9 +6,14 @@ import randomIcon from "../../assets/icons/random.svg";
 import { Link, useNavigate } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import { logoutUser } from "../../services/authService";
+import profileIcon from '../../assets/icons/profile.svg';
+import helpIcon from '../../assets/icons/help.svg';
+import logOutIcon from '../../assets/icons/log-out.svg';
+import HelpMeModal from "../HelpMeModal/HelpMeModal";
 
 const NavBar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
 
@@ -63,17 +68,24 @@ const NavBar = () => {
                         </button>
                         {isDropdownOpen && (
                             <div className="user-dropdown-content">
-                                <Link to="/account" className="link" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-                                    <div>Profile</div>
+                                <Link to="/account" className="link user-dropdown-content-profile" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                                    <img src={profileIcon} alt="profile-icon" />
+                                    <span>Profile</span>
                                 </Link>
-                                <button className="log-out-button btn" onClick={handleLogout}>
-                                    <div>Log out</div>
-                                </button>
+                                <div className="user-dropdown-content-help" onClick={() => setOpenModal(true)}>
+                                    <img src={helpIcon} alt="help-icon" />
+                                    <span>Help me</span>
+                                </div>
+                                <div className="log-out-button" onClick={handleLogout}>
+                                    <img src={logOutIcon} alt="log-out-icon" />
+                                    <span>Log out</span>
+                                </div>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
+            {openModal && <HelpMeModal onClose={() => setOpenModal(false)} />}
         </div>
     );
 };

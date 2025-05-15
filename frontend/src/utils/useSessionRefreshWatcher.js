@@ -5,16 +5,16 @@ import { onAuthStateChanged } from "firebase/auth";
 const useSessionRefreshWatcher = (setShowModal) => {
     const timerIdRef = useRef(null);
 
-    const startTimer = () => {
-        clearTimeout(timerIdRef.current);
-
-        timerIdRef.current = setTimeout(() => {
-            setShowModal(true);
-            startTimer();
-        }, 55 * 60 * 1000);
-    };
-
     useEffect(() => {
+        const startTimer = () => {
+            clearTimeout(timerIdRef.current);
+
+            timerIdRef.current = setTimeout(() => {
+                setShowModal(true);
+                startTimer();
+            }, 55 * 60 * 1000);
+        };
+
         if (auth.currentUser) {
             startTimer();
         }

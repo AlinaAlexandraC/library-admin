@@ -107,7 +107,7 @@ const FiltersBar = ({ titles, setFilteredTitles }) => {
                     </li>
                 </ul>
                 <div className="filter-reset" onClick={removeFilters}>
-                    <div>Reset filters</div>
+                    <span>Reset filters</span>
                     <img src={resetIcon} alt="reset-icon" className="reset-icon" />
                 </div>
             </div>

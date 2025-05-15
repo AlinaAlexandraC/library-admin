@@ -22,12 +22,12 @@ const TitleItem = ({ title, index, openModal, onToggleStatus, onDelete }) => {
     return (
         <div className="title-item-container">
             <div className="decoration" style={{ backgroundColor: getColorByType(title.type) }}></div>
-            <div className="title-details">
-                <div className="title-item-name">
+            <div className={(title.genre || title.author || title.numberOfSeasons || title.numberOfEpisodes || title.numberOfChapters) ? "title-details" : "title-only"}>
+                <div className={(title.genre || title.author || title.numberOfSeasons || title.numberOfEpisodes || title.numberOfChapters) ? "title-item-name" : "title-item-name-only"}>
                     <span className="index">{index}.</span>
                     <span className="filename">{title.title}</span>
                 </div>
-                <div className="other-details">
+                <div className={(title.genre || title.author || title.numberOfSeasons || title.numberOfEpisodes || title.numberOfChapters) ? "other-details" : "no-details"}>
                     <span className="genre">{title.genre || ""}</span>
                     <span className="author">{title.author || ""}</span>
                     {title.numberOfSeasons != null && (

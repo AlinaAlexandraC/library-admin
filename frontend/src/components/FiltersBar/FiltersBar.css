@@ -117,6 +117,7 @@
 
 .reset-icon {
     width: 20px;
+    margin-right: 8px;
 }
 
 .arrow-down-icon-black.flipped {
@@ -125,8 +126,14 @@
 }
 
 @media only screen and (max-width: 670px) {
-    .filters-bar-options {
+
+    .filters-bar-options,
+    .filter-reset {
         font-size: 12px;
+    }
+
+    .reset-icon {
+        width: 15px;
     }
 
     .filter {
