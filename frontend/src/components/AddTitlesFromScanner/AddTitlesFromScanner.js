@@ -9,6 +9,8 @@ const AddTitlesFromScanner = () => {
     const videoRef = useRef(null);
     const [scannedBook, setScannedBook] = useState(null);
     const [scanning, setScanning] = useState(false);
+    const [permissionGranted, setPermissionGranted] = useState(false);
+    const [requestingPermission, setRequestingPermission] = useState(false);
     const codeReader = useRef(null);
 
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -20,35 +22,48 @@ const AddTitlesFromScanner = () => {
         }
     }, []);
 
+    const requestCameraPermission = async () => {
+        setRequestingPermission(true);
+        try {
+            await navigator.mediaDevices.getUserMedia({ video: true });
+            setPermissionGranted(true);
+            return true;
+        } catch (err) {
+            alert("Camera permission denied. Please allow camera access to scan books.");
+            setPermissionGranted(false);
+            return false;
+        } finally {
+            setRequestingPermission(false);
+        }
+    };
+
     useEffect(() => {
         if (!isMobile || !scanning || !videoRef.current) return;
 
         codeReader.current = new BrowserMultiFormatReader();
 
-        if (scanning) {
-            codeReader.current.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
-                if (result) {
-                    const isbn = result.getText();
-                    const bookData = await fetchBookByIsbn(isbn);
-                    if (bookData) {
-                        setScannedBook({ isbn, ...bookData });
-                    } else {
-                        console.warn('No book data found for ISBN:', isbn);
-                    }
-                    setScanning(false);
+        codeReader.current.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
+            if (result) {
+                const isbn = result.getText();
+                const bookData = await fetchBookByIsbn(isbn);
+                if (bookData) {
+                    setScannedBook({ isbn, ...bookData });
+                } else {
+                    console.warn('No book data found for ISBN:', isbn);
                 }
-                if (err && !(err.name === 'NotFoundException')) {
-                    console.error(err);
-                }
-            });
-        }
+                setScanning(false);
+            }
+            if (err && !(err.name === 'NotFoundException')) {
+                console.error(err);
+            }
+        });
 
         return () => {
             if (codeReader.current) {
                 codeReader.current.reset();
             }
         };
-    }, [scanning, isMobile, videoRef.current]);
+    }, [scanning, isMobile]);
 
     const fetchBookByIsbn = async (isbn) => {
         try {
@@ -69,6 +84,23 @@ const AddTitlesFromScanner = () => {
         }
     };
 
+    const handleStartScanning = async (e) => {
+        e.preventDefault();
+        if (!isMobile) return;
+
+        const granted = await requestCameraPermission();
+        if (granted) {
+            setScannedBook(null);
+            setScanning(true);
+        }
+    };
+
+    const handleStopScanning = (e) => {
+        e.preventDefault();
+        setScanning(false);
+        setScannedBook(null); // clear scanned book when stopping scan for consistency
+    };
+
     return (
         <div className='add-titles-by-scanning-container'>
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
@@ -82,39 +114,36 @@ const AddTitlesFromScanner = () => {
                         ) : (
                             <>
                                 {scanning ? (
-                                    <button
-                                        className='stop-scanning-button btn'
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setScanning(false);
-                                        }}
-                                    >
-                                        Stop Scanning
-                                    </button>
+                                    <>
+                                        <video
+                                            ref={videoRef}
+                                            style={{ width: '100%', maxWidth: '500px' }}
+                                            playsInline
+                                            muted
+                                            autoPlay
+                                        />
+                                        <button
+                                            className='stop-scanning-button btn'
+                                            onClick={handleStopScanning}
+                                        >
+                                            Stop Scanning
+                                        </button>
+                                    </>
                                 ) : (
-                                    <button
-                                        className='start-scanning-button btn'
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            if (isMobile) {
-                                                setScannedBook(null);
-                                                setScanning(true);
-                                            }
-                                        }}
-                                        disabled={!isMobile}
-                                    >
-                                        Start Scanning
-                                    </button>
-                                )}
-
-                                {scanning && (
-                                    <video
-                                        ref={videoRef}
-                                        style={{ width: '100%', maxWidth: '500px' }}
-                                        playsInline
-                                        muted
-                                        autoPlay
-                                    />
+                                    <>
+                                        <button
+                                            className='start-scanning-button btn'
+                                            onClick={handleStartScanning}
+                                            disabled={!isMobile || requestingPermission}
+                                        >
+                                            Start Scanning
+                                        </button>
+                                        {requestingPermission && (
+                                            <p style={{ marginTop: '0.5rem', fontStyle: 'italic', color: '#555' }}>
+                                                Requesting camera access...
+                                            </p>
+                                        )}
+                                    </>
                                 )}
                             </>
                         )}
@@ -132,7 +161,7 @@ const AddTitlesFromScanner = () => {
                     )}
                 </form>
             </Form>
-        </div >
+        </div>
     );
 };
 
