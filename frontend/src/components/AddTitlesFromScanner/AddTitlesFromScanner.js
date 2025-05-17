@@ -7,59 +7,56 @@ import formImageHorizontal from "../../assets/images/scanner-horizontal.jpg";
 
 const AddTitlesFromScanner = () => {
     const videoRef = useRef(null);
-    const [scannedBook, setScannedBook] = useState(null);
-    const [scanning, setScanning] = useState(false);
-    const [permissionGranted, setPermissionGranted] = useState(false);
-    const [requestingPermission, setRequestingPermission] = useState(false);
     const codeReader = useRef(null);
 
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+    const [scannedBook, setScannedBook] = useState(null);
+    const [scanning, setScanning] = useState(false);
+    const [permissionDenied, setPermissionDenied] = useState(false);
+    const [manualIsbn, setManualIsbn] = useState('');
+
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     useEffect(() => {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if (!navigator.mediaDevices?.getUserMedia) {
             alert("Camera not supported in this browser.");
             return;
         }
-    }, []);
 
-    const requestCameraPermission = async () => {
-        setRequestingPermission(true);
-        try {
-            await navigator.mediaDevices.getUserMedia({ video: true });
-            setPermissionGranted(true);
-            return true;
-        } catch (err) {
-            alert("Camera permission denied. Please allow camera access to scan books.");
-            setPermissionGranted(false);
-            return false;
-        } finally {
-            setRequestingPermission(false);
-        }
-    };
-
-    useEffect(() => {
-        if (!isMobile || !scanning || !videoRef.current) return;
-
-        codeReader.current = new BrowserMultiFormatReader();
-
-        codeReader.current.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
-            if (result) {
-                const isbn = result.getText();
-                const bookData = await fetchBookByIsbn(isbn);
-                if (bookData) {
-                    setScannedBook({ isbn, ...bookData });
-                } else {
-                    console.warn('No book data found for ISBN:', isbn);
+        if (scanning && isMobile && videoRef.current) {
+            const initScanner = async () => {
+                try {
+                    await navigator.mediaDevices.getUserMedia({ video: true });
+                } catch (err) {
+                    setPermissionDenied(true);
+                    console.warn("Camera permission denied:", err);
+                    setScanning(false);
+                    return;
                 }
-                setScanning(false);
-            }
-            if (err && !(err.name === 'NotFoundException')) {
-                console.error(err);
-            }
-        });
+
+                codeReader.current = new BrowserMultiFormatReader();
+
+                codeReader.current.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
+                    if (result) {
+                        const isbn = result.getText();
+                        const bookData = await fetchBookByIsbn(isbn);
+                        if (bookData) {
+                            setScannedBook({ isbn, ...bookData });
+                        } else {
+                            console.warn('No book data found for ISBN:', isbn);
+                        }
+                        setScanning(false);
+                    }
+                    if (err && !(err.name === 'NotFoundException')) {
+                        console.error(err);
+                    }
+                });
+            };
+
+            initScanner();
+        }
 
         return () => {
-            if (codeReader.current) {
+            if (codeReader.current?.reset) {
                 codeReader.current.reset();
             }
         };
@@ -84,36 +81,49 @@ const AddTitlesFromScanner = () => {
         }
     };
 
-    const handleStartScanning = async (e) => {
-        e.preventDefault();
-        if (!isMobile) return;
-
-        const granted = await requestCameraPermission();
-        if (granted) {
-            setScannedBook(null);
-            setScanning(true);
+    const handleManualIsbnSubmit = async () => {
+        if (manualIsbn.trim().length >= 10) {
+            const bookData = await fetchBookByIsbn(manualIsbn.trim());
+            if (bookData) {
+                setScannedBook({ isbn: manualIsbn.trim(), ...bookData });
+            }
         }
-    };
-
-    const handleStopScanning = (e) => {
-        e.preventDefault();
-        setScanning(false);
-        setScannedBook(null); // clear scanned book when stopping scan for consistency
     };
 
     return (
         <div className='add-titles-by-scanning-container'>
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
                 <form className="add-titles-by-scanning-wrapper" onSubmit={(e) => e.preventDefault()}>
-                    <div className='add-titles-by-scanning-title'>Add Titles by Scanning ISBN</div>
+                    <div className='add-titles-by-scanning-title'>
+                        {isMobile ? 'Add Titles by Scanning ISBN' : 'Add Titles by ISBN code'}
+                    </div>
+
                     <div className='scanner-container'>
                         {!isMobile ? (
-                            <p style={{ color: 'gray', fontStyle: 'italic', marginBottom: '1rem' }}>
-                                Scanner is available only on mobile devices.
-                            </p>
+                            <>
+                                <div className='manual-isbn-container'>
+                                    <label htmlFor="manual-isbn">Enter ISBN manually:</label>
+                                    <input
+                                        type="text"
+                                        id="manual-isbn"
+                                        name="manual-isbn"
+                                        value={manualIsbn}
+                                        onChange={(e) => setManualIsbn(e.target.value)}
+                                        placeholder="ISBN (10 or 13 digits)"
+                                    />
+                                </div>
+                                <button
+                                    type="button"
+                                    className="submit-manual-isbn-button btn"
+                                    onClick={handleManualIsbnSubmit}
+                                    disabled={manualIsbn.trim().length < 10}
+                                >
+                                    Add Book
+                                </button>
+                            </>
                         ) : (
                             <>
-                                {scanning ? (
+                                {scanning && !permissionDenied ? (
                                     <>
                                         <video
                                             ref={videoRef}
@@ -124,7 +134,10 @@ const AddTitlesFromScanner = () => {
                                         />
                                         <button
                                             className='stop-scanning-button btn'
-                                            onClick={handleStopScanning}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setScanning(false);
+                                            }}
                                         >
                                             Stop Scanning
                                         </button>
@@ -133,26 +146,49 @@ const AddTitlesFromScanner = () => {
                                     <>
                                         <button
                                             className='start-scanning-button btn'
-                                            onClick={handleStartScanning}
-                                            disabled={!isMobile || requestingPermission}
+                                            onClick={async (e) => {
+                                                e.preventDefault();
+                                                setPermissionDenied(false);
+                                                setScannedBook(null);
+                                                setScanning(true);
+                                            }}
                                         >
                                             Start Scanning
                                         </button>
-                                        {requestingPermission && (
-                                            <p style={{ marginTop: '0.5rem', fontStyle: 'italic', color: '#555' }}>
-                                                Requesting camera access...
-                                            </p>
+                                        {(permissionDenied || !scanning) && (
+                                            <div style={{ marginTop: '1rem' }}>
+                                                <label htmlFor="manual-isbn">Or enter ISBN manually:</label>
+                                                <input
+                                                    type="text"
+                                                    id="manual-isbn"
+                                                    name="manual-isbn"
+                                                    value={manualIsbn}
+                                                    onChange={(e) => setManualIsbn(e.target.value)}
+                                                    placeholder="ISBN (10 or 13 digits)"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="submit-manual-isbn-button btn"
+                                                    onClick={handleManualIsbnSubmit}
+                                                    disabled={manualIsbn.trim().length < 10}
+                                                >
+                                                    Add Book
+                                                </button>
+                                            </div>
                                         )}
                                     </>
                                 )}
                             </>
                         )}
                     </div>
+
                     {scannedBook && (
                         <div className="scanned-book" style={{ marginTop: '20px' }}>
                             <h3>Scanned Book</h3>
                             <div style={{ border: '1px solid #ccc', padding: '10px' }}>
-                                {scannedBook.cover && <img src={scannedBook.cover} alt={scannedBook.title} style={{ height: '150px' }} />}
+                                {scannedBook.cover && (
+                                    <img src={scannedBook.cover} alt={scannedBook.title} style={{ height: '150px' }} />
+                                )}
                                 <h4>{scannedBook.title}</h4>
                                 <p><strong>Authors:</strong> {scannedBook.authors.join(', ')}</p>
                                 <p><strong>ISBN:</strong> {scannedBook.isbn}</p>

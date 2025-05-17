@@ -22,10 +22,31 @@
     width: 100%;
     height: 80%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 .scanner-container p {
     text-align: center;
+}
+
+.scanner-display {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.manual-isbn-container {
+    width: 100%;
+    height: 30%;
+}
+
+.manual-isbn-container label {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.manual-isbn-container input {
+    width: 100%;
 }
