@@ -72,7 +72,7 @@ const AddTitlesFromScanner = () => {
     return (
         <div className='add-titles-by-scanning-container'>
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="add-titles-by-scanning-wrapper" >
+                <form className="add-titles-by-scanning-wrapper" onSubmit={(e) => e.preventDefault()}>
                     <div className='add-titles-by-scanning-title'>Add Titles by Scanning ISBN</div>
                     <div className='scanner-container'>
                         {!isMobile ? (
