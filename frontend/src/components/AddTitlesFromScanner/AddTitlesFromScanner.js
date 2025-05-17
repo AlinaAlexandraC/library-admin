@@ -14,11 +14,18 @@ const AddTitlesFromScanner = () => {
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
     useEffect(() => {
-        if (!isMobile) return;
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert("Camera not supported in this browser.");
+            return;
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!isMobile || !scanning) return;
+
+        codeReader.current = new BrowserMultiFormatReader();
 
         if (scanning) {
-            codeReader.current = new BrowserMultiFormatReader();
-
             codeReader.current.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
                 if (result) {
                     const isbn = result.getText();
@@ -67,24 +74,51 @@ const AddTitlesFromScanner = () => {
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
                 <form className="add-titles-by-scanning-wrapper" >
                     <div className='add-titles-by-scanning-title'>Add Titles by Scanning ISBN</div>
-
                     <div className='scanner-container'>
-                        {scanning ? (
-                            <>
-                                <button className='stop-scanning-button btn' onClick={() => setScanning(false)}>Stop Scanning</button>
-                                <video
-                                    ref={videoRef}
-                                    style={{ width: '100%', maxWidth: '500px' }}
-                                    playsInline
-                                    muted
-                                    autoPlay
-                                />
-                            </>
+                        {!isMobile ? (
+                            <p style={{ color: 'gray', fontStyle: 'italic', marginBottom: '1rem' }}>
+                                Scanner is available only on mobile devices.
+                            </p>
                         ) : (
-                            <button className='start-scanning-button btn' onClick={() => setScanning(true)}>Start Scanning</button>
+                            <>
+                                {scanning ? (
+                                    <button
+                                        className='stop-scanning-button btn'
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setScanning(false);
+                                        }}
+                                    >
+                                        Stop Scanning
+                                    </button>
+                                ) : (
+                                    <button
+                                        className='start-scanning-button btn'
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (isMobile) {
+                                                setScannedBook(null);
+                                                setScanning(true);
+                                            }
+                                        }}
+                                        disabled={!isMobile}
+                                    >
+                                        Start Scanning
+                                    </button>
+                                )}
+
+                                {scanning && (
+                                    <video
+                                        ref={videoRef}
+                                        style={{ width: '100%', maxWidth: '500px' }}
+                                        playsInline
+                                        muted
+                                        autoPlay
+                                    />
+                                )}
+                            </>
                         )}
                     </div>
-
                     {scannedBook && (
                         <div className="scanned-book" style={{ marginTop: '20px' }}>
                             <h3>Scanned Book</h3>
@@ -98,7 +132,7 @@ const AddTitlesFromScanner = () => {
                     )}
                 </form>
             </Form>
-        </div>
+        </div >
     );
 };
 

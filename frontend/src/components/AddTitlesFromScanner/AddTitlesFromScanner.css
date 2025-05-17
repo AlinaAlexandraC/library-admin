@@ -25,3 +25,7 @@
     justify-content: center;
     align-items: center;
 }
+
+.scanner-container p {
+    text-align: center;
+}
