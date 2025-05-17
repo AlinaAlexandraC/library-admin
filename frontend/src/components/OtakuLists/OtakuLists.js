@@ -1,5 +1,5 @@
 import './OtakuLists.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import AddListModal from '../AddListModal/AddListModal';
 import noListIcon from '../../assets/images/no-lists.jpg';
 import ListItem from '../ListItem/ListItem';
@@ -13,6 +13,7 @@ import deleteIcon from '../../assets/icons/deleteList.svg';
 import saveIcon from '../../assets/icons/saveList.svg';
 import editIcon from '../../assets/icons/editList.svg';
 import Loader from '../Loader/Loader';
+import SearchBar from '../SearchBar/SearchBar';
 
 const OtakuLists = () => {
     const [userLists, setUserLists] = useState([]);
@@ -24,6 +25,7 @@ const OtakuLists = () => {
     const [listName, setListName] = useState("");
     const [renameError, setRenameError] = useState("");
     const [deleteConfirmation, setDeleteConfirmation] = useState("");
+    const [query, setQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(() => {
         return parseInt(localStorage.getItem("otakuListsCurrentPage")) || 1;
     });
@@ -54,21 +56,30 @@ const OtakuLists = () => {
         }
     };
 
-    useEffect(() => {
-        localStorage.setItem("otakuListsCurrentPage", currentPage);
-    }, [currentPage]);
-
+    const activeList = useMemo(() => {
+        if (query.trim() === "") return userLists;
+        const lowerQuery = query.toLowerCase();
+        return userLists.filter(list =>
+            list.name && list.name.toLowerCase().includes(lowerQuery)
+        );
+    }, [query, userLists]);
     const indexOfLastList = currentPage * listsPerPage;
     const indexOfFirstList = indexOfLastList - listsPerPage;
-    const currentLists = userLists.slice(indexOfFirstList, indexOfLastList);
-    const totalPages = Math.ceil(userLists.length / listsPerPage);
+    const currentLists = useMemo(() =>
+        activeList.slice(indexOfFirstList, indexOfLastList),
+        [activeList, indexOfFirstList, indexOfLastList]);
+    const totalPages = useMemo(() =>
+        Math.ceil(activeList.length / listsPerPage), [activeList.length]);
 
     useEffect(() => {
-        const newTotalPages = Math.ceil(userLists.length / listsPerPage);
-        if (currentPage > newTotalPages) {
-            setCurrentPage(Math.max(newTotalPages, 1));
+        setCurrentPage(1);
+    }, [query]);
+
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(Math.max(totalPages, 1));
         }
-    }, [userLists.length, listsPerPage, currentPage]);
+    }, [totalPages, currentPage]);
 
     const handleEditList = async (e, listId, newName) => {
         e.preventDefault();
@@ -110,15 +121,27 @@ const OtakuLists = () => {
         setShowDeleteListModal(true);
     };
 
+    const handleSearch = (query) => {
+        setQuery(query);
+    };
+
     return (
         <div className="otaku-lists-container">
             <div className="otaku-lists-wrapper">
-                <button className='otaku-lists-button btn' onClick={() => setShowAddListModal(true)}>Create a list</button>
-
                 <div className="otaku-lists">
+                    {userLists.length > 0 && (
+                        <>
+                            <button className='create-otaku-lists-button btn' onClick={() => setShowAddListModal(true)}>Create a list</button>
+                            <SearchBar onSearch={handleSearch} />
+                        </>
+                    )}
                     {loading ? (
                         <Loader />
-                    ) : userLists.length > 0 ? (
+                    ) : query.trim() !== "" && activeList.length === 0 ? (
+                        <div className="no-results">
+                            <p>No results found for "{query}"</p>
+                        </div>
+                    ) : activeList.length > 0 ? (
                         currentLists.map((list, index) => {
                             const isEditing = editingListId === list._id;
 
@@ -190,11 +213,11 @@ const OtakuLists = () => {
                         </div>
                     )}
                 </div>
-                    <LibraryPagination
-                        totalPages={totalPages}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                    />
+                <LibraryPagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                />
             </div>
 
             {showAddListModal && (

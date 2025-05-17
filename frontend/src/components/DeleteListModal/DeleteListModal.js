@@ -22,10 +22,19 @@ const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, 
             });
 
             if (response.success) {
-                if (!deleteTitles) {
-                    setDeleteConfirmation("Titles were successfully moved to the default lists.");
-                    setTimeout(() => setDeleteConfirmation(""), 5000);
+                let message = "";
+
+                if (titleCount === 0) {
+                    message = "List was successfully deleted.";
+                } else if (deleteTitles) {
+                    message = "List and its titles were successfully deleted.";
+                } else {
+                    message = "Titles were successfully moved to the default lists.";
                 }
+
+                setDeleteConfirmation(message);
+                setTimeout(() => setDeleteConfirmation(""), 5000);
+
                 setUserLists(prevLists => prevLists.filter(list => list._id !== listId));
                 onClose();
             } else {

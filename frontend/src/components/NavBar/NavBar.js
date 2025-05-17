@@ -72,7 +72,13 @@ const NavBar = () => {
                                     <img src={profileIcon} alt="profile-icon" />
                                     <span>Profile</span>
                                 </Link>
-                                <div className="user-dropdown-content-help" onClick={() => setOpenModal(true)}>
+                                <div
+                                    className="user-dropdown-content-help"
+                                    onClick={() => {
+                                        setOpenModal(true);
+                                        setIsDropdownOpen(false);
+                                    }}
+                                >
                                     <img src={helpIcon} alt="help-icon" />
                                     <span>Help me</span>
                                 </div>

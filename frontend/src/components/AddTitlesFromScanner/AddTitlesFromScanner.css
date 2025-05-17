@@ -1,0 +1,27 @@
+.add-titles-by-scanning-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-titles-by-scanning-wrapper {
+    height: 100%;
+    padding-top: 20px;
+    width: 70%;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-titles-by-scanning-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.scanner-container {
+    width: 100%;
+    height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

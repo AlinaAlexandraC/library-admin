@@ -3,12 +3,8 @@ import arrowDownIconB from "../../assets/icons/arrow-down-black.svg";
 import resetIcon from "../../assets/icons/reset.svg";
 import { useState, useEffect } from "react";
 
-const FiltersBar = ({ titles, setFilteredTitles }) => {
+const FiltersBar = ({ titles, setFilteredTitles, selectedFilters, setSelectedFilters }) => {
     const [openFilter, setOpenFilter] = useState(false);
-    const [selectedFilters, setSelectedFilters] = useState({
-        genre: [],
-        watched: [],
-    });
 
     const toggleOptions = (filter) => {
         setOpenFilter(openFilter === filter ? null : filter);
@@ -33,23 +29,20 @@ const FiltersBar = ({ titles, setFilteredTitles }) => {
 
         const { genre, watched } = selectedFilters;
 
-        const filterBooleans = watched.map(status =>
-            status === "Checked" ? true : false
-        );
-
         const filteredTitles = titles.filter((title) => {
             const genreMatches =
                 genre.length === 0 || (title.genre && genre.includes(title.genre));
 
+            const statusLabel = title.status ? "Checked" : "Not Checked";
+
             const statusMatches =
-                filterBooleans.length === 0 || filterBooleans.includes(title.status);
+                watched.length === 0 || watched.includes(statusLabel);
 
             return genreMatches && statusMatches;
         });
 
         setFilteredTitles(filteredTitles);
     }, [selectedFilters, titles, setFilteredTitles]);
-
 
     const removeFilters = () => {
         setSelectedFilters({ genre: [], watched: [] });

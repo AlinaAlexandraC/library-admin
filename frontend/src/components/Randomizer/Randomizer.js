@@ -22,7 +22,7 @@ const Randomizer = () => {
     useEffect(() => {
         const getLists = async () => {
             const handleSetCustomLists = (lists) => {
-                const nonEmptyLists = lists.filter(list => list.titles && list.titles.length > 0);
+                const nonEmptyLists = lists.filter(list => list.titles && list.titles.length > 1);
                 setCustomLists(nonEmptyLists);
                 setCustomLoading(false);
             };
@@ -36,7 +36,7 @@ const Randomizer = () => {
             const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
             try {
                 const data = await fetchData("lists");
-                const defaults = data.filter(list => defaultListNames.includes(list.name) && list.titles.length > 0);
+                const defaults = data.filter(list => defaultListNames.includes(list.name) && list.titles.length > 1);
                 setDefaultLists(defaults);
             } catch (error) {
                 console.error("Failed to fetch the default lists", error);
@@ -81,14 +81,12 @@ const Randomizer = () => {
             const randomTitle = titles[random];
 
             if (randomTitle && randomTitle.title_id) {
-                const titleType = randomTitle.type || "defaultType";
+                const rawType = randomTitle.title_id?.type || randomTitle.type;
+                const titleType = rawType && rawType !== "" ? rawType : "Unknown";
                 setIcon(getIcon(titleType));
 
-                if (randomTitle.type === 'book' || randomTitle.type === 'manga') {
-                    setHeader("You should read this:");
-                } else {
-                    setHeader("You should watch this:");
-                }
+                const readingTypes = ['Book', 'Manga'];
+                setHeader(readingTypes.includes(titleType) ? "You should read this:" : "You should watch this:");
             } else {
                 setHeader("This is the chosen title:");
             }
@@ -107,6 +105,7 @@ const Randomizer = () => {
                                 <p>{error}</p>
                             ) : (
                                 <>
+                                    <div className="randomizer-title">Select a list</div>
                                     <hr />
                                     <select name="" onChange={handleListSelection} disabled={customLists.length === 0}>
                                         <option value="">Select a custom list</option>

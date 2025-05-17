@@ -6,7 +6,7 @@
 }
 
 .otaku-lists-wrapper {
-    height: 960px;
+    height: 1032px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -40,7 +40,7 @@
     align-items: center;
 }
 
-.otaku-lists-button {
+.create-otaku-lists-button {
     width: 100%;
     position: absolute;
     top: 0;
@@ -49,7 +49,7 @@
 
 .otaku-lists {
     height: calc(100% - 86px);
-    margin-top: 46px;
+    margin-top: 40px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -158,13 +158,19 @@
     }
 }
 
+.otaku-lists-wrapper .no-results {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
 @media only screen and (max-width: 490px) {
     .list-details-container {
         width: calc(100% - 60px);
     }
 
     .otaku-lists-wrapper {
-        height: 660px;
+        height: 722px;
     }
 
     .list-buttons-container {

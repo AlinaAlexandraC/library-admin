@@ -6,6 +6,7 @@
     display: flex;
     align-items: center;
     border-radius: 40px;
+    font-size: 14px;
 }
 
 .list-icon {

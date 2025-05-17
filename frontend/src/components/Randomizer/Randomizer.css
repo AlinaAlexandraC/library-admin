@@ -29,6 +29,12 @@
     position: relative;
 }
 
+.randomizer-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
 .randomizer-list-selection {
     width: 100%;
     margin: 80px;
@@ -73,6 +79,7 @@
 .randomizer-display span {
     font-weight: 600;
     font-size: 20px;
+    margin-bottom: 15px;
 }
 
 .title-info-randomizer .title {
@@ -88,7 +95,7 @@
     width: 200px;
     border-radius: 50%;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-    margin: 30px 0;
+    margin: 10px 0;
 }
 
 .title-info-randomizer {
@@ -191,5 +198,11 @@
 
     .select-another-list {
         width: 100%;
+    }
+}
+
+@media only screen and (max-height: 680px) {
+    .randomizer-icon {
+        display: none;
     }
 }
