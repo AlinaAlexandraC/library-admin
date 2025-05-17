@@ -21,7 +21,7 @@ const AddTitlesFromScanner = () => {
     }, []);
 
     useEffect(() => {
-        if (!isMobile || !scanning) return;
+        if (!isMobile || !scanning || !videoRef.current) return;
 
         codeReader.current = new BrowserMultiFormatReader();
 
@@ -48,7 +48,7 @@ const AddTitlesFromScanner = () => {
                 codeReader.current.reset();
             }
         };
-    }, [scanning, isMobile]);
+    }, [scanning, isMobile, videoRef.current]);
 
     const fetchBookByIsbn = async (isbn) => {
         try {
