@@ -79,19 +79,22 @@ const Randomizer = () => {
     useEffect(() => {
         if (titles.length > 0 && random !== null) {
             const randomTitle = titles[random];
+            const rawType = randomTitle?.title_id?.type || randomTitle?.type;
 
-            if (randomTitle && randomTitle.title_id) {
-                const rawType = randomTitle.title_id?.type || randomTitle.type;
-                const titleType = rawType && rawType !== "" ? rawType : "Unknown";
-                setIcon(getIcon(titleType));
-
-                const readingTypes = ['Book', 'Manga'];
-                setHeader(readingTypes.includes(titleType) ? "You should read this:" : "You should watch this:");
-            } else {
+            if (!rawType || rawType === "") {
                 setHeader("This is the chosen title:");
+                setIcon(getIcon("Unknown"));
+                return;
             }
+
+            const titleType = rawType;
+            setIcon(getIcon(titleType));
+
+            const readingTypes = ['Book', 'Manga'];
+            setHeader(readingTypes.includes(titleType) ? "You should read this:" : "You should watch this:");
         }
     }, [random, titles]);
+
 
     return (
         <div className="randomizer-outer-container">

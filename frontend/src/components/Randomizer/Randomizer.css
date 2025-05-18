@@ -19,7 +19,7 @@
 .randomizer-wrapper {
     display: flex;
     justify-content: center;
-    align-content: center;
+    align-items: center;
     width: 85%;
     height: 90%;
     border-radius: 20px;
@@ -45,13 +45,13 @@
 }
 
 .randomizer-list-selection select {
-    width: 80%;
+    width: 90%;
     height: 40px;
     text-align: center;
 }
 
 .randomizer-list-selection hr {
-    width: 100%;
+    width: 90%;
 }
 
 .randomizer-titles-list,
@@ -60,8 +60,11 @@
     height: 90%;
     margin: 20px;
     display: flex;
-    justify-content: center;
     flex-direction: column;
+}
+
+.randomizer-display {
+    justify-content: center;
     align-items: center;
 }
 
@@ -69,6 +72,7 @@
 .randomizer-list-selection {
     overflow: scroll;
     font-size: 14px;
+    height: 70%;
 }
 
 .randomizer-titles-list::-webkit-scrollbar,
@@ -171,14 +175,8 @@
 
     .randomizer-titles-list,
     .randomizer-display,
-    hr,
-    .randomizer-list-selection {
+    hr {
         width: calc(100% - 40px);
-    }
-
-    .randomizer-list-selection {
-        height: 70%;
-        margin: 20px;
     }
 
     .randomizer-icon {

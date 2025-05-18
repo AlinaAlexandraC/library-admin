@@ -20,27 +20,12 @@
     font-weight: 600;
 }
 
-.dropdown-lists {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-}
-
 .add-titles-from-folder-content {
     height: 80%;
     display: flex;
     justify-content: center;
     flex-direction: column;
     justify-content: space-around;
-}
-
-.select-folder-titles-type-select,
-.select-folder-otaku-list-select {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 48%;
 }
 
 .select-folder-container {
@@ -60,10 +45,38 @@
     width: 120px;
 }
 
+.dropdown-lists {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.dropdown-lists::after {
+    content: "";
+    display: block;
+    height: 1px;
+    margin-top: 10px;
+}
+
+.select-folder-titles-type-select,
+.select-folder-otaku-list-select {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 48%;
+}
+
 .titles-list-from-folder {
-    height: 85%;
-    overflow: scroll;
-    font-size: 14px;
+    max-height: 300px;
+    overflow-y: auto;
+    position: relative;
+    width: 100%;
+    padding-right: 4px;
 }
 
 .titles-list-from-folder ul {
@@ -125,15 +138,40 @@
     margin: 0 10px;
 }
 
-.add-titles-from-folder-container .list-instruction {
-    font-size: 12px;
-    margin-top: 0;
-}
-
 .add-titles-from-folder-container .instruction {
     text-align: center;
-    font-size: 12px;
-    padding-bottom: 5px;
+    font-size: 13px;
+    padding-bottom: 10px;
+}
+
+.floating-info {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3498db;
+    color: white;
+    width: 80%;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 14px;
+    text-align: center;
+    opacity: 1;
+    animation: fadeIn 0.3s ease-in-out;
+    padding: 10px 15px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media only screen and (max-width: 730px) {
@@ -141,13 +179,14 @@
         display: none;
     }
 
-    .titles-list-from-folder {
-        width: 250px;
+    .add-titles-from-folder-content {
+        height: 90%;
     }
 
     .dropdown-lists {
         flex-direction: column;
         gap: 10px;
+        height: 110px;
     }
 
     .select-folder-titles-type-select,
@@ -160,10 +199,6 @@
     }
 
     .titles-list-from-folder {
-        max-height: 350px;
-    }
-
-    .buttons {
-        width: 250px;
+        max-height: 400px;
     }
 }

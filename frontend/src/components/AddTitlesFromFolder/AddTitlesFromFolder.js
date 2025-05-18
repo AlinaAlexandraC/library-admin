@@ -132,7 +132,7 @@ const AddTitlesFromFolder = () => {
                             </div>
                         )}
                         {titleFormData.length > 0 && (
-                            <div className="titles-list-from-folder">
+                            <>
                                 <div className="dropdown-lists">
                                     <div className="select-folder-titles-type-select">
                                         <label>Type</label>
@@ -158,20 +158,23 @@ const AddTitlesFromFolder = () => {
                                         </select>
                                     </div>
                                 </div>
-                                <ul className="extracted-titles-list-container">
-                                    {titleFormData.map((title, index) => (
-                                        <li key={index} className="extracted-title-container">
-                                            <div className="decoration"></div>
-                                            <div className="extracted-title">
-                                                <span className="extracted-title-index">{index + 1}.</span>
-                                                <span className="extracted-title-filename">{title}</span>
-                                            </div>
-                                            <button type="button" onClick={() => setTitleFormData(titleFormData.filter((_, i) => i !== index))} className="extracted-title-button">x</button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                                <div className="titles-list-from-folder">
+                                    <ul className="extracted-titles-list-container">
+                                        {titleFormData.map((title, index) => (
+                                            <li key={index} className="extracted-title-container">
+                                                <div className="decoration"></div>
+                                                <div className="extracted-title">
+                                                    <span className="extracted-title-index">{index + 1}.</span>
+                                                    <span className="extracted-title-filename">{title}</span>
+                                                </div>
+                                                <button type="button" onClick={() => setTitleFormData(titleFormData.filter((_, i) => i !== index))} className="extracted-title-button">x</button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </>
                         )}
+
                         <div className="buttons">
                             <button type="submit" className="add-titles-from-folder-button btn">Add to list</button>
                             {folderSelected ? (
@@ -183,17 +186,17 @@ const AddTitlesFromFolder = () => {
                         <label className={`${error ? "error" : "success"}`}>{error || success}</label>
                     </div>
                     {folderSelected && (
-                        <>
-                            <div className="instruction">Number of titles extracted: <strong>{titleFormData.length} titles</strong></div>
-                            <p className="list-instruction">
-                                Titles will be added to:{" "}
-                                <strong>{selectedOtakuList || (selectedType ? selectedType : "Unknown")}</strong> list.
-                            </p>
-                            <div className="instruction">Duplicated titles would be removed.</div>
-                        </>
+                        <div className="instruction">
+                            Adding <strong>{titleFormData.length}</strong> titles to the <strong>{selectedOtakuList || selectedType || "Unknown"}</strong> list. Duplicates will be removed.
+                        </div>
                     )}
                 </form>
             </Form>
+            {titleFormData.length > 20 && (
+                <div className="floating-info">
+                    Adding many titles may take some time. Thanks for your patience!
+                </div>
+            )}
         </div>
     );
 };

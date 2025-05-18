@@ -79,7 +79,7 @@ span {
     z-index: 1;
 }
 
-.user-dropdown-content img {
+.user-dropdown-content svg {
     width: 20px;
     margin-left: 15px;
 }
@@ -138,6 +138,22 @@ span {
     min-height: 150px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     position: relative;
+}
+
+.user-dropdown-content-profile {
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.user-dropdown-content-profile:visited {
+    color: black !important;
+}
+
+.user-dropdown-content-profile:active {
+    color: inherit;
+    text-decoration: none;
+    cursor: default;
 }
 
 @media only screen and (max-width: 730px) {

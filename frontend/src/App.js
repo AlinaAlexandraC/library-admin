@@ -101,8 +101,14 @@ function App() {
   const [serverStatus, setServerStatus] = useState("Waking up the server... Please wait ⏳");
   const [showServerModal, setShowServerModal] = useState(true);
   const [showSessionModal, setShowSessionModal] = useState(false);
+  const [resetSessionTimer, setResetSessionTimer] = useState(0);
 
-  useSessionRefreshWatcher(setShowSessionModal);
+  useSessionRefreshWatcher(setShowSessionModal, resetSessionTimer);
+
+  const handleStayLoggedIn = () => {
+    setShowSessionModal(false);
+    setResetSessionTimer(prev => prev + 1);
+  };
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") {
@@ -147,7 +153,7 @@ function App() {
       {showSessionModal &&
         <SessionRefreshModal
           message="Your session is about to expire, do you want to stay logged in?"
-          onClose={() => setShowSessionModal(false)}
+          onClose={handleStayLoggedIn}
         />
       }
 

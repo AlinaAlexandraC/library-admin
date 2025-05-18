@@ -18,6 +18,48 @@
     font-weight: 600;
 }
 
+.method-toggle {
+    height: 70%;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.options-decoration {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 2rem 0;
+}
+
+.options-decoration hr {
+    flex: 1;
+    border: none;
+    border-top: 1px solid #ccc;
+    height: 0;
+    margin: 0;
+}
+
+.options-decoration span {
+    font-weight: 500;
+    color: #666;
+    white-space: nowrap;
+}
+
+.scanner-unavailable-message {
+    color: gray;
+    font-family: 'italic';
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.method-toggle button {
+    width: auto;
+    padding: 0 10px;
+}
+
 .scanner-container {
     width: 100%;
     height: 80%;
@@ -37,16 +79,30 @@
     flex-direction: column;
 }
 
-.manual-isbn-container {
+.manual-isbn-input {
     width: 100%;
     height: 30%;
 }
 
-.manual-isbn-container label {
+.manual-isbn-input label {
     display: block;
     margin-bottom: 6px;
 }
 
-.manual-isbn-container input {
+.manual-isbn-input input {
     width: 100%;
+}
+
+.manual-entry {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-titles-by-scanning-wrapper .error {
+    height: 30px;
+    text-align: center;
+    margin: 15px 0;
 }
