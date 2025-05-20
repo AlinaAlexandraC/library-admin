@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import fetchCustomLists from "../../utils/fetchCustomLists";
 import { fetchData } from "../../services/apiService";
+import { typeDropdown } from "../../utils/constants";
 
 const AddTitlesFromFolder = () => {
     const [titleFormData, setTitleFormData] = useState([]);
@@ -16,6 +17,7 @@ const AddTitlesFromFolder = () => {
     const [selectedType, setSelectedType] = useState("");
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
+    const [duplicateCount, setDuplicateCount] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,9 +56,7 @@ const AddTitlesFromFolder = () => {
 
         if (titleFormData.length === 0) {
             setError("No titles to add. Please select a valid folder.");
-            setTimeout(() => {
-                setError(null);
-            }, 3000);
+            setTimeout(() => setError(null), 3000);
             return;
         }
 
@@ -86,10 +86,22 @@ const AddTitlesFromFolder = () => {
                 selectedType: selectedType || ""
             });
 
+            const totalSent = titles.length;
+            const duplicates = response.duplicates?.length || 0;
+            const addedCount = totalSent - duplicates;
+
             if (response.success) {
-                setSuccess("Titles added successfully!");
+                setDuplicateCount(duplicates);
+
+                if (addedCount > 0) {
+                    setSuccess(`${addedCount} title${addedCount > 1 ? "s" : ""} added successfully!`);
+                } else {
+                    setSuccess("");
+                }
+
                 setTimeout(() => {
                     setSuccess("");
+                    setDuplicateCount(0);
                 }, 3000);
 
                 setTitleFormData([]);
@@ -97,15 +109,11 @@ const AddTitlesFromFolder = () => {
                 setSelectedOtakuList("");
             } else {
                 setError("Error adding titles. Try again later.");
-                setTimeout(() => {
-                    setError(null);
-                }, 3000);
+                setTimeout(() => setError(null), 3000);
             }
         } catch (error) {
             setError("Failed to connect to server");
-            setTimeout(() => {
-                setError(null);
-            }, 3000);
+            setTimeout(() => setError(null), 3000);
         }
     };
 
@@ -137,7 +145,7 @@ const AddTitlesFromFolder = () => {
                                     <div className="select-folder-titles-type-select">
                                         <label>Type</label>
                                         <select name="type" id="type" className="type-select" value={selectedType} onChange={handleChange}>
-                                            {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
+                                            {typeDropdown.map((option, index) => (
                                                 <option key={index} value={option}>{option}</option>
                                             ))}
                                         </select>
@@ -193,8 +201,13 @@ const AddTitlesFromFolder = () => {
                 </form>
             </Form>
             {titleFormData.length > 20 && (
-                <div className="floating-info">
+                <div className="floating-error">
                     Adding many titles may take some time. Thanks for your patience!
+                </div>
+            )}
+            {duplicateCount > 0 && (
+                <div className="floating-error">
+                    {duplicateCount} duplicate {duplicateCount === 1 ? "title was" : "titles were"} skipped.
                 </div>
             )}
         </div>

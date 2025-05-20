@@ -68,11 +68,19 @@
     align-items: center;
 }
 
+.randomizer-wrapper hr {
+    height: 85%;
+}
+
+.randomizer-list-selection hr {
+    height: 0;
+}
+
 .randomizer-titles-list,
 .randomizer-list-selection {
     overflow: scroll;
     font-size: 14px;
-    height: 70%;
+    height: 85%;
 }
 
 .randomizer-titles-list::-webkit-scrollbar,
@@ -175,8 +183,12 @@
 
     .randomizer-titles-list,
     .randomizer-display,
-    hr {
+    .randomizer-wrapper hr {
         width: calc(100% - 40px);
+    }
+
+    .randomizer-wrapper hr {
+        height: 0;
     }
 
     .randomizer-icon {

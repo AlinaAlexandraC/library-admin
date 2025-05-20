@@ -5,12 +5,15 @@ import { fetchData } from "../../services/apiService";
 const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, setDeleteConfirmation }) => {
     const [deleteType, setDeleteType] = useState("list");
     const [error, setError] = useState("");
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = async () => {
         if (titleCount > 0 && !deleteType) {
             setError("Please select whether you want to delete just the list or the list along with its titles.");
             return;
         }
+
+        setIsDeleting(true);
 
         const deleteTitles = deleteType.toLowerCase() === "all";
 
@@ -48,6 +51,8 @@ const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, 
             setTimeout(() => {
                 setError("");
             }, 3000);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -68,8 +73,12 @@ const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, 
                 </div>
             )}
             <div className="modal-actions">
-                <button onClick={handleDelete} className="delete-list-btn">Delete List</button>
-                <button onClick={onClose} className="cancel-btn">Cancel</button>
+                <button onClick={handleDelete} className="delete-list-btn" disabled={isDeleting}>
+                    {isDeleting ? "Deleting..." : "Delete List"}
+                </button>
+                <button onClick={onClose} className="cancel-btn">
+                    Cancel
+                </button>
             </div>
             {error && <p className="error">{error}</p>}
         </div>

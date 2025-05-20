@@ -84,6 +84,33 @@ select {
     padding-top: 10px;
 }
 
+.floating-error {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3498db;
+    color: white;
+    max-width: 600px;
+    width: 90vw;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    font-size: 16px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 @media only screen and (max-width: 490px) {
     span {
         font-size: 12px;

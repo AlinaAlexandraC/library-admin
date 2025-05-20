@@ -130,34 +130,6 @@
     background-color: #7ed0ec;
 }
 
-.rename-error-box,
-.delete-confirmation-box {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #3498db;
-    color: white;
-    width: 80%;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    font-size: 16px;
-    text-align: center;
-    opacity: 1;
-    animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
 .otaku-lists-wrapper .no-results {
     text-align: center;
     font-size: 16px;

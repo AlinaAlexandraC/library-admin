@@ -2,6 +2,7 @@ import "./FiltersBar.css";
 import arrowDownIconB from "../../assets/icons/arrow-down-black.svg";
 import resetIcon from "../../assets/icons/reset.svg";
 import { useState, useEffect } from "react";
+import { genresFilters, statusesFilters } from "../../utils/constants";
 
 const FiltersBar = ({ titles, setFilteredTitles, selectedFilters, setSelectedFilters }) => {
     const [openFilter, setOpenFilter] = useState(false);
@@ -50,9 +51,6 @@ const FiltersBar = ({ titles, setFilteredTitles, selectedFilters, setSelectedFil
         setFilteredTitles(titles);
     };
 
-    const genres = ["Isekai", "Shonen", "Mecha", "Slice of Life", "Romance", "Ecchi"];
-    const statuses = ["Checked", "Not Checked"];
-
     return (
         <div className="filters-bar-container">
             <div className="filters-bar-wrapper">
@@ -66,7 +64,7 @@ const FiltersBar = ({ titles, setFilteredTitles, selectedFilters, setSelectedFil
                         />
                         <div className={`options-box ${openFilter === "genre" ? "show" : ""}`}>
                             <ul>
-                                {genres.map((genre, index) => (
+                                {genresFilters.map((genre, index) => (
                                     <li key={index} className={`option-${index}`}>
                                         <input type="checkbox" className="option-checkbox" checked={selectedFilters.genre.includes(genre)} onChange={() => handleCheckboxChange("genre", genre)} />
                                         <div>{genre}</div>
@@ -84,7 +82,7 @@ const FiltersBar = ({ titles, setFilteredTitles, selectedFilters, setSelectedFil
                         />
                         <div className={`options-box ${openFilter === "status" ? "show" : ""}`}>
                             <ul>
-                                {statuses.map((status, index) => (
+                                {statusesFilters.map((status, index) => (
                                     <li key={index} className={`option-${index}`}>
                                         <input
                                             type="checkbox"

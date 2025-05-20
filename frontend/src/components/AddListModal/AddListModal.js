@@ -1,5 +1,6 @@
 import './AddListModal.css';
 import { useState } from "react";
+import { reservedNames } from "../../utils/constants";
 
 const AddListModal = ({ onSave, onClose, existingLists }) => {
     const [listName, setListName] = useState("");
@@ -13,8 +14,6 @@ const AddListModal = ({ onSave, onClose, existingLists }) => {
             setTimeout(() => setError(""), 3000);
             return;
         }
-
-        const reservedNames = ["Anime", "Book", "Manga", "Movie", "Series", "Unknown"];
 
         if (reservedNames.some(name => name.toLowerCase() === trimmedName.toLowerCase())) {
             setError("This list name is reserved and cannot be used.");

@@ -7,6 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .search-bar-input {
@@ -21,6 +22,23 @@
 
 .search-bar-input:focus {
     outline: none;
+}
+
+.clear-button {
+    position: absolute;
+    right: 15px;
+    top: 45%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 25px;
+    color: #999;
+    cursor: pointer;
+    outline: none;
+}
+
+.clear-button:hover {
+    color: #333;
 }
 
 @media only screen and (max-width: 490px) {

@@ -68,8 +68,10 @@ const OtakuLists = () => {
     const currentLists = useMemo(() =>
         activeList.slice(indexOfFirstList, indexOfLastList),
         [activeList, indexOfFirstList, indexOfLastList]);
-    const totalPages = useMemo(() =>
-        Math.ceil(activeList.length / listsPerPage), [activeList.length]);
+    const totalPages = useMemo(() => {
+        const pages = Math.ceil(activeList.length / listsPerPage);
+        return pages > 0 ? pages : 1;
+    }, [activeList.length]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -77,7 +79,7 @@ const OtakuLists = () => {
 
     useEffect(() => {
         if (currentPage > totalPages) {
-            setCurrentPage(Math.max(totalPages, 1));
+            setCurrentPage(totalPages > 0 ? totalPages : 1);
         }
     }, [totalPages, currentPage]);
 
@@ -115,10 +117,16 @@ const OtakuLists = () => {
 
     const openDeleteModal = (e, listId, listName, titleCount) => {
         e.preventDefault();
-        e.stopPropagation();
+        e.stopPropagation();        
 
-        setCurrentList({ listId, listName, titleCount });
-        setShowDeleteListModal(true);
+        const selectedList = userLists.find(list => list._id === listId);
+
+        if (selectedList) {
+            setCurrentList({ listId, listName, titleCount });
+            setShowDeleteListModal(true);
+        } else {
+            console.error(`List with id ${listId} not found in userLists.`);
+        }
     };
 
     const handleSearch = (query) => {
@@ -166,7 +174,7 @@ const OtakuLists = () => {
                                                         <img src={saveIcon} alt="save-icon" />
                                                     </button>
                                                     <button
-                                                        onClick={(e) => openDeleteModal(e, list._id, list.name, list.titleCount)}
+                                                        onClick={(e) => openDeleteModal(e, list._id, list.name, list.titles ? list.titles.length : 0)}
                                                         className='delete-list'
                                                     >
                                                         <img src={deleteIcon} alt="delete-icon" />
@@ -192,7 +200,7 @@ const OtakuLists = () => {
                                                             <img src={editIcon} alt="edit-icon" />
                                                         </button>
                                                         <button
-                                                            onClick={(e) => openDeleteModal(e, list._id, list.name, list.titleCount)}
+                                                            onClick={(e) => openDeleteModal(e, list._id, list.name, list.titles ? list.titles.length : 0)}
                                                             className='delete-list'
                                                         >
                                                             <img src={deleteIcon} alt="delete-icon" />
@@ -243,12 +251,12 @@ const OtakuLists = () => {
             )}
 
             {renameError && (
-                <div className="rename-error-box">
+                <div className="floating-error">
                     <p>{renameError}</p>
                 </div>
             )}
             {deleteConfirmation && (
-                <div className="delete-confirmation-box">
+                <div className="floating-error">
                     <p>{deleteConfirmation}</p>
                 </div>
             )}

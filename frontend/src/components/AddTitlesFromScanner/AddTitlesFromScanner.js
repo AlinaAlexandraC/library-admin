@@ -80,7 +80,7 @@ const AddTitlesFromScanner = () => {
     };
 
     const handleManualIsbnSubmit = async () => {
-        setErrorMessage(''); // Clear previous errors
+        setErrorMessage('');
 
         const sanitizedIsbn = manualIsbn.trim().replace(/[^0-9Xx]/g, '');
 

@@ -1,24 +1,8 @@
 import "./TitleItem.css";
 import ItemButtons from "../ItemButtons/ItemButtons";
+import { getColorByType } from "../../utils/getColorByType";
 
-const TitleItem = ({ title, index, openModal, onToggleStatus, onDelete }) => {
-    const getColorByType = (type) => {
-        switch (type) {
-            case 'Anime':
-                return "#FF6B6B";
-            case 'Book':
-                return "#3F51B5";
-            case 'Movie':
-                return "#3CB371";
-            case 'Series':
-                return "#00BCD4";
-            case 'Manga':
-                return "#F59E0B";
-            default:
-                return "blue";
-        }
-    };
-
+const TitleItem = ({ title, index, openModal, onToggleStatus, onDelete, loadingAction }) => {
     return (
         <div className="title-item-container">
             <div className="decoration" style={{ backgroundColor: getColorByType(title.type) }}></div>
@@ -52,6 +36,7 @@ const TitleItem = ({ title, index, openModal, onToggleStatus, onDelete }) => {
                 openModal={openModal}
                 onToggleStatus={onToggleStatus}
                 onDelete={onDelete}
+                loadingAction={loadingAction}
             />
         </div>
     );

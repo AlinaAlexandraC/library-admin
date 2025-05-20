@@ -15,7 +15,7 @@ const LibraryPagination = ({ totalPages, setCurrentPage, currentPage }) => {
             <img
                 src={rightArrowIcon}
                 alt="right-arrow-icon"
-                className={`right-arrow-icon ${currentPage === totalPages ? "disabled" : ""}`}
+                className={`right-arrow-icon ${currentPage >= totalPages ? "disabled" : ""}`}
                 onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
             />
         </div>

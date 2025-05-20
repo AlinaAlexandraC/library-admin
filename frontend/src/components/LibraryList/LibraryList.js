@@ -10,15 +10,7 @@ import EditItem from "../EditItem/EditItem";
 import FiltersBar from "../FiltersBar/FiltersBar";
 import noTitles from "../../assets/images/no-titles.jpg";
 import { fetchData } from "../../services/apiService";
-
-const LEGEND_COLORS = [
-    { label: "anime", color: "#FF6B6B" },
-    { label: "book", color: "#3F51B5" },
-    { label: "manga", color: "#F59E0B" },
-    { label: "movie", color: "#3CB371" },
-    { label: "series", color: "#00BCD4" },
-    { label: "unknown", color: "blue" }
-];
+import { LEGEND_COLORS } from "../../utils/constants";
 
 const LibraryList = () => {
     const [titles, setTitles] = useState([]);
@@ -27,6 +19,8 @@ const LibraryList = () => {
     const [error, setError] = useState(null);
     const [query, setQuery] = useState("");
     const [modalItem, setModalItem] = useState(null);
+    const [loadingAction, setLoadingAction] = useState({ id: null, type: null });
+    const [errorMessage, setErrorMessage] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState({ genre: [], watched: [] });
     const [currentPage, setCurrentPage] = useState(() => {
         return parseInt(localStorage.getItem("libraryCurrentPage")) || 1;
@@ -64,26 +58,19 @@ const LibraryList = () => {
         );
     }, [filteredTitles, sortedTitles, query, selectedFilters]);
 
-    const totalPages = Math.ceil(activeList.length / itemsPerPage);
+    const totalPages = useMemo(() => {
+        const pages = Math.ceil(activeList.length / itemsPerPage);
+        return pages > 0 ? pages : 1;
+    }, [activeList.length]);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const displayedTitles = activeList.slice(startIndex, startIndex + itemsPerPage);
 
     useEffect(() => {
-        setCurrentPage(1);
-    }, [filteredTitles]);
-
-    useEffect(() => {
-        if (query) {
-            setCurrentPage(1);
-        }
-    }, [query]);
-
-    useEffect(() => {
         const newTotalPages = Math.ceil(activeList.length / itemsPerPage);
         if (currentPage > newTotalPages) {
-            setCurrentPage(Math.max(newTotalPages, 1));
+            setCurrentPage(newTotalPages > 0 ? newTotalPages : 1);
         }
-    }, [activeList.length, itemsPerPage, currentPage]);
+    }, [filteredTitles, query, activeList.length, currentPage]);
 
     const handleToggleStatus = async (title) => {
         const newStatus = !title.status;
@@ -105,17 +92,28 @@ const LibraryList = () => {
                     item._id === title._id ? { ...item, status: !newStatus } : item
                 )
             );
+            setErrorMessage("Failed to update status.");
+            setTimeout(() => setErrorMessage(""), 3000);
         }
     };
 
     const handleDeleteTitle = async (title) => {
+        setLoadingAction({ id: title._id, type: "delete" });
+
         try {
             await fetchData("titles/remove", "DELETE", { title_id: title._id });
-            setTitles((prevTitles) =>
-                prevTitles.filter(item => item && item._id && item._id !== title._id)
+            const updatedTitles = titles.filter(item => item && item._id && item._id !== title._id);
+            const newTotalPages = Math.ceil(updatedTitles.length / itemsPerPage);
+            setCurrentPage((prev) =>
+                prev > newTotalPages ? (newTotalPages > 0 ? newTotalPages : 1) : prev
             );
+            setTitles(updatedTitles);
         } catch (error) {
             console.error("Failed to delete item:", error);
+            setErrorMessage("Failed to delete item.");
+            setTimeout(() => setErrorMessage(""), 3000);
+        } finally {
+            setLoadingAction({ id: null, type: null });
         }
     };
 
@@ -156,6 +154,7 @@ const LibraryList = () => {
             </div>
             <div className="library-list-wrapper">
                 <div className="library-list-name">✨ {listId.toUpperCase()} ✨</div>
+                <SearchBar onSearch={handleSearch} />
                 {loading ? (
                     <Loader />
                 ) : error ? (
@@ -176,7 +175,6 @@ const LibraryList = () => {
                     </>
                 ) : (
                     <div>
-                        <SearchBar onSearch={handleSearch} />
                         <ul className="library-list-titles" >
                             {displayedTitles.map((title, index) => (
                                 <li key={title._id || index} className={`element-${index}`}>
@@ -187,6 +185,7 @@ const LibraryList = () => {
                                         openModal={openModal}
                                         onToggleStatus={handleToggleStatus}
                                         onDelete={handleDeleteTitle}
+                                        loadingAction={loadingAction}
                                     />
                                 </li>
                             ))}
@@ -204,6 +203,11 @@ const LibraryList = () => {
                     <div className="overlay" onClick={closeModal}></div>
                     <EditItem title={modalItem} onClose={closeModal} setTitles={setTitles} refreshTitles={() => fetchTitles(listId, setTitles, setError, setLoading)} />
                 </>
+            )}
+            {errorMessage && (
+                <div className="floating-error" onClick={() => setErrorMessage(null)}>
+                    {errorMessage}
+                </div>
             )}
         </div>
     );

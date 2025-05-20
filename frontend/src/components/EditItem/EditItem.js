@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import "./EditItem.css";
 import { fetchData } from "../../services/apiService";
+import { genreDropdown, typeDropdown } from "../../utils/constants";
 
 const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
     const [editedTitle, setEditedTitle] = useState({ ...title });
     const [customLists, setCustomLists] = useState([]);
+    const [isSaving, setIsSaving] = useState(false);
     const [currentListId, setCurrentListId] = useState(title.listId || null);
 
     useEffect(() => {
@@ -44,6 +46,8 @@ const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
     };
 
     const handleSave = async () => {
+        setIsSaving(true);
+
         try {
             const payload = {
                 title_id: editedTitle._id,
@@ -72,6 +76,8 @@ const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
             onClose();
         } catch (error) {
             console.error("Failed to save item:", error);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -81,7 +87,7 @@ const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
             <input type="text" name="title" value={editedTitle.title} onChange={handleChange} className="title-input"
             />
             <select name="type" id="type" className="type-select" value={editedTitle.type} onChange={handleChange}>
-                {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
+                {typeDropdown.map((option, index) => (
                     <option key={index} value={option}>{option}</option>
                 ))}
             </select>
@@ -100,7 +106,7 @@ const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
             {editedTitle.type === "Anime" && (
                 <>
                     <select name="genre" id="genre" className="genre-select" value={editedTitle.genre} onChange={handleChange}>
-                        {["Select genre", "Isekai", "Shonen", "Mecha", "Slice of Life", "Romance", "Ecchi", "Other"].map((option, index) => (
+                        {genreDropdown.map((option, index) => (
                             <option key={index} value={option}>{option}</option>
                         ))}
                     </select>
@@ -127,7 +133,9 @@ const EditItem = ({ title, onClose, setTitles, refreshTitles }) => {
                 </>
             )}
             <div className="modal-actions">
-                <button onClick={handleSave} className="save-btn btn">Save</button>
+                <button onClick={handleSave} disabled={isSaving} className="save-btn btn">
+                    {isSaving ? "Saving..." : "Save"}
+                </button>
                 <button onClick={onClose} className="cancel-btn btn">Cancel</button>
             </div>
         </div>

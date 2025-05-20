@@ -6,6 +6,7 @@ import formImage from "../../assets/images/form-vertical.jpg";
 import formImageHorizontal from "../../assets/images/form-horizontal.jpg";
 import fetchCustomLists from "../../utils/fetchCustomLists.js";
 import { fetchData } from "../../services/apiService.js";
+import { genreDropdown, typeDropdown } from "../../utils/constants.js";
 
 const AddTitlesManually = () => {
     const [titleFormData, setTitleFormData] = useState({
@@ -23,6 +24,7 @@ const AddTitlesManually = () => {
     const [selectedType, setSelectedType] = useState("");
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [duplicateCount, setDuplicateCount] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -60,7 +62,14 @@ const AddTitlesManually = () => {
             });
 
             if (response.success) {
-                setSuccess("Title added successfully!");
+                const duplicates = response.duplicates?.length || 0;
+                setDuplicateCount(duplicates);
+
+                if ((response.title?.length || 0) > 0) {
+                    setSuccess("Title added successfully!");
+                } else {
+                    setSuccess("");
+                }
                 setTitleFormData({
                     title: "",
                     type: "",
@@ -73,7 +82,10 @@ const AddTitlesManually = () => {
                 });
                 setSelectedOtakuList("");
                 setSelectedType("");
-                setTimeout(() => setSuccess(""), 3000);
+                setTimeout(() => {
+                    setSuccess("");
+                    setDuplicateCount(0);
+                }, 3000);
             } else {
                 setError("Process failed. Try again later");
                 setTimeout(() => setError(""), 3000);
@@ -98,7 +110,7 @@ const AddTitlesManually = () => {
                         <div className="type-container">
                             <label>Type</label>
                             <select name="type" className="type" value={titleFormData.type} onChange={(e) => { setSelectedType(e.target.value); handleChange(e); }}>
-                                {["Select type", "Anime", "Book", "Manga", "Movie", "Series"].map((option, index) => (
+                                {typeDropdown.map((option, index) => (
                                     <option key={index} value={option === "Select type" ? "" : option}>{option}</option>
                                 ))}
                             </select>
@@ -123,7 +135,7 @@ const AddTitlesManually = () => {
                                 <div className="genre-container">
                                     <label>Genre</label>
                                     <select name="genre" className="genre" value={titleFormData.genre} onChange={handleChange}>
-                                        {["Select genre", "Isekai", "Shonen", "Mecha", "Slice of Life", "Romance", "Ecchi"].map((option, index) => (
+                                        {genreDropdown.map((option, index) => (
                                             <option key={index} value={option}>{option}</option>
                                         ))}
                                     </select>
@@ -187,6 +199,11 @@ const AddTitlesManually = () => {
                 </p>
                 <div className="instruction">Only fields marked with * are mandatory. Adding more details will increase filtering. Duplicated titles would be removed.</div>
             </Form>
+            {duplicateCount > 0 && (
+                <div className="floating-error">
+                    {duplicateCount} duplicated {duplicateCount === 1 ? "title was" : "titles were"} skipped.
+                </div>
+            )}
         </div>
     );
 };

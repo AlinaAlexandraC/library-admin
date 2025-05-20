@@ -72,3 +72,7 @@
     display: flex;
     align-items: center;
 }
+
+.add-titles-manually-container > div.floating-error {
+    padding: 10px 15px;
+}

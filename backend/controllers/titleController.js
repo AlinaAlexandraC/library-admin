@@ -9,7 +9,9 @@ export const addTitleToUserList = async (req, res) => {
         const firebaseUid = req.user.uid;
         const { titles, listId, selectedType } = req.body;
 
-        if (!titles || titles.length === 0) return res.status(400).json({ message: "No titles provided." });
+        if (!titles || titles.length === 0) {
+            return res.status(400).json({ message: "No titles provided." });
+        }
 
         let user = await User.findOne({ firebaseUid }).populate({
             path: "lists",
@@ -19,6 +21,7 @@ export const addTitleToUserList = async (req, res) => {
         if (!user) return res.status(404).json({ message: "User not found." });
 
         const savedTitles = [];
+        const duplicateTitles = [];
         let list;
 
         const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
@@ -26,7 +29,7 @@ export const addTitleToUserList = async (req, res) => {
         if (!defaultListNames.includes(listId)) {
             list = await List.findOne({ _id: listId, userId: user._id });
         } else {
-            const listName = selectedType != "" ? selectedType : "Unknown";
+            const listName = selectedType !== "" ? selectedType : "Unknown";
 
             list = await List.findOne({ name: listName, userId: user._id });
 
@@ -49,34 +52,61 @@ export const addTitleToUserList = async (req, res) => {
         await list.save();
 
         for (let titleData of titles) {
-            const { title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status } = titleData;
+            const {
+                title,
+                type,
+                genre,
+                author,
+                numberOfSeasons,
+                numberOfEpisodes,
+                numberOfChapters,
+                status
+            } = titleData;
 
             if (!title) continue;
 
-            const existingTitle = await Title.findOne({ title, type });
             let newTitle;
+            const existingTitle = await Title.findOne({ title, type });
 
             if (existingTitle) {
                 newTitle = existingTitle;
             } else {
-                newTitle = new Title({ title, type, genre, author, numberOfSeasons, numberOfEpisodes, numberOfChapters, status });
+                newTitle = new Title({
+                    title,
+                    type,
+                    genre,
+                    author,
+                    numberOfSeasons,
+                    numberOfEpisodes,
+                    numberOfChapters,
+                    status
+                });
                 newTitle = await newTitle.save();
             }
 
-            const titleAlreadyInList = list.titles.some(item => item.title_id.toString() === newTitle._id.toString());
+            const titleAlreadyInList = list.titles.some(
+                item => item.title_id.toString() === newTitle._id.toString()
+            );
 
             if (!titleAlreadyInList) {
                 list.titles.push({ title_id: newTitle._id, dateAdded: new Date() });
+                savedTitles.push(newTitle);
+            } else {
+                duplicateTitles.push(newTitle);
             }
-
-            savedTitles.push(newTitle);
         }
 
         await list.save();
 
-        res.status(201).json({ success: true, message: "Title added successfully!", title: savedTitles });
+        return res.status(201).json({
+            success: true,
+            message: "Title added successfully!",
+            title: savedTitles,
+            duplicates: duplicateTitles
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error in addTitleToUserList:", error);
+        return res.status(500).json({ message: error.message });
     }
 };
 

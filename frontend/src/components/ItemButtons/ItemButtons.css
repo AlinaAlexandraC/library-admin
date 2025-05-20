@@ -46,6 +46,13 @@
     height: 28px;
 }
 
+.item-buttons-edit.disabled,
+.item-buttons-delete.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    user-select: none;
+}
+
 @media (max-width: 768px) {
     .item-buttons-container {
         width: auto;

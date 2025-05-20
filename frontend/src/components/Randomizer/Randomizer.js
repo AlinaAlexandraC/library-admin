@@ -4,6 +4,7 @@ import getIcon from "../../utils/getIcon";
 import Loader from "../Loader/Loader";
 import { fetchData } from "../../services/apiService";
 import fetchCustomLists from "../../utils/fetchCustomLists";
+import { reservedNames } from "../../utils/constants";
 
 const Randomizer = () => {
     const [titles, setTitles] = useState([]);
@@ -33,10 +34,9 @@ const Randomizer = () => {
         getLists();
 
         const fetchDefaultLists = async () => {
-            const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
             try {
                 const data = await fetchData("lists");
-                const defaults = data.filter(list => defaultListNames.includes(list.name) && list.titles.length > 1);
+                const defaults = data.filter(list => reservedNames.includes(list.name) && list.titles.length > 1);
                 setDefaultLists(defaults);
             } catch (error) {
                 console.error("Failed to fetch the default lists", error);

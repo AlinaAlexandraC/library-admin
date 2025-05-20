@@ -144,34 +144,8 @@
     padding-bottom: 10px;
 }
 
-.floating-info {
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #3498db;
-    color: white;
-    width: 80%;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    font-size: 14px;
-    text-align: center;
-    opacity: 1;
-    animation: fadeIn 0.3s ease-in-out;
+.add-titles-from-folder-container>div.floating-error {
     padding: 10px 15px;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 @media only screen and (max-width: 730px) {
