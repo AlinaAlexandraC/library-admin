@@ -6,7 +6,7 @@ const UserAgreement = () => {
         <div className="user-agreement-container">
             <div className="user-agreement-wrapper">
                 <div className="user-agreement-content">
-                    <h2 className="header">User Privacy Notice - Otaku Library</h2>
+                    <h2 className="header">User Agreement - Otaku Library</h2>
                     <div className="content-container">
                         <section>
                             <h3>Introduction</h3>

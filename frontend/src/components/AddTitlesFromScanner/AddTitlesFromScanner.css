@@ -90,7 +90,7 @@
 }
 
 .manual-isbn-input input {
-    width: 100%;
+    width: calc(100% - 14px);
 }
 
 .manual-entry {
@@ -105,4 +105,26 @@
     height: 30px;
     text-align: center;
     margin: 15px 0;
+}
+
+.scanned-book {
+    margin-top: 20px;
+}
+
+.scanned-book-details {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.scanned-book-details img {
+    height: 150px;
+}
+
+.scanned-book-details h4 {
+    text-align: center;
 }

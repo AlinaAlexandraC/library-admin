@@ -182,25 +182,34 @@ const AddTitlesFromScanner = () => {
                                         }}
                                         placeholder="ISBN (10 or 13 digits)"
                                     />
+                                    {errorMessage && <label className="error">{errorMessage}</label>}
                                 </div>
-                                <button
-                                    type="button"
-                                    className="btn"
-                                    onClick={handleManualIsbnSubmit}
-                                >
-                                    Search Book
-                                </button>
+                                <div className="buttons">
+                                    <button
+                                        type="button"
+                                        className="btn"
+                                        onClick={handleManualIsbnSubmit}
+                                    >
+                                        Search Book
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn"
+                                        onClick={resetSearch}
+                                    >
+                                        Back to Options
+                                    </button>
+                                </div>
                             </div>
-                            {errorMessage && <label className="error">{errorMessage}</label>}
                         </>
                     )}
 
                     {isBookFound && scannedBook && (
-                        <div className="scanned-book" style={{ marginTop: '20px' }}>
+                        <div className="scanned-book">
                             <p><strong>Result for ISBN:</strong> {scannedBook.isbn}</p>
-                            <div style={{ border: '1px solid #ccc', padding: '10px' }}>
+                            <div className='scanned-book-details'>
                                 {scannedBook.cover && (
-                                    <img src={scannedBook.cover} alt={scannedBook.title} style={{ height: '150px' }} />
+                                    <img src={scannedBook.cover} alt={scannedBook.title} />
                                 )}
                                 <h4>{scannedBook.title}</h4>
                                 <p><strong>Author:</strong> {scannedBook.author}</p>

@@ -10,7 +10,9 @@ const fetchTitles = async (listId, setTitles, setError, setLoading) => {
 
         setTitles(titles);
     } catch (error) {
-        setError(error.message);
+        if (error.message !== 'No titles found for this list.') {
+            setError(error.message);
+        }
     } finally {
         setLoading(false);
     }
