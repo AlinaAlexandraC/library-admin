@@ -139,12 +139,7 @@
 
 .add-titles-from-folder-container .instruction {
     text-align: center;
-    font-size: 13px;
-    padding-bottom: 10px;
-}
-
-.add-titles-from-folder-container>div.floating-error {
-    padding: 10px 15px;
+    padding: 10px 0;
 }
 
 @media only screen and (max-width: 730px) {
@@ -167,11 +162,26 @@
         width: 100%;
     }
 
-    .add-titles-from-folder-wrapper .buttons-container {
-        margin-top: 10px;
-    }
-
     .titles-list-from-folder {
         max-height: 400px;
+    }
+}
+
+@media only screen and (max-width: 490px) {
+    .select-folder-container {
+        width: 200px;
+        height: 200px;
+    }
+
+    .add-titles-from-folder-content>div.titles-list-from-folder>ul {
+        height: 30vh;
+    }
+}
+
+@media only screen and (max-height: 375px) {
+
+    .extracted-title>span.extracted-title-filename,
+    .extracted-title>span.extracted-title-index {
+        font-size: 13px;
     }
 }

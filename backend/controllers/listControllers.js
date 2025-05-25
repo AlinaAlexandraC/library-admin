@@ -27,7 +27,7 @@ export const getUserLists = async (req, res) => {
             titleCount: list.titles?.length || 0,
             titles: list.titles || []
         })) : [];
-
+      
         res.status(200).json(listsSummary);
     } catch (error) {
         res.status(500).json({ message: error.message });

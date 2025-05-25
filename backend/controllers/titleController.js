@@ -2,18 +2,20 @@ import User from "../models/User.js";
 import Title from "../models/Title.js";
 import List from "../models/List.js";
 
+const DEFAULT_LIST_NAMES = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
+
 // Add a title to the user's list
 
 export const addTitleToUserList = async (req, res) => {
     try {
         const firebaseUid = req.user.uid;
-        const { titles, listId, selectedType } = req.body;
+        const { titles, listId } = req.body;
 
         if (!titles || titles.length === 0) {
             return res.status(400).json({ message: "No titles provided." });
         }
 
-        let user = await User.findOne({ firebaseUid }).populate({
+        const user = await User.findOne({ firebaseUid }).populate({
             path: "lists",
             populate: { path: "titles.title_id" },
         });
@@ -22,30 +24,13 @@ export const addTitleToUserList = async (req, res) => {
 
         const savedTitles = [];
         const duplicateTitles = [];
-        let list;
 
-        const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
+        const list = user.lists.find(
+            l => l._id.toString() === listId || l.name.toLowerCase() === listId.toLowerCase()
+        );
 
-        if (!defaultListNames.includes(listId)) {
-            list = await List.findOne({ _id: listId, userId: user._id });
-        } else {
-            const listName = selectedType !== "" ? selectedType : "Unknown";
-
-            list = await List.findOne({ name: listName, userId: user._id });
-
-            if (!list) {
-                list = new List({
-                    name: listName,
-                    userId: user._id
-                });
-
-                await list.save();
-
-                if (!user.lists.includes(list._id)) {
-                    user.lists.push(list._id);
-                    await user.save();
-                }
-            }
+        if (!list) {
+            return res.status(404).json({ message: "List not found. Please create it first." });
         }
 
         list.titles = list.titles.filter(entry => entry.title_id != null);
@@ -65,12 +50,9 @@ export const addTitleToUserList = async (req, res) => {
 
             if (!title) continue;
 
-            let newTitle;
-            const existingTitle = await Title.findOne({ title, type });
+            let newTitle = await Title.findOne({ title, type });
 
-            if (existingTitle) {
-                newTitle = existingTitle;
-            } else {
+            if (!newTitle) {
                 newTitle = new Title({
                     title,
                     type,
@@ -81,14 +63,24 @@ export const addTitleToUserList = async (req, res) => {
                     numberOfChapters,
                     status
                 });
-                newTitle = await newTitle.save();
+                await newTitle.save();
             }
 
-            const titleAlreadyInList = list.titles.some(
+            const isInAnotherList = user.lists.some(userList =>
+                userList._id.toString() !== list._id.toString() &&
+                userList.titles.some(entry => entry.title_id?._id.toString() === newTitle._id.toString())
+            );
+
+            if (isInAnotherList) {
+                duplicateTitles.push(newTitle);
+                continue;
+            }
+
+            const alreadyInList = list.titles.some(
                 item => item.title_id.toString() === newTitle._id.toString()
             );
 
-            if (!titleAlreadyInList) {
+            if (!alreadyInList) {
                 list.titles.push({ title_id: newTitle._id, dateAdded: new Date() });
                 savedTitles.push(newTitle);
             } else {
@@ -100,8 +92,8 @@ export const addTitleToUserList = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: "Title added successfully!",
-            title: savedTitles,
+            message: "Title(s) added successfully!",
+            addedTitles: savedTitles,
             duplicates: duplicateTitles
         });
     } catch (error) {
@@ -144,94 +136,86 @@ export const getTitles = async (req, res) => {
 
 // Update a title
 
-export const updateTitle = async (req, res) => {
+export const updateTitleDetails = async (req, res) => {
     try {
         const firebaseUid = req.user.uid;
-        const { title_id, updatedData, newListId } = req.body;
+        const { title_id, updatedData } = req.body;
 
-        const user = await User.findOne({ firebaseUid })
-            .populate({
-                path: "lists",
-                populate: { path: "titles.title_id" },
-            });
-
+        const user = await User.findOne({ firebaseUid });
         if (!user) return res.status(404).json({ message: "User not found." });
 
-        const defaultListNames = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
-
-        let currentList = null;
-        let titleEntry = null;
-        const changes = [];
-
-        for (let list of user.lists) {
-            const foundEntry = list.titles.find(entry =>
-                entry.title_id && entry.title_id._id.toString() === title_id
-            );
-
-            if (foundEntry) {
-                currentList = list;
-                titleEntry = foundEntry;
-                break;
-            }
-        }
-
-        if (!titleEntry || !currentList)
-            return res.status(404).json({ message: "Title not found in user's list." });
-
         const updatedTitle = await Title.findByIdAndUpdate(title_id, updatedData, { new: true });
-
         if (!updatedTitle) return res.status(404).json({ message: "Title not found." });
-
-        const currentListIsDefault = defaultListNames.includes(currentList.name);
-        const updatedTypeIsDefault = defaultListNames.includes(updatedTitle.type);
-
-        if (newListId && newListId !== currentList._id.toString()) {
-            const targetList = user.lists.find(list => list._id.toString() === newListId);
-            if (!targetList) return res.status(404).json({ message: "Target custom list not found." });
-
-            currentList.titles = currentList.titles.filter(
-                entry => entry.title_id._id.toString() !== title_id
-            );
-            await currentList.save();
-
-            targetList.titles.push({ title_id: updatedTitle._id, dateAdded: new Date() });
-            await targetList.save();
-
-            changes.push(`Moved to custom list "${targetList.name}".`);
-
-        } else if (
-            currentListIsDefault &&
-            updatedTypeIsDefault &&
-            currentList.name !== updatedTitle.type
-        ) {
-            currentList.titles = currentList.titles.filter(
-                entry => entry.title_id._id.toString() !== title_id
-            );
-            await currentList.save();
-
-            let targetList = user.lists.find(list => list.name === updatedTitle.type);
-            if (!targetList) {
-                targetList = new List({ name: updatedTitle.type, userId: user._id, titles: [] });
-                await targetList.save();
-                user.lists.push(targetList._id);
-                await user.save();
-            }
-
-            targetList.titles.push({ title_id: updatedTitle._id, dateAdded: new Date() });
-            await targetList.save();
-
-            changes.push(`Moved to default list "${targetList.name}".`);
-        } else {
-            changes.push(`Type updated to "${updatedTitle.type}". List unchanged.`);
-        }
 
         res.status(200).json({
             success: true,
             updatedTitle,
-            message: changes.length > 0 ? changes.join(" ") : "Title updated successfully."
+            message: "Title details updated successfully.",
         });
     } catch (error) {
         res.status(400).json({ message: error.message });
+    }
+};
+
+async function updateTitleList(title, currentList, targetList) {
+    const filteredTitles = currentList.titles.filter(
+        e => e.title_id?._id.toString() !== title._id.toString()
+    );
+    if (filteredTitles.length === currentList.titles.length) {
+        throw new Error("Title entry not found in current list.");
+    }
+
+    currentList.titles = filteredTitles;
+    await currentList.save();
+
+    const duplicate = targetList.titles.find(e =>
+        e.title_id?.title === title.title && e.title_id?.type === title.type
+    );
+    if (duplicate) throw new Error(`Duplicate title exists in list "${targetList.name}".`);
+
+    targetList.titles.push({ title_id: title._id, dateAdded: new Date() });
+    await targetList.save();
+
+    return `Moved "${title.title}" to list "${targetList.name}".`;
+}
+
+export const moveTitleBetweenLists = async (req, res) => {
+    try {
+        const firebaseUid = req.user.uid;
+        const { title_id, newListId } = req.body;
+
+        const user = await User.findOne({ firebaseUid }).populate({
+            path: "lists",
+            populate: { path: "titles.title_id" },
+        });
+
+        if (!user) return res.status(404).json({ message: "User not found." });
+
+        const title = await Title.findById(title_id);
+        if (!title) return res.status(404).json({ message: "Title not found." });
+
+        const currentList = user.lists.find(list =>
+            list.titles.some(entry => entry.title_id?._id.toString() === title_id)
+        );
+        if (!currentList) return res.status(404).json({ message: "Title not found in any list." });
+
+        if (!newListId || newListId === currentList._id.toString()) {
+            return res.status(400).json({ message: "Invalid or same target list." });
+        }
+
+        const targetList = user.lists.find(list =>
+            list._id.toString() === newListId || list.name === newListId
+        );
+
+        if (!targetList) {
+            return res.status(404).json({ message: "Target list not found. Please create it first." });
+        }
+
+        const message = await updateTitleList(title, currentList, targetList);
+
+        return res.status(200).json({ success: true, message });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 };
 

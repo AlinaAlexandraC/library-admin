@@ -88,10 +88,10 @@
     display: none;
 }
 
-.randomizer-display span {
+.randomizer-display-header {
     font-weight: 600;
     font-size: 20px;
-    margin-bottom: 15px;
+    margin: 15px 0;
 }
 
 .title-info-randomizer .title {
@@ -116,11 +116,6 @@
     justify-content: center;
     align-items: center;
     gap: 15px;
-}
-
-.title-info-randomizer div {
-    margin: 20px 0;
-    text-align: center;
 }
 
 .randomizer-title-container {

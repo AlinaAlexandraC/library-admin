@@ -19,7 +19,7 @@
     text-align: center;
 }
 
-.session-refresh-modal-container .buttons-container {
+.session-refresh-modal-container .buttons {
     display: flex;
     justify-content: space-around;
     margin-top: 20px;

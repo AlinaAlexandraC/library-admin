@@ -119,12 +119,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .scanned-book-details img {
-    height: 150px;
+    height: 120px;
 }
 
-.scanned-book-details h4 {
-    text-align: center;
+.scanned-title {
+    margin: 10px 0;
 }

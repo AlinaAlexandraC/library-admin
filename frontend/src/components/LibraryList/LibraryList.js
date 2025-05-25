@@ -81,7 +81,7 @@ const LibraryList = () => {
         );
 
         try {
-            await fetchData("titles/update", "PATCH", {
+            await fetchData("titles/updateDetails", "PATCH", {
                 title_id: title._id,
                 updatedData: { status: newStatus },
             });
@@ -137,6 +137,11 @@ const LibraryList = () => {
 
     const closeModal = () => {
         setModalItem(null);
+    };
+
+    const refreshTitles = async () => {
+        const updatedTitles = await fetchData("titles");
+        setTitles(updatedTitles);
     };
 
     return (
@@ -201,7 +206,7 @@ const LibraryList = () => {
             {modalItem && (
                 <>
                     <div className="overlay" onClick={closeModal}></div>
-                    <EditItem title={modalItem} onClose={closeModal} setTitles={setTitles} refreshTitles={() => fetchTitles(listId, setTitles, setError, setLoading)} />
+                    <EditItem title={modalItem} onClose={closeModal} setTitles={setTitles} setErrorMessage={setErrorMessage} refreshTitles={refreshTitles} />
                 </>
             )}
             {errorMessage && (

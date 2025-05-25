@@ -109,12 +109,14 @@ const Registration = () => {
                             handleChange={handleChange}
                         />
                     </div>
-                    <div className="registration-terms">
-                        By selecting <strong>Create account</strong>, you agree to our <Link to='/user-agreement'>User Agreement</Link> and acknowledge reading our <Link to='/user-privacy-notice'>User Privacy Notice</Link>.
+                    <div className="registration-actions">
+                        <div className="registration-terms">
+                            By selecting <strong>Create account</strong>, you agree to our <Link to='/user-agreement'>User Agreement</Link> and acknowledge reading our <Link to='/user-privacy-notice'>User Privacy Notice</Link>.
+                        </div>
+                        <button type="submit" className="registration-button btn">Create account</button>
+                        <span className="go-to-login">Already have an account? <Link to="/">Sign in</Link></span>
+                        <div className={`${error ? "error" : "success"}`} id="password-validation">{error ? error : success}</div>
                     </div>
-                    <button type="submit" className="registration-button btn">Create account</button>
-                    <span className="go-to-login">Already have an account? <Link to="/">Sign in</Link></span>
-                    <div className={`${error ? "error" : "success"}`} id="password-validation">{error ? error : success}</div>
                 </form>
             </Form>
         </div>

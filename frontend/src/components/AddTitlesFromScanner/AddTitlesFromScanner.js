@@ -206,13 +206,13 @@ const AddTitlesFromScanner = () => {
 
                     {isBookFound && scannedBook && (
                         <div className="scanned-book">
-                            <p><strong>Result for ISBN:</strong> {scannedBook.isbn}</p>
+                            <label><strong>Result for ISBN:</strong> {scannedBook.isbn}</label>
                             <div className='scanned-book-details'>
                                 {scannedBook.cover && (
                                     <img src={scannedBook.cover} alt={scannedBook.title} />
                                 )}
-                                <h4>{scannedBook.title}</h4>
-                                <p><strong>Author:</strong> {scannedBook.author}</p>
+                                <span className='scanned-title'><strong>{scannedBook.title}</strong></span>
+                                <span><strong>Author:</strong> {scannedBook.author}</span>
                             </div>
                             <div className="buttons">
                                 <button className='btn' onClick={() => console.log('Add to list clicked')}>Add to list</button>

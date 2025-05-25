@@ -1,5 +1,6 @@
 import axios from "axios";
 import { auth } from "../config/firebase";
+import { showSessionExpiredModal } from "../utils/useSessionRefreshWatcher";
 
 export const fetchData = async (endpoint, method = 'GET', body = null) => {
   try {
@@ -26,6 +27,16 @@ export const fetchData = async (endpoint, method = 'GET', body = null) => {
 
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'An error occurred');
+    const message = error.response?.data?.message || 'An error occurred';
+    const status = error.response?.status;
+
+    if (
+      status === 403 &&
+      typeof message === 'string' && message.toLowerCase().includes("token")
+    ) {
+      showSessionExpiredModal();
+    }
+
+    throw new Error(message);
   }
 };

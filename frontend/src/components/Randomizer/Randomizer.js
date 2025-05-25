@@ -135,7 +135,7 @@ const Randomizer = () => {
                     ) : (
                         <>
                             <div className="randomizer-display">
-                                <span>{header}</span>
+                                <span className="randomizer-display-header">{header}</span>
                                 {titles.length > 0 && (
                                     <div className="title-info-randomizer">
                                         <img src={icon} alt="icon" className="randomizer-icon" />

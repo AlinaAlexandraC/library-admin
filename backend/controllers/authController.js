@@ -1,8 +1,9 @@
 import admin from "../config/firebase.js";
 import Session from "../models/Session.js";
 import User from "../models/User.js";
+import List from "../models/List.js";
 
-// Register new user
+const DEFAULT_LIST_NAMES = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
 
 export const registerUser = async (req, res) => {
     const { email, password, firstName, lastName } = req.body;
@@ -25,11 +26,25 @@ export const registerUser = async (req, res) => {
             firstName,
             lastName,
             email,
-            firebaseUid
+            firebaseUid,
+            lists: []
         });
 
         try {
             await newUser.save();
+
+            for (const listName of DEFAULT_LIST_NAMES) {
+                const list = new List({
+                    userId: newUser._id,
+                    name: listName,
+                    titles: []
+                });
+                await list.save();
+                newUser.lists.push(list._id);
+            }
+
+            await newUser.save();
+
             return res.status(201).json({ message: "User registered successfully", user: newUser });
         } catch (mongoError) {
             if (process.env.NODE_ENV === 'development') {

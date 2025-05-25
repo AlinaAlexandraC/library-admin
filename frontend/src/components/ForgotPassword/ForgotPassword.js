@@ -66,7 +66,7 @@ const ForgotPassword = () => {
                             required
                         />
                     </div>
-                    <div className="buttons-container">
+                    <div className="buttons">
                         <button type="submit" className="send-reset-link btn" >Send Reset Link</button>
                         <div className="return-to-login-button">
                             <Link to="/" className="link">

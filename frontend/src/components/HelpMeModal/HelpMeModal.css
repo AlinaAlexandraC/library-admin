@@ -1,5 +1,5 @@
 .help-container {
-    width: 400px;
+    width: 310px;
     margin: 20px auto;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f9f9f9;
@@ -17,7 +17,7 @@
 .faq-item {
     margin-bottom: 10px;
     border-bottom: 1px solid #ddd;
-    width: 400px;
+    width: 310px;
 }
 
 .faq-question {
@@ -77,4 +77,22 @@
 
 .help-me-close-button:focus {
     outline: none;
+}
+
+@media only screen and (max-height: 375px) {
+
+    .faq-question,
+    .faq-answer {
+        font-size: 12px;
+    }
+
+    .faq-question,
+    .faq-answer {
+        padding: 5px 6px;
+    }
+
+    .help-me-close-button {
+        padding: 6px 20px;
+        font-size: 14px;
+    }
 }

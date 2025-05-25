@@ -15,4 +15,6 @@ const ListSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+ListSchema.index({ userId: 1, name: 1 }, { unique: true });
+
 export default mongoose.model('List', ListSchema);

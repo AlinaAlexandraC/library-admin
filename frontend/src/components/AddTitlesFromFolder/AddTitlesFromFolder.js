@@ -182,7 +182,11 @@ const AddTitlesFromFolder = () => {
                                 </div>
                             </>
                         )}
-
+                        {folderSelected && (
+                            <span className="instruction">
+                                Adding <strong>{titleFormData.length}</strong> titles to the <strong>{selectedOtakuList || selectedType || "Unknown"}</strong> list. Duplicates will be removed.
+                            </span>
+                        )}
                         <div className="buttons">
                             <button type="submit" className="add-titles-from-folder-button btn">Add to list</button>
                             {folderSelected ? (
@@ -193,11 +197,6 @@ const AddTitlesFromFolder = () => {
                         </div>
                         <label className={`${error ? "error" : "success"}`}>{error || success}</label>
                     </div>
-                    {folderSelected && (
-                        <div className="instruction">
-                            Adding <strong>{titleFormData.length}</strong> titles to the <strong>{selectedOtakuList || selectedType || "Unknown"}</strong> list. Duplicates will be removed.
-                        </div>
-                    )}
                 </form>
             </Form>
             {titleFormData.length > 20 && (

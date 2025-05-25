@@ -4,7 +4,7 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import Layout from './pages/Layout';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import ServerStatusModal from './components/ServerStatusModal/ServerStatusModal';
-import useSessionRefreshWatcher from './utils/useSessionRefreshWatcher';
+import useSessionRefreshWatcher, { registerSessionModalSetter } from './utils/useSessionRefreshWatcher';
 import SessionRefreshModal from './components/SessionRefreshModal/SessionRefreshModal';
 import Loader from './components/Loader/Loader';
 
@@ -104,6 +104,10 @@ function App() {
   const [resetSessionTimer, setResetSessionTimer] = useState(0);
 
   useSessionRefreshWatcher(setShowSessionModal, resetSessionTimer);
+
+  useEffect(() => {
+    registerSessionModalSetter(setShowSessionModal);
+  }, []);
 
   const handleStayLoggedIn = () => {
     setShowSessionModal(false);

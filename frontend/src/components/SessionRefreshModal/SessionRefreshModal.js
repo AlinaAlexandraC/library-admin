@@ -57,7 +57,7 @@ const SessionRefreshModal = ({ message, onClose }) => {
             <div className="session-refresh-modal-container">
                 <div className="modal">
                     <p>{message}</p>
-                    <div className="buttons-container">
+                    <div className="buttons">
                         <button className="server-status-close-button" onClick={handleStayLoggedIn}>Stay logged in</button>
                         <button className="server-status-close-button" onClick={handleLogOut}>Log out</button>
                     </div>

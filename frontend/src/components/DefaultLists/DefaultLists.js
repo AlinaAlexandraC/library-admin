@@ -24,6 +24,7 @@ const DefaultLists = () => {
     const fetchListsSummary = async () => {
         try {
             const lists = await fetchData("lists/");
+            
             return lists.reduce((acc, list) => {
                 acc[list.name.toLowerCase()] = list.titleCount;
                 return acc;

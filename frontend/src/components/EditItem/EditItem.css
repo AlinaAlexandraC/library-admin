@@ -8,8 +8,10 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    width: 350px;
+    width: 310px;
     text-align: center;
+    max-height: 80vh;
+    overflow-y: scroll;
 }
 
 .edit-item-container h3 {
@@ -27,11 +29,16 @@
     box-sizing: inherit;
 }
 
-.modal-actions {
+.edit-item-container>div {
     padding: 0 calc(10% - 10px);
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     margin-top: 30px;
+}
+
+.move-default-btn {
+    width: 100%;
 }
 
 .btn {
@@ -59,4 +66,10 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+}
+
+.move-default-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
 }

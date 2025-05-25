@@ -2,6 +2,18 @@ import { useEffect, useRef, useCallback } from "react";
 import { auth } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
+let showModalSetter = null;
+
+export const registerSessionModalSetter = (setterFn) => {
+  showModalSetter = setterFn;
+};
+
+export const showSessionExpiredModal = () => {
+  if (typeof showModalSetter === 'function') {
+    showModalSetter(true);
+  }
+};
+
 const useSessionRefreshWatcher = (setShowModal, resetSignal) => {
     const timerIdRef = useRef(null);
 

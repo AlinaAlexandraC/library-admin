@@ -23,8 +23,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    height: 70%;
-    padding: 15px 0;
+    height: 35vh;
 }
 
 .title-container,
@@ -58,21 +57,17 @@
 }
 
 .add-titles-manually-container .list-instruction {
-    font-size: 13px;
-    margin-top: 0;
-}
-
-.add-titles-manually-container .instruction {
     text-align: center;
     font-size: 12px;
-    padding-bottom: 5px;
 }
 
-.add-titles-manually-wrapper .buttons-container {
-    display: flex;
-    align-items: center;
+.add-titles-manually-container>div.floating-error.instruction {
+    font-size: 10px;
 }
 
-.add-titles-manually-container > div.floating-error {
-    padding: 10px 15px;
+@media only screen and (max-width: 490px) {
+
+    .add-titles-manually-input-container {
+            overflow: scroll;
+    }
 }

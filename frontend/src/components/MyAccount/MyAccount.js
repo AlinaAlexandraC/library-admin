@@ -85,7 +85,7 @@ const MyAccount = () => {
                                     onChange={(e) => setFirstName(e.target.value)}
                                     className="user-first-name-input" />
                             ) : (
-                                <div className="user-first-name">{firstName}</div>
+                                <span className="user-first-name">{firstName}</span>
                             )}
                         </div>
                         <div className="last-name-container">
@@ -96,7 +96,7 @@ const MyAccount = () => {
                                     onChange={(e) => setLastName(e.target.value)}
                                     className="user-last-name-input" />
                             ) : (
-                                <div className="user-last-name">{lastName}</div>
+                                <span className="user-last-name">{lastName}</span>
                             )}
                         </div>
                         <div className="email-container">
@@ -107,19 +107,17 @@ const MyAccount = () => {
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="user-email-input" />
                             ) : (
-                                <div className="user-email">{email}</div>
+                                <span className="user-email">{email}</span>
                             )}
                         </div>
                     </div>
-                    <div className="buttons-container">
-                        <div className="buttons">
-                            {isEditing ? (
-                                <button className="edit btn" onClick={handleSave}>Save details</button>
-                            ) : (
-                                <button className="edit btn" onClick={handleEdit}>Edit details</button>
-                            )}
-                            <button className="delete-account btn" onClick={handleDeleteClick}>Delete account</button>
-                        </div>
+                    <div className="buttons">
+                        {isEditing ? (
+                            <button className="edit btn" onClick={handleSave}>Save details</button>
+                        ) : (
+                            <button className="edit btn" onClick={handleEdit}>Edit details</button>
+                        )}
+                        <button className="delete-account btn" onClick={handleDeleteClick}>Delete account</button>
                     </div>
                     <label className={`${error ? "error" : "success"}`}>{error ? error : success}</label>
                 </div>

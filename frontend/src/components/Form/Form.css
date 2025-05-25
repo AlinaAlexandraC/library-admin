@@ -66,3 +66,14 @@
         background-size: cover;
     }
 }
+
+@media only screen and (max-height: 375px) {
+    .form-wrapper {
+        height: 85%;
+        width: 85%;
+    }
+
+    .form-structure {
+        overflow: scroll;
+    }
+}

@@ -70,23 +70,16 @@ select {
     color: green;
 }
 
-.buttons-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 10px;
-}
-
 .buttons {
     display: flex;
     justify-content: space-around;
     gap: 10px;
-    padding-top: 10px;
+    padding: 10px 0;
 }
 
 .floating-error {
     position: fixed;
-    bottom: 20px;
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     background-color: #3498db;
@@ -99,6 +92,7 @@ select {
     font-size: 16px;
     text-align: center;
     animation: fadeIn 0.3s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+    padding: 10px 15px;
 }
 
 @keyframes fadeIn {
@@ -112,7 +106,30 @@ select {
 }
 
 @media only screen and (max-width: 490px) {
-    span {
+
+    span,
+    label {
+        font-size: 12px;
+    }
+
+    .floating-error {
+        font-size: 9px;
+    }
+
+    .buttons {
+        width: 250px;
+    }
+
+    .btn {
+        height: 25px;
+        font-size: 11px;
+    }
+}
+
+@media only screen and (max-height: 375px) {
+
+    span,
+    label {
         font-size: 12px;
     }
 }

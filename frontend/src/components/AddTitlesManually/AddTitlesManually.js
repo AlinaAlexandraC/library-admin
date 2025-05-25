@@ -185,23 +185,24 @@ const AddTitlesManually = () => {
                             </div>
                         )}
                     </div>
-                    <div className="buttons-container">
-                        <div className="buttons">
-                            <button type="submit" className="add-titles-manually-button btn">Add to list</button>
-                            <button className="see-library-button btn" onClick={() => navigate("/lists")}>See list</button>
-                        </div>
+                    <span className="list-instruction">
+                        Titles will be added to:{" "}
+                        <strong>{selectedOtakuList || (titleFormData.type ? titleFormData.type : "Unknown")}</strong> list.
+                    </span>
+                    <div className="buttons">
+                        <button type="submit" className="add-titles-manually-button btn">Add to list</button>
+                        <button className="see-library-button btn" onClick={() => navigate("/lists")}>See list</button>
                         <label className={`${error ? "error" : "success"}`}>{error ? error : success}</label>
                     </div>
                 </form>
-                <p className="list-instruction">
-                    Titles will be added to:{" "}
-                    <strong>{selectedOtakuList || (titleFormData.type ? titleFormData.type : "Unknown")}</strong> list.
-                </p>
-                <div className="instruction">Only fields marked with * are mandatory. Adding more details will increase filtering. Duplicated titles would be removed.</div>
             </Form>
-            {duplicateCount > 0 && (
+            {duplicateCount > 0 ? (
                 <div className="floating-error">
                     {duplicateCount} duplicated {duplicateCount === 1 ? "title was" : "titles were"} skipped.
+                </div>
+            ) : (
+                <div className="floating-error instruction">
+                    Only fields marked with * are mandatory. Adding more details will increase filtering. Duplicated titles would be removed.
                 </div>
             )}
         </div>
