@@ -5,34 +5,9 @@
     align-items: center;
 }
 
-.my-account-wrapper {
-    width: 80%;
-    height: 85%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.my-account-details {
-    height: 70%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    gap: 6px;
-}
-
-.my-account-title {
-    width: 80%;
-    font-size: 24px;
-    font-weight: 600;
-    padding: 10px 0;
-}
-
 .first-name-container,
 .last-name-container,
 .email-container {
-    width: 95%;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -43,18 +18,17 @@
 .user-last-name,
 .user-email {
     padding: 6px 0;
-}
-
-.my-account-wrapper>div.buttons {
-    width: 95%;
+    font-size: 13px;
 }
 
 .user-first-name-input,
 .user-last-name-input,
 .user-email-input {
     border: 0;
+    padding: 0;
     border-radius: 5px 5px 0 0;
     background-color: #fff;
+    font-size: 13px;
 }
 
 .user-first-name-input:focus,
@@ -62,11 +36,4 @@
 .user-email-input:focus {
     outline: none;
     box-shadow: 0 -2px 0 0 #3c3d80 inset;
-}
-
-@media only screen and (max-height: 375px) {
-
-    .my-account-details {
-        overflow: scroll;
-    }
 }

@@ -71,10 +71,50 @@ const MyAccount = () => {
         setShowDeleteModal(false);
     };
 
+    const buttons = isEditing
+        ? [
+            {
+                label: "Save details",
+                type: "button",
+                className: "save btn",
+                onClick: handleSave
+            },
+            {
+                label: "Delete account",
+                type: "button",
+                className: "delete-account btn",
+                onClick: handleDeleteClick
+            }
+        ]
+        : [
+            {
+                label: "Edit details",
+                type: "button",
+                className: "edit btn",
+                onClick: handleEdit
+            },
+            {
+                label: "Delete account",
+                type: "button",
+                className: "delete-account btn",
+                onClick: handleDeleteClick
+            }
+
+
+        ];
+
     return (
         <div className="my-account-container">
-            <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <div className="my-account-title">Personal details</div>
+            <Form
+                formImage={formImage}
+                formImageHorizontal={formImageHorizontal}
+                header="Personal details"
+                floatingMessage={
+                    error
+                        ? { type: "error", text: error }
+                        : { type: "success", text: success }
+                }
+                buttons={buttons}>
                 <div className="my-account-wrapper">
                     <div className="my-account-details">
                         <div className="first-name-container">
@@ -111,15 +151,6 @@ const MyAccount = () => {
                             )}
                         </div>
                     </div>
-                    <div className="buttons">
-                        {isEditing ? (
-                            <button className="edit btn" onClick={handleSave}>Save details</button>
-                        ) : (
-                            <button className="edit btn" onClick={handleEdit}>Edit details</button>
-                        )}
-                        <button className="delete-account btn" onClick={handleDeleteClick}>Delete account</button>
-                    </div>
-                    <label className={`${error ? "error" : "success"}`}>{error ? error : success}</label>
                 </div>
             </Form>
             {showDeleteModal && (

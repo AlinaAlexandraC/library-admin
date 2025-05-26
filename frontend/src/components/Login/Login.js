@@ -68,39 +68,50 @@ const Login = () => {
 
     return (
         <div className="login-container">
-            <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="login-wrapper" onSubmit={handleSubmit}>
-                    <div className="login-title">Sign in to your account</div>
-                    <div className="registration-question">
-                        <div>New to Library?</div>
-                        <Link to="/registration">
-                            <div className="create-account">
-                                Create account
-                            </div>
-                        </Link>
-                    </div>
-                    <div className="login-email-container">
-                        <label>Email address</label>
-                        <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
-                    </div>
-                    <div className="registration-password-container">
-                        <Password
-                            label="Password"
-                            name="password"
-                            value={formData.password}
-                            handleChange={handleChange}
-                        />
-                    </div>
-                    <div className="password-validation">
-                        <div className="remember-me-container">
-                            <input type="checkbox" className="remember-me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
-                            <label className="remember-me-label">Remember me</label>
+            <Form
+                formImage={formImage}
+                formImageHorizontal={formImageHorizontal}
+                header="Sign in to your account"
+                floatingMessage={
+                    error
+                        ? { type: "error", text: error }
+                        : { type: "success", text: success }
+                }
+                onSubmit={handleSubmit}
+                buttons={[
+                    {
+                        label: "Sign in",
+                        type: "submit",
+                        className: "login-button btn",
+                    }
+                ]}>
+                <div className="registration-question">
+                    <div>New to Library?</div>
+                    <Link to="/registration">
+                        <div className="create-account">
+                            Create account
                         </div>
-                        <Link to="/forgot-password">Forgot Password</Link>
+                    </Link>
+                </div>
+                <div className="login-email-container">
+                    <label>Email address</label>
+                    <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
+                </div>
+                <div className="registration-password-container">
+                    <Password
+                        label="Password"
+                        name="password"
+                        value={formData.password}
+                        handleChange={handleChange}
+                    />
+                </div>
+                <div className="password-validation">
+                    <div className="remember-me-container">
+                        <input type="checkbox" className="remember-me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
+                        <label className="remember-me-label">Remember me</label>
                     </div>
-                    <button type="submit" className="login-button btn" >Sign in</button>
-                </form>
-                <div className={`${error ? "error" : "success"}`}>{error ? error : success}</div>
+                    <Link to="/forgot-password">Forgot Password</Link>
+                </div>
             </Form>
         </div>
     );

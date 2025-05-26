@@ -1,29 +1,7 @@
-.add-titles-manually-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.add-titles-manually-wrapper {
-    height: 100%;
-    padding-top: 20px;
-    width: 70%;
-    min-width: 250px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.add-titles-manually-title {
-    font-size: 24px;
-    font-weight: 600;
-}
-
 .add-titles-manually-input-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    height: 35vh;
+    gap: 15px;
 }
 
 .title-container,
@@ -39,35 +17,13 @@
     gap: 6px;
 }
 
-.anime-container {
-    height: 35%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
 .title-length {
     display: flex;
     justify-content: space-between;
+    margin-top: 15px;
 }
 
 .seasons-number,
 .episodes-number {
     width: 48%;
-}
-
-.add-titles-manually-container .list-instruction {
-    text-align: center;
-    font-size: 12px;
-}
-
-.add-titles-manually-container>div.floating-error.instruction {
-    font-size: 10px;
-}
-
-@media only screen and (max-width: 490px) {
-
-    .add-titles-manually-input-container {
-            overflow: scroll;
-    }
 }

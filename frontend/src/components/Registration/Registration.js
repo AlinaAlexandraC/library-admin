@@ -76,48 +76,59 @@ const Registration = () => {
 
     return (
         <div className="registration-container">
-            <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="registration-wrapper" onSubmit={handleSubmit}>
-                    <div className="registration-title">Create an account</div>
-                    <div className="registration-name">
-                        <div className="registration-first-name-container">
-                            <label>First name</label>
-                            <input type="text" placeholder="ex. John" className="first-name-input" name="firstName" value={formData.firstName} onChange={handleChange} required />
-                        </div>
-                        <div className="registration-last-name-container">
-                            <label>Last name</label>
-                            <input type="text" placeholder="ex. Doe" className="last-name-input" name="lastName" value={formData.lastName} onChange={handleChange} required />
-                        </div>
+            <Form
+                formImage={formImage}
+                formImageHorizontal={formImageHorizontal}
+                header="Create an account"
+                floatingMessage={
+                    error
+                        ? { type: "error", text: error }
+                        : { type: "success", text: success }
+                }
+                onSubmit={handleSubmit}
+                buttons={[
+                    {
+                        label: "Create account",
+                        type: "submit",
+                        className: "registration-button btn",
+                    }
+                ]}>
+                <div className="registration-name">
+                    <div className="registration-first-name-container">
+                        <label>First name</label>
+                        <input type="text" placeholder="ex. John" className="first-name-input" name="firstName" value={formData.firstName} onChange={handleChange} required />
                     </div>
-                    <div className="registration-email-container">
-                        <label>Email address</label>
-                        <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
+                    <div className="registration-last-name-container">
+                        <label>Last name</label>
+                        <input type="text" placeholder="ex. Doe" className="last-name-input" name="lastName" value={formData.lastName} onChange={handleChange} required />
                     </div>
-                    <div className="registration-password-container">
-                        <Password
-                            label="Password"
-                            name="password"
-                            value={formData.password}
-                            handleChange={handleChange}
-                        />
+                </div>
+                <div className="registration-email-container">
+                    <label>Email address</label>
+                    <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
+                </div>
+                <div className="registration-password-container">
+                    <Password
+                        label="Password"
+                        name="password"
+                        value={formData.password}
+                        handleChange={handleChange}
+                    />
+                </div>
+                <div className="registration-repeat-password-container">
+                    <Password
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        handleChange={handleChange}
+                    />
+                </div>
+                <div className="registration-actions">
+                    <div className="registration-terms">
+                        By selecting <strong>Create account</strong>, you agree to our <Link to='/user-agreement'>User Agreement</Link> and acknowledge reading our <Link to='/user-privacy-notice'>User Privacy Notice</Link>.
                     </div>
-                    <div className="registration-repeat-password-container">
-                        <Password
-                            label="Confirm Password"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            handleChange={handleChange}
-                        />
-                    </div>
-                    <div className="registration-actions">
-                        <div className="registration-terms">
-                            By selecting <strong>Create account</strong>, you agree to our <Link to='/user-agreement'>User Agreement</Link> and acknowledge reading our <Link to='/user-privacy-notice'>User Privacy Notice</Link>.
-                        </div>
-                        <button type="submit" className="registration-button btn">Create account</button>
-                        <span className="go-to-login">Already have an account? <Link to="/">Sign in</Link></span>
-                        <div className={`${error ? "error" : "success"}`} id="password-validation">{error ? error : success}</div>
-                    </div>
-                </form>
+                </div>
+                <div className="go-to-login">Already have an account? <Link to="/">Sign in</Link></div>
             </Form>
         </div>
     );

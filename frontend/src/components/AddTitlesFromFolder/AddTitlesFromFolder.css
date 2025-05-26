@@ -1,43 +1,20 @@
-.add-titles-from-folder-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.add-titles-from-folder-wrapper {
-    height: 100%;
-    width: 85%;
-    min-width: 250px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.add-titles-from-folder-title {
-    padding-top: 20px;
-    font-size: 24px;
-    font-weight: 600;
-}
-
 .add-titles-from-folder-content {
-    height: 80%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    align-items: center;
 }
 
 .select-folder-container {
-    margin: 50px 0;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     border: 1px solid;
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
     cursor: pointer;
-    align-self: center;
+    margin-bottom: 30px;
 }
 
 .folder-icon {
@@ -71,11 +48,9 @@
 }
 
 .titles-list-from-folder {
-    max-height: 300px;
+    max-height: 250px;
     overflow-y: auto;
     position: relative;
-    width: 100%;
-    padding-right: 4px;
 }
 
 .titles-list-from-folder ul {
@@ -115,7 +90,7 @@
 }
 
 .extracted-title {
-    padding: 0 10px 0 20px;
+    padding: 5px 10px 5px 20px;
     width: calc(100% - 75px);
 }
 
@@ -137,51 +112,7 @@
     margin: 0 10px;
 }
 
-.add-titles-from-folder-container .instruction {
-    text-align: center;
-    padding: 10px 0;
-}
-
-@media only screen and (max-width: 730px) {
-    .add-titles-from-folder-container .form-image-horizontal {
-        display: none;
-    }
-
-    .add-titles-from-folder-content {
-        height: 90%;
-    }
-
-    .dropdown-lists {
-        flex-direction: column;
-        gap: 10px;
-        height: 110px;
-    }
-
-    .select-folder-titles-type-select,
-    .select-folder-otaku-list-select {
-        width: 100%;
-    }
-
-    .titles-list-from-folder {
-        max-height: 400px;
-    }
-}
-
-@media only screen and (max-width: 490px) {
-    .select-folder-container {
-        width: 200px;
-        height: 200px;
-    }
-
-    .add-titles-from-folder-content>div.titles-list-from-folder>ul {
-        height: 30vh;
-    }
-}
-
-@media only screen and (max-height: 375px) {
-
-    .extracted-title>span.extracted-title-filename,
-    .extracted-title>span.extracted-title-index {
-        font-size: 13px;
-    }
+.extracted-title>span.extracted-title-filename,
+.extracted-title>span.extracted-title-index {
+    font-size: 11px;
 }

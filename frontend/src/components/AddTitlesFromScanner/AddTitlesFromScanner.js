@@ -121,106 +121,116 @@ const AddTitlesFromScanner = () => {
         setScanning(false);
     };
 
+    const buttons = usingManual
+        ? [
+            {
+                label: "Search Book",
+                type: "button",
+                className: "btn",
+                onClick: handleManualIsbnSubmit,
+            },
+            {
+                label: "Back to Options",
+                type: "button",
+                className: "btn",
+                onClick: resetSearch,
+            },
+        ]
+        : [
+            {
+                label: "Enter ISBN Manually",
+                type: "button",
+                className: "manual-isbn btn",
+                onClick: () => {
+                    resetSearch();
+                    setUsingManual(true);
+                },
+            },
+        ];
+
     return (
         <div className='add-titles-by-scanning-container'>
-            <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="add-titles-by-scanning-wrapper" onSubmit={(e) => e.preventDefault()}>
-                    <div className='add-titles-by-scanning-title'>Add Titles by ISBN</div>
+            <Form formImage={formImage} formImageHorizontal={formImageHorizontal}
+                header="Add Titles by ISBN"
+                floatingMessage=""
+                onSubmit={(e) => e.preventDefault()}
+                instruction={
+                    <>
 
-                    {!isBookFound && !usingManual && (
-                        <div className='method-toggle'>
-                            {isMobileOrTablet ? (
-                                <button
-                                    type="button"
-                                    className="btn"
-                                    onClick={() => {
-                                        resetSearch();
-                                        setScanning(true);
-                                    }}
-                                >
-                                    Scan ISBN with Camera
-                                </button>
-                            ) : (
-                                <p className="scanner-unavailable-message">
-                                    Scanning is only available on mobile or tablet devices.
-                                </p>
-                            )}
-                            <>
-                                <div className='options-decoration'>
-                                    <hr />
-                                    <span>OR</span>
-                                    <hr />
-                                </div>
-                                <button type="button" className="btn" onClick={() => { resetSearch(); setUsingManual(true); }}>Enter ISBN Manually</button>
-                            </>
-                        </div>
-                    )}
-
-                    {scanning && !isBookFound && (
-                        <div className='scanner-ui'>
-                            <p>Place the barcode in front of the camera</p>
-                            <video ref={videoRef} style={{ width: '100%', maxWidth: '500px' }} playsInline muted autoPlay />
-                            <div className='scanner-actions'>
-                                <button className='btn' onClick={() => setScanning(false)}>Stop Scanning</button>
-                                <button className='btn' onClick={() => { setScanning(false); setUsingManual(true); }}>Try Manually</button>
-                            </div>
-                        </div>
-                    )}
-
-                    {usingManual && !isBookFound && (
+                    </>
+                }
+                buttons={buttons}
+            >
+                {!isBookFound && !usingManual && (
+                    <div className='method-toggle'>
+                        {isMobileOrTablet ? (
+                            <button
+                                type="button"
+                                className="btn"
+                                onClick={() => {
+                                    resetSearch();
+                                    setScanning(true);
+                                }}
+                            >
+                                Scan ISBN with Camera
+                            </button>
+                        ) : (
+                            <p className="scanner-unavailable-message">
+                                Scanning is only available on mobile or tablet devices.
+                            </p>
+                        )}
                         <>
-                            <div className='manual-entry'>
-                                <div className='manual-isbn-input'>
-                                    <label htmlFor="manual-isbn">Enter ISBN:</label>
-                                    <input
-                                        type="text"
-                                        id="manual-isbn"
-                                        value={manualIsbn}
-                                        onChange={(e) => {
-                                            setManualIsbn(e.target.value);
-                                            setErrorMessage('');
-                                        }}
-                                        placeholder="ISBN (10 or 13 digits)"
-                                    />
-                                    {errorMessage && <label className="error">{errorMessage}</label>}
-                                </div>
-                                <div className="buttons">
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        onClick={handleManualIsbnSubmit}
-                                    >
-                                        Search Book
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        onClick={resetSearch}
-                                    >
-                                        Back to Options
-                                    </button>
-                                </div>
+                            <div className='options-decoration'>
+                                <hr />
+                                <span>OR</span>
+                                <hr />
                             </div>
                         </>
-                    )}
+                    </div>
+                )}
 
-                    {isBookFound && scannedBook && (
-                        <div className="scanned-book">
-                            <label><strong>Result for ISBN:</strong> {scannedBook.isbn}</label>
-                            <div className='scanned-book-details'>
-                                {scannedBook.cover && (
-                                    <img src={scannedBook.cover} alt={scannedBook.title} />
-                                )}
-                                <span className='scanned-title'><strong>{scannedBook.title}</strong></span>
-                                <span><strong>Author:</strong> {scannedBook.author}</span>
-                            </div>
-                            <div className="buttons">
-                                <button className='btn' onClick={() => console.log('Add to list clicked')}>Add to list</button>
-                                <button className='btn' onClick={resetSearch}>Search another</button>
-                            </div>
+                {scanning && !isBookFound && (
+                    <div className='scanner-ui'>
+                        <p>Place the barcode in front of the camera</p>
+                        <video ref={videoRef} style={{ width: '100%', maxWidth: '500px' }} playsInline muted autoPlay />
+                        <div className='scanner-actions'>
+                            <button className='btn' onClick={() => setScanning(false)}>Stop Scanning</button>
+                            <button className='btn' onClick={() => { setScanning(false); setUsingManual(true); }}>Try Manually</button>
                         </div>
-                    )}
-                </form>
+                    </div>
+                )}
+
+                {usingManual && !isBookFound && (
+                    <>
+                        <div className='manual-isbn-input'>
+                            <label htmlFor="manual-isbn">Enter ISBN:</label>
+                            <input
+                                type="text"
+                                id="manual-isbn"
+                                value={manualIsbn}
+                                onChange={(e) => {
+                                    setManualIsbn(e.target.value);
+                                    setErrorMessage('');
+                                }}
+                                placeholder="ISBN (10 or 13 digits)"
+                            />
+                            {errorMessage && <label className="error">{errorMessage}</label>}
+                        </div>
+                    </>
+                )}
+
+                {isBookFound && scannedBook && (
+                    <div className="scanned-book">
+                        <label><strong>Result for ISBN:</strong> {scannedBook.isbn}</label>
+                        <div className='scanned-book-details'>
+                            {scannedBook.cover && (
+                                <img src={scannedBook.cover} alt={scannedBook.title} />
+                            )}
+                            <span className='scanned-title'><strong>{scannedBook.title}</strong></span>
+                            <span><strong>Author:</strong> {scannedBook.author}</span>
+                        </div>
+                    </div>
+                )}
             </Form>
         </div>
     );

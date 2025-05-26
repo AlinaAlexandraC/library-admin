@@ -1,8 +1,5 @@
 import User from "../models/User.js";
 import Title from "../models/Title.js";
-import List from "../models/List.js";
-
-const DEFAULT_LIST_NAMES = ["Anime", "Movie", "Manga", "Series", "Book", "Unknown"];
 
 // Add a title to the user's list
 
@@ -66,29 +63,24 @@ export const addTitleToUserList = async (req, res) => {
                 await newTitle.save();
             }
 
-            const isInAnotherList = user.lists.some(userList =>
-                userList._id.toString() !== list._id.toString() &&
-                userList.titles.some(entry => entry.title_id?._id.toString() === newTitle._id.toString())
+            const isDuplicate = user.lists.some(userList =>
+                userList.titles.some(entry =>
+                    entry.title_id &&
+                    entry.title_id.title === newTitle.title &&
+                    entry.title_id.type === newTitle.type
+                )
             );
 
-            if (isInAnotherList) {
+            if (isDuplicate) {
                 duplicateTitles.push(newTitle);
                 continue;
             }
 
-            const alreadyInList = list.titles.some(
-                item => item.title_id.toString() === newTitle._id.toString()
-            );
-
-            if (!alreadyInList) {
-                list.titles.push({ title_id: newTitle._id, dateAdded: new Date() });
-                savedTitles.push(newTitle);
-            } else {
-                duplicateTitles.push(newTitle);
-            }
+            list.titles.push({ title_id: newTitle._id, dateAdded: new Date() });
+            savedTitles.push(newTitle);
         }
 
-        await list.save();
+        await list.save();       
 
         return res.status(201).json({
             success: true,
@@ -96,11 +88,13 @@ export const addTitleToUserList = async (req, res) => {
             addedTitles: savedTitles,
             duplicates: duplicateTitles
         });
+
     } catch (error) {
         console.error("Error in addTitleToUserList:", error);
         return res.status(500).json({ message: error.message });
     }
 };
+
 
 // Get all titles
 
@@ -143,6 +137,16 @@ export const updateTitleDetails = async (req, res) => {
 
         const user = await User.findOne({ firebaseUid });
         if (!user) return res.status(404).json({ message: "User not found." });
+
+        const duplicate = await Title.findOne({
+            title: updatedData.title,
+            type: updatedData.type,
+            _id: { $ne: title_id },
+        });
+
+        if (duplicate) {
+            return res.status(400).json({ message: "This change would create a duplicate title in your library." });
+        }
 
         const updatedTitle = await Title.findByIdAndUpdate(title_id, updatedData, { new: true });
         if (!updatedTitle) return res.status(404).json({ message: "Title not found." });

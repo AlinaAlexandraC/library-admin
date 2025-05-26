@@ -53,30 +53,42 @@ const ForgotPassword = () => {
 
     return (
         <div className="forgot-password-container">
-            <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="forgot-password-wrapper" onSubmit={handleResetPassword}>
-                    <div className="forgot-password-title">Forgot Password</div>
-                    <div className="forgot-password-email-container">
-                        <label htmlFor="email">Email address</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="buttons">
-                        <button type="submit" className="send-reset-link btn" >Send Reset Link</button>
-                        <div className="return-to-login-button">
-                            <Link to="/" className="link">
-                                <div className="return-to-login btn">Go back to login</div>
-                            </Link>
-                        </div>
-                    </div>
-                    <div className={`${error ? "error" : "success"}`}>{error ? error : message}</div>
-                    <div className="instruction">Password must be at least 8 characters long, contain one uppercase letter, and one number</div>
-                </form>
+            <Form
+                formImage={formImage}
+                formImageHorizontal={formImageHorizontal}
+                header="Forgot Password"
+                onSubmit={handleResetPassword}
+                floatingMessage={
+                    error
+                        ? { type: "error", text: error }
+                        : message
+                            ? { type: "success", text: message }
+                            : null
+                }
+                instruction={"Password must be at least 8 characters long, contain one uppercase letter, and one number"}
+                buttons={[
+                    {
+                        label: "Send Reset Link",
+                        type: "submit",
+                        className: "send-reset-link btn",
+                    },
+                    {
+                        label: "Go back to login",
+                        type: "button",
+                        className: "return-to-login btn",
+                        onClick: () => navigate("/")
+                    }
+                ]} >
+                <div className="forgot-password-email-container">
+                    <label htmlFor="email">Email address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
             </Form>
         </div>
     );

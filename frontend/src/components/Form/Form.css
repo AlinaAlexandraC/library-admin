@@ -5,15 +5,15 @@
     justify-content: center;
     align-items: center;
     height: 80vh;
-    width: 90vw;
+    width: 95vw;
     max-width: 1300px;
     border-radius: 10px;
 }
 
 .form-wrapper {
     display: flex;
-    width: 80%;
-    height: 70%;
+    width: 90%;
+    height: 85%;
     border-radius: 20px;
     background-color: #f8f8f8;
     overflow: hidden;
@@ -37,12 +37,38 @@
 
 .form-structure {
     flex: 1;
-    background-color: #f8f8f8;
-    border-radius: 0 20px 20px 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
+}
+
+.form-header {
+    font-size: 24px;
+    font-weight: 600;
+    width: 70%;
+    min-width: 250px;
+}
+
+.form-body {
+    width: 70%;
+    min-width: 250px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.form-body-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-instruction {
+    text-align: center;
+    font-size: 12px;
+    margin: 10px 0;
 }
 
 @media only screen and (max-width: 730px) {
@@ -67,6 +93,30 @@
     }
 }
 
+@media only screen and (max-height: 830px) {
+    .form-container {
+        height: 90vh;
+    }
+
+    .form-wrapper {
+        height: 85%;
+    }
+
+    .form-body {
+        gap: 5px;
+    }
+
+    .form-structure {
+        justify-content: flex-start;
+        max-height: 580px;
+        overflow: auto;
+    }
+
+    .form-structure::-webkit-scrollbar {
+        display: none;
+    }
+}
+
 @media only screen and (max-height: 375px) {
     .form-wrapper {
         height: 85%;
@@ -75,5 +125,9 @@
 
     .form-structure {
         overflow: scroll;
+    }
+
+    .form-structure::-webkit-scrollbar {
+        display: none;
     }
 }

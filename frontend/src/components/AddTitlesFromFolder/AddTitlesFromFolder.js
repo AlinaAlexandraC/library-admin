@@ -18,6 +18,7 @@ const AddTitlesFromFolder = () => {
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
     const [duplicateCount, setDuplicateCount] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -53,6 +54,7 @@ const AddTitlesFromFolder = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         if (titleFormData.length === 0) {
             setError("No titles to add. Please select a valid folder.");
@@ -114,6 +116,8 @@ const AddTitlesFromFolder = () => {
         } catch (error) {
             setError("Failed to connect to server");
             setTimeout(() => setError(null), 3000);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -122,93 +126,106 @@ const AddTitlesFromFolder = () => {
         setSelectedType(value);
     };
 
-    const reselectFolder = () => {
-        setTitleFormData([]);
-        setFolderSelected(false);
-    };
+    const floatingMessage = isSubmitting
+        ? { text: "Adding titles, please wait...", type: "info" }
+        : error
+            ? { text: error, type: "error" }
+            : success
+                ? { text: success, type: "success" }
+                : duplicateCount > 0
+                    ? { text: `${duplicateCount} duplicate ${duplicateCount === 1 ? "title was" : "titles were"} skipped.`, type: "info" }
+                    : null;
+
+    const buttons = [
+        {
+            label: "Add to list",
+            type: "submit",
+            className: "add-titles-from-folder-button btn",
+        },
+        folderSelected
+            ? {
+                label: "Select another",
+                onClick: () => {
+                    setTitleFormData([]);
+                    setFolderSelected(false);
+                },
+                className: "select-another-button btn",
+            }
+            : {
+                label: "See list",
+                onClick: () => navigate("/lists"),
+                className: "see-library-button btn",
+            },
+    ];
+
+    const instruction = folderSelected ? (
+        <>
+            Adding <strong>{titleFormData.length} titles </strong> to the <strong>{selectedOtakuList || selectedType || "Unknown"}</strong> list. Duplicates will be removed.
+        </>
+    ) : null;
 
     return (
         <div className="add-titles-from-folder-container">
-            <Form formImage={formImage} formImageHorizontal={formImageHorizontal}>
-                <form className="add-titles-from-folder-wrapper" onSubmit={handleSubmit} >
-                    <div className="add-titles-from-folder-title">Import titles from a folder</div>
-                    <div className="add-titles-from-folder-content">
-                        {!folderSelected && (
-                            <div className="select-folder-container" onClick={handleFolderSelection}>
-                                <img src={folderIcon} alt="folder-icon" className="folder-icon" />
-                                <span>Select Folder</span>
-                            </div>
-                        )}
-                        {titleFormData.length > 0 && (
-                            <>
-                                <div className="dropdown-lists">
-                                    <div className="select-folder-titles-type-select">
-                                        <label>Type</label>
-                                        <select name="type" id="type" className="type-select" value={selectedType} onChange={handleChange}>
-                                            {typeDropdown.map((option, index) => (
-                                                <option key={index} value={option}>{option}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="select-folder-otaku-list-select">
-                                        <label>OtakuList</label>
-                                        <select
-                                            name="customList"
-                                            className="custom-list"
-                                            value={selectedOtakuList}
-                                            onChange={(e) => setSelectedOtakuList(e.target.value)}
-                                            disabled={userLists.length === 0}
-                                        >
-                                            <option value="">Select a custom list</option>
-                                            {userLists.map(list => (
-                                                <option key={list._id} value={list.name}>{list.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="titles-list-from-folder">
-                                    <ul className="extracted-titles-list-container">
-                                        {titleFormData.map((title, index) => (
-                                            <li key={index} className="extracted-title-container">
-                                                <div className="decoration"></div>
-                                                <div className="extracted-title">
-                                                    <span className="extracted-title-index">{index + 1}.</span>
-                                                    <span className="extracted-title-filename">{title}</span>
-                                                </div>
-                                                <button type="button" onClick={() => setTitleFormData(titleFormData.filter((_, i) => i !== index))} className="extracted-title-button">x</button>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </>
-                        )}
-                        {folderSelected && (
-                            <span className="instruction">
-                                Adding <strong>{titleFormData.length}</strong> titles to the <strong>{selectedOtakuList || selectedType || "Unknown"}</strong> list. Duplicates will be removed.
-                            </span>
-                        )}
-                        <div className="buttons">
-                            <button type="submit" className="add-titles-from-folder-button btn">Add to list</button>
-                            {folderSelected ? (
-                                <button type="button" className="select-another-button btn" onClick={reselectFolder}>Select another folder</button>
-                            ) : (
-                                <button type="button" className="see-library-button btn" onClick={() => navigate("/lists")}>See list</button>
-                            )}
+            <Form
+                formImage={formImage}
+                formImageHorizontal={formImageHorizontal}
+                header="Import titles from a folder"
+                onSubmit={handleSubmit}
+                floatingMessage={floatingMessage}
+                instruction={instruction}
+                buttons={buttons}>
+                <div className="add-titles-from-folder-content">
+                    {!folderSelected && (
+                        <div className="select-folder-container" onClick={handleFolderSelection}>
+                            <img src={folderIcon} alt="folder-icon" className="folder-icon" />
+                            <span>Select Folder</span>
                         </div>
-                        <label className={`${error ? "error" : "success"}`}>{error || success}</label>
-                    </div>
-                </form>
+                    )}
+                    {titleFormData.length > 0 && (
+                        <>
+                            <div className="dropdown-lists">
+                                <div className="select-folder-titles-type-select">
+                                    <label>Type</label>
+                                    <select name="type" id="type" className="type-select" value={selectedType} onChange={handleChange}>
+                                        {typeDropdown.map((option, index) => (
+                                            <option key={index} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="select-folder-otaku-list-select">
+                                    <label>OtakuList</label>
+                                    <select
+                                        name="customList"
+                                        className="custom-list"
+                                        value={selectedOtakuList}
+                                        onChange={(e) => setSelectedOtakuList(e.target.value)}
+                                        disabled={userLists.length === 0}
+                                    >
+                                        <option value="">Select a custom list</option>
+                                        {userLists.map(list => (
+                                            <option key={list._id} value={list.name}>{list.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="titles-list-from-folder">
+                                <ul className="extracted-titles-list-container">
+                                    {titleFormData.map((title, index) => (
+                                        <li key={index} className="extracted-title-container">
+                                            <div className="decoration"></div>
+                                            <div className="extracted-title">
+                                                <span className="extracted-title-index">{index + 1}.</span>
+                                                <span className="extracted-title-filename">{title}</span>
+                                            </div>
+                                            <button type="button" onClick={() => setTitleFormData(titleFormData.filter((_, i) => i !== index))} className="extracted-title-button">x</button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </>
+                    )}
+                </div>
             </Form>
-            {titleFormData.length > 20 && (
-                <div className="floating-error">
-                    Adding many titles may take some time. Thanks for your patience!
-                </div>
-            )}
-            {duplicateCount > 0 && (
-                <div className="floating-error">
-                    {duplicateCount} duplicate {duplicateCount === 1 ? "title was" : "titles were"} skipped.
-                </div>
-            )}
         </div>
     );
 };

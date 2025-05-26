@@ -1,9 +1,9 @@
 .App {
     opacity: 0;
-    animation: fadeIn 0.5s forwards;
+    animation: appFadeIn 0.5s forwards;
 }
 
-@keyframes fadeIn {
+@keyframes appFadeIn {
     to {
         opacity: 1;
     }
@@ -74,10 +74,10 @@ select {
     display: flex;
     justify-content: space-around;
     gap: 10px;
-    padding: 10px 0;
+    padding: 20px 0;
 }
 
-.floating-error {
+.floating-message {
     position: fixed;
     bottom: 10px;
     left: 50%;
@@ -91,17 +91,48 @@ select {
     z-index: 9999;
     font-size: 16px;
     text-align: center;
-    animation: fadeIn 0.3s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+    animation: floatingFadeIn 0.3s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
     padding: 10px 15px;
 }
 
-@keyframes fadeIn {
+.floating-message.error {
+    background-color: #e74c3c;
+    color: white;
+    border: 1px solid #c0392b;
+}
+
+.floating-message.success {
+    background-color: #2ecc71;
+    color: white;
+    border: 1px solid #27ae60;
+}
+
+.floating-message.info {
+    background-color: #3498db;
+    color: white;
+    border: 1px solid #2980b9;
+}
+
+
+@keyframes floatingFadeIn {
     from {
         opacity: 0;
+        transform: translateX(-50%) translateY(20px);
     }
 
     to {
         opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
     }
 }
 
@@ -110,19 +141,6 @@ select {
     span,
     label {
         font-size: 12px;
-    }
-
-    .floating-error {
-        font-size: 9px;
-    }
-
-    .buttons {
-        width: 250px;
-    }
-
-    .btn {
-        height: 25px;
-        font-size: 11px;
     }
 }
 
