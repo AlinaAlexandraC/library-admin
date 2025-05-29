@@ -30,11 +30,14 @@
     font-size: 12px;
 }
 
+.registration-name,
+.registration-email-container,
+.registration-repeat-password-container,
 .registration-button {
     width: 100%;
 }
 
-@media only screen and (max-width: 730px) {
+@media only screen and (max-width: 480px) {
 
     .registration-terms,
     .go-to-login {

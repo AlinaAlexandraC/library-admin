@@ -41,9 +41,14 @@
     color: #333;
 }
 
-@media only screen and (max-width: 490px) {
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
     .search-bar-container {
         height: 40px;
         margin: 6px 10px;
+    }
+
+    .clear-button {
+        font-size: 20px;
     }
 }

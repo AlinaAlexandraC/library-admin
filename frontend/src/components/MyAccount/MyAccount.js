@@ -8,11 +8,11 @@ import DeleteAccount from "../DeleteAccount/DeleteAccount";
 
 const MyAccount = () => {
     const [isEditing, setIsEditing] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
+    const [floatingMessage, setFloatingMessage] = useState(null);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [originalUserData, setOriginalUserData] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
@@ -23,8 +23,13 @@ const MyAccount = () => {
                 setFirstName(data.firstName);
                 setLastName(data.lastName);
                 setEmail(data.email);
+                setOriginalUserData({
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    email: data.email,
+                });
             } catch (error) {
-                setError("Failed to load user data");
+                setFloatingMessage({ type: "error", text: "Failed to load user data" });
             }
         };
 
@@ -37,9 +42,20 @@ const MyAccount = () => {
 
     const handleSave = async () => {
         if (!firstName.trim() || !lastName.trim() || !email.trim()) {
-            setError("Fields cannot be empty");
-            setTimeout(() => setError(null), 3000);
-            setSuccess(null);
+            setFloatingMessage({ type: "error", text: "Fields cannot be empty" });
+            setTimeout(() => setFloatingMessage(null), 3000);
+            return;
+        }
+
+        if (
+            originalUserData &&
+            firstName === originalUserData.firstName &&
+            lastName === originalUserData.lastName &&
+            email === originalUserData.email
+        ) {
+            setFloatingMessage({ type: "info", text: "No changes detected." });
+            setTimeout(() => setFloatingMessage(null), 3000);
+            setIsEditing(false);
             return;
         }
 
@@ -52,14 +68,14 @@ const MyAccount = () => {
         try {
             await fetchData("users/update", 'PATCH', userData);
 
-            setError(null);
-            setSuccess("Details saved successfully");
-            setTimeout(() => setSuccess(null), 3000);
+            setFloatingMessage({ type: "success", text: "Details saved successfully" });
+            setTimeout(() => setFloatingMessage(null), 3000);
             setIsEditing(false);
+            setOriginalUserData(userData);
         } catch (error) {
             console.error("Failed to save item:", error);
-            setError("Failed to save details. Please try again.");
-            setTimeout(() => setError(null), 3000);
+            setFloatingMessage({ type: "error", text: "Failed to save details. Please try again." });
+            setTimeout(() => setFloatingMessage(null), 3000);
         }
     };
 
@@ -109,11 +125,7 @@ const MyAccount = () => {
                 formImage={formImage}
                 formImageHorizontal={formImageHorizontal}
                 header="Personal details"
-                floatingMessage={
-                    error
-                        ? { type: "error", text: error }
-                        : { type: "success", text: success }
-                }
+                floatingMessage={floatingMessage && floatingMessage.text ? floatingMessage : null}
                 buttons={buttons}>
                 <div className="my-account-wrapper">
                     <div className="my-account-details">

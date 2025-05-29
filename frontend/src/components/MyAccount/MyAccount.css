@@ -3,6 +3,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+}
+
+.my-account-wrapper {
+    width: 100%;
 }
 
 .first-name-container,

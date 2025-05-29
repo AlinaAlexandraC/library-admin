@@ -3,7 +3,7 @@ import "./Form.css";
 const Form = ({ children, formImage, formImageHorizontal, header, floatingMessage, onSubmit, instruction, buttons = [], }) => {
     const floatingClass = floatingMessage
         ? `floating-message ${floatingMessage.type || "info"}`
-        : "";
+        : "";     
 
     return (
         <div className="form-container">
@@ -19,7 +19,8 @@ const Form = ({ children, formImage, formImageHorizontal, header, floatingMessag
                         <div className="form-body-content">
                             {children}
                         </div>
-
+                        {instruction && <div className="form-instruction">{instruction}</div>
+                        }
                         <div className="buttons">
                             {buttons.map((btn, index) => (
                                 <button
@@ -32,8 +33,7 @@ const Form = ({ children, formImage, formImageHorizontal, header, floatingMessag
                                 </button>
                             ))}
                         </div>
-                        {instruction && <div className="form-instruction">{instruction}</div>
-                        }
+
                     </form>
 
                     {floatingMessage && (

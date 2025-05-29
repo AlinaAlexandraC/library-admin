@@ -37,23 +37,34 @@
     margin-top: 30px;
 }
 
-.move-default-btn {
-    width: 100%;
+.edit-item-container::-webkit-scrollbar {
+    display: none;
 }
 
-.btn {
+.move-default-btn {
+    width: 100%;
     padding: 8px 12px;
     cursor: pointer;
     border: none;
     border-radius: 5px;
 }
 
-.save-btn {
+.edit-item-container>div>div>button.save-btn.btn,
+.edit-item-container>div>div>button.cancel-btn.btn {
+    color: #fff;
+    height: 36px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+.edit-item-container>div>div>button.save-btn.btn {
     background: #388E3C;
     color: white;
 }
 
-.cancel-btn {
+.edit-item-container>div>div>button.cancel-btn.btn {
     background: #e53935;
     color: white;
 }

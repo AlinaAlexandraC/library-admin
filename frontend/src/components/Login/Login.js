@@ -12,8 +12,7 @@ const Login = () => {
         email: "",
         password: "",
     });
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
+    const [floatingMessage, setFloatingMessage] = useState(null);
     const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
 
@@ -31,8 +30,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
-        setSuccess(null);
+        setFloatingMessage(null);
 
         try {
             const response = await loginUser(formData);
@@ -44,21 +42,21 @@ const Login = () => {
                     localStorage.removeItem("rememberedEmail");
                 }
 
-                setSuccess("Welcome! Redirecting to library...");
+                setFloatingMessage({ type: "success", text: "Welcome! Redirecting to library..." });
                 setTimeout(() => navigate(`/lists`), 2000);
             } else {
-                setError("Login failed: No user data received. Please try again.");
+                setFloatingMessage({ type: "error", text: "Login failed: No user data received. Please try again." });
             }
         } catch (error) {
+            let message = "An error occurred during login.";
             if (error.code === "auth/too-many-requests") {
-                setError("Too many attempts. Please wait a moment and try again.");
+                message = "Too many attempts. Please wait a moment and try again.";
             } else if (error.code === "auth/invalid-credential") {
-                setError("Please check your credentials and try again.");
-            } else {
-                setError("An error occurred during login.");
+                message = "Please check your credentials and try again.";
             }
 
-            setTimeout(() => setError(""), 3000);
+            setFloatingMessage({ type: "error", text: message });
+            setTimeout(() => setFloatingMessage(null), 3000);
         }
     };
 
@@ -72,11 +70,7 @@ const Login = () => {
                 formImage={formImage}
                 formImageHorizontal={formImageHorizontal}
                 header="Sign in to your account"
-                floatingMessage={
-                    error
-                        ? { type: "error", text: error }
-                        : { type: "success", text: success }
-                }
+                floatingMessage={floatingMessage && floatingMessage.text ? floatingMessage : null}
                 onSubmit={handleSubmit}
                 buttons={[
                     {

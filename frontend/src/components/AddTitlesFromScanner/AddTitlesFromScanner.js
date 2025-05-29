@@ -15,7 +15,7 @@ const AddTitlesFromScanner = () => {
     const [manualIsbn, setManualIsbn] = useState('');
     const [isBookFound, setIsBookFound] = useState(false);
     const [usingManual, setUsingManual] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [floatingMessage, setFloatingMessage] = useState(null);
 
     const isMobileOrTablet = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
@@ -80,13 +80,12 @@ const AddTitlesFromScanner = () => {
     };
 
     const handleManualIsbnSubmit = async () => {
-        setErrorMessage('');
-
+        setFloatingMessage(null);
         const sanitizedIsbn = manualIsbn.trim().replace(/[^0-9Xx]/g, '');
 
         if (sanitizedIsbn.length < 10) {
-            setErrorMessage("Please enter a valid ISBN with at least 10 characters.");
-            setTimeout(() => setErrorMessage(""), 3000);
+            setFloatingMessage({ type: "error", text: "Please enter a valid ISBN with at least 10 characters." });
+            setTimeout(() => setFloatingMessage(null), 3000);
             setIsBookFound(false);
             return;
         }
@@ -95,19 +94,19 @@ const AddTitlesFromScanner = () => {
             const bookData = await fetchBookByIsbn(sanitizedIsbn);
 
             if (bookData) {
-                console.log("Manually entered ISBN:", sanitizedIsbn);
                 setScannedBook({ isbn: sanitizedIsbn, ...bookData });
                 setIsBookFound(true);
+                setFloatingMessage({ type: "success", text: "Book found!" });
+                setTimeout(() => setFloatingMessage(null), 3000);
             } else {
-                setErrorMessage("No book found with this ISBN.");
-                setTimeout(() => setErrorMessage(""), 3000);
+                setFloatingMessage({ type: "error", text: "No book found with this ISBN." });
+                setTimeout(() => setFloatingMessage(null), 3000);
                 setIsBookFound(false);
                 setScannedBook(null);
             }
         } catch (error) {
-            setErrorMessage("Error fetching book data. Please try again later.");
-            setTimeout(() => setErrorMessage(""), 3000);
-            console.error("Fetch error:", error);
+            setFloatingMessage({ type: "error", text: "Error fetching book data. Please try again later." });
+            setTimeout(() => setFloatingMessage(null), 3000);
             setIsBookFound(false);
             setScannedBook(null);
         }
@@ -152,13 +151,8 @@ const AddTitlesFromScanner = () => {
         <div className='add-titles-by-scanning-container'>
             <Form formImage={formImage} formImageHorizontal={formImageHorizontal}
                 header="Add Titles by ISBN"
-                floatingMessage=""
+                floatingMessage={floatingMessage && floatingMessage.text ? floatingMessage : null}
                 onSubmit={(e) => e.preventDefault()}
-                instruction={
-                    <>
-
-                    </>
-                }
                 buttons={buttons}
             >
                 {!isBookFound && !usingManual && (
@@ -210,11 +204,10 @@ const AddTitlesFromScanner = () => {
                                 value={manualIsbn}
                                 onChange={(e) => {
                                     setManualIsbn(e.target.value);
-                                    setErrorMessage('');
+                                    setFloatingMessage(null);
                                 }}
                                 placeholder="ISBN (10 or 13 digits)"
                             />
-                            {errorMessage && <label className="error">{errorMessage}</label>}
                         </div>
                     </>
                 )}

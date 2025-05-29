@@ -13,8 +13,14 @@
     height: 100%;
 }
 
-@media only screen and (max-width: 490px) {
+@media only screen and (max-width: 480px) {
     .list-item-container {
-        height: 50px;
+        height: 40px;
+    }
+}
+
+@media only screen and (max-height: 375px) {
+    .list-item-container {
+        height: 40px;
     }
 }

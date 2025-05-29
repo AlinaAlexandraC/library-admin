@@ -74,14 +74,15 @@
     align-items: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
 
     .title-details,
     .title-only {
         width: calc(100% - 80px);
     }
 
-    .filename {
-        font-size: clamp(12px, 2vw, 24px);
+    .title-item-name-only>span.filename {
+        font-size: 12px;
     }
 }

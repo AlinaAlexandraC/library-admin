@@ -13,7 +13,7 @@
 .form-wrapper {
     display: flex;
     width: 90%;
-    height: 85%;
+    height: 90%;
     border-radius: 20px;
     background-color: #f8f8f8;
     overflow: hidden;
@@ -53,7 +53,7 @@
 .form-body {
     width: 70%;
     min-width: 250px;
-    min-height: 400px;
+    min-height: 350px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -62,7 +62,10 @@
 .form-body-content {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
 }
 
 .form-instruction {
@@ -71,10 +74,10 @@
     margin: 10px 0;
 }
 
-@media only screen and (max-width: 730px) {
+@media (max-width: 480px) {
     .form-wrapper {
         flex-direction: column;
-        height: 90%;
+        height: 95%;
     }
 
     .form-image-wrapper {
@@ -93,41 +96,29 @@
     }
 }
 
-@media only screen and (max-height: 830px) {
-    .form-container {
-        height: 90vh;
-    }
-
-    .form-wrapper {
-        height: 85%;
-    }
-
-    .form-body {
-        gap: 5px;
-    }
-
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
     .form-structure {
         justify-content: flex-start;
         max-height: 580px;
-        overflow: auto;
-    }
-
-    .form-structure::-webkit-scrollbar {
-        display: none;
-    }
-}
-
-@media only screen and (max-height: 375px) {
-    .form-wrapper {
-        height: 85%;
-        width: 85%;
-    }
-
-    .form-structure {
         overflow: scroll;
     }
 
     .form-structure::-webkit-scrollbar {
         display: none;
+    }
+
+    .form-header {
+        font-size: 18px;
+    }
+
+    .form-body {
+        gap: 5px;
+    }
+}
+
+@media (max-height: 375px) and (orientation: landscape) {
+    .form-body {
+        min-height: 200px;
     }
 }

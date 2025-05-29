@@ -161,7 +161,8 @@
     border-radius: 0 0 10px 10px;
 }
 
-@media only screen and (max-width: 730px) {
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
     .randomizer-wrapper {
         flex-direction: column;
         height: 75vh;
@@ -203,11 +204,5 @@
 
     .select-another-list {
         width: 100%;
-    }
-}
-
-@media only screen and (max-height: 680px) {
-    .randomizer-icon {
-        display: none;
     }
 }

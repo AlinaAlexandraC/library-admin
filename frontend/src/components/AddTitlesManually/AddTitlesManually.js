@@ -22,9 +22,7 @@ const AddTitlesManually = () => {
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
     const [selectedType, setSelectedType] = useState("");
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
-    const [duplicateCount, setDuplicateCount] = useState(0);
+    const [floatingMessage, setFloatingMessage] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,22 +35,16 @@ const AddTitlesManually = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
-        setSuccess(null);
+        setFloatingMessage({ type: "info", text: "Adding title, please wait..." });
 
         try {
             let targetListId;
 
             if (selectedOtakuList) {
                 const selectedList = userLists.find(list => list.name === selectedOtakuList);
-
                 targetListId = selectedList ? selectedList._id : null;
             } else {
-                if (selectedType) {
-                    targetListId = selectedType;
-                } else {
-                    targetListId = "Unknown";
-                }
+                targetListId = selectedType || "Unknown";
             }
 
             const response = await fetchData("titles/add", "POST", {
@@ -63,13 +55,26 @@ const AddTitlesManually = () => {
 
             if (response.success) {
                 const duplicates = response.duplicates?.length || 0;
-                setDuplicateCount(duplicates);
 
-                if ((response.title?.length || 0) > 0) {
-                    setSuccess("Title added successfully!");
+                if ((response.title?.length || 0) > 0 || duplicates > 0) {
+                    const successText =
+                        (response.title?.length || 0) > 0
+                            ? "Title added successfully."
+                            : "";
+                    const duplicateText =
+                        duplicates > 0
+                            ? ` ${duplicates} duplicate${duplicates === 1 ? "" : "s"} skipped.`
+                            : "";
+
+                    setFloatingMessage({
+                        type: "success",
+                        text: `${successText}${duplicateText}`.trim(),
+                    });
+                    setTimeout(() => setFloatingMessage(null), 3000);
                 } else {
-                    setSuccess("");
+                    setFloatingMessage(null);
                 }
+
                 setTitleFormData({
                     title: "",
                     type: "",
@@ -80,31 +85,19 @@ const AddTitlesManually = () => {
                     numberOfChapters: "",
                     status: false,
                 });
+
                 setSelectedOtakuList("");
                 setSelectedType("");
-                setTimeout(() => {
-                    setSuccess("");
-                    setDuplicateCount(0);
-                }, 3000);
             } else {
-                setError("Process failed. Try again later");
-                setTimeout(() => setError(""), 3000);
+                setFloatingMessage({ type: "error", text: "Process failed. Try again later" });
+                setTimeout(() => setFloatingMessage(null), 3000);
             }
         } catch (error) {
             console.error("Error during title submission:", error);
-            setError(error.message || "Process failed. Try again later");
-            setTimeout(() => setError(""), 3000);
+            setFloatingMessage({ type: "error", text: error.message || "Process failed. Try again later" });
+            setTimeout(() => setFloatingMessage(null), 3000);
         }
     };
-
-    const floatingMessage = error
-        ? { type: "error", text: error }
-        : success
-            ? { type: "success", text: success }
-            : {
-                type: "info",
-                text: duplicateCount > 0 && `${duplicateCount} duplicated ${duplicateCount === 1 ? "title was" : "titles were"} skipped.`
-            };
 
     const buttons = [
         {
@@ -126,7 +119,7 @@ const AddTitlesManually = () => {
                 formImage={formImage}
                 formImageHorizontal={formImageHorizontal}
                 header="Add a new title here"
-                floatingMessage={floatingMessage}
+                floatingMessage={floatingMessage && floatingMessage.text ? floatingMessage : null}
                 onSubmit={handleSubmit}
                 instruction={
                     <>
@@ -134,6 +127,7 @@ const AddTitlesManually = () => {
                             Titles will be added to:{" "}
                             <strong>{selectedOtakuList || (titleFormData.type ? titleFormData.type : "Unknown")}</strong> list.
                         </span>
+                        <br />
                         <br />
                         <span >
                             Only fields marked with * are mandatory. Adding more details will increase filtering.

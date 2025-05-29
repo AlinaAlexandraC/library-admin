@@ -79,7 +79,8 @@
     outline: none;
 }
 
-@media only screen and (max-height: 375px) {
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
 
     .faq-question,
     .faq-answer {

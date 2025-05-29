@@ -136,18 +136,28 @@ select {
     }
 }
 
-@media only screen and (max-width: 490px) {
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
 
     span,
     label {
         font-size: 12px;
     }
-}
 
-@media only screen and (max-height: 375px) {
+    .buttons {
+        padding: 5px 0;
+    }
 
-    span,
-    label {
-        font-size: 12px;
+    .btn {
+        height: 25px;
+        font-size: 11px;
+    }
+
+    input {
+        height: 20px;
+    }
+
+    select {
+        height: 24px;
     }
 }

@@ -27,7 +27,7 @@
 .nav-bar-user {
     cursor: pointer;
     border-radius: 30px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     padding: 0 10px;
     color: #fff;
@@ -54,6 +54,7 @@ span {
 .user-dropdown-button {
     border-radius: 30px;
     font-weight: 600;
+    font-size: 13px;
     color: #fff;
     background-color: #3c3d80;
     height: 36px;
@@ -97,7 +98,7 @@ span {
 .user-dropdown-content .link span,
 .log-out-button span,
 .user-dropdown-content-help span {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
 }
 
@@ -156,10 +157,22 @@ span {
     cursor: default;
 }
 
-@media only screen and (max-width: 730px) {
+@media (max-width: 700px) {
     .nav-bar-header span {
         display: none;
     }
+
+    .nav-bar-library,
+    .nav-bar-form,
+    .nav-bar-randomizer,
+    .nav-bar-user,
+    .user-dropdown-button {
+        width: 70px;
+    }
+}
+
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
 
     .user-dropdown-content .link span,
     .log-out-button span,
@@ -167,28 +180,6 @@ span {
         display: block;
         font-size: 14px;
     }
-
-    .nav-bar-library,
-    .nav-bar-form,
-    .nav-bar-randomizer,
-    .nav-bar-user,
-    .user-dropdown-button {
-        width: 90px;
-    }
-}
-
-@media only screen and (max-width: 490px) {
-
-    .nav-bar-library,
-    .nav-bar-form,
-    .nav-bar-randomizer,
-    .nav-bar-user,
-    .user-dropdown-button {
-        width: 60px;
-    }
-}
-
-@media only screen and (max-width: 320px) {
 
     .nav-bar-library,
     .nav-bar-form,

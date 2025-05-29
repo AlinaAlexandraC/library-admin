@@ -11,13 +11,11 @@ import { typeDropdown } from "../../utils/constants";
 
 const AddTitlesFromFolder = () => {
     const [titleFormData, setTitleFormData] = useState([]);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
+    const [floatingMessage, setFloatingMessage] = useState(null);
     const [folderSelected, setFolderSelected] = useState(false);
     const [selectedType, setSelectedType] = useState("");
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
-    const [duplicateCount, setDuplicateCount] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
@@ -27,7 +25,7 @@ const AddTitlesFromFolder = () => {
 
     const handleFolderSelection = async () => {
         if (!('showDirectoryPicker' in window)) {
-            setError('Your browser does not support the File System Access API');
+            setFloatingMessage({ type: "error", text: "Your browser does not support the File System Access API" });
             return;
         }
 
@@ -43,22 +41,20 @@ const AddTitlesFromFolder = () => {
                 setTitleFormData(folderNames);
                 setFolderSelected(true);
             }
-
         } catch (error) {
-            setError("Error accessing the folder. Try again later.");
-            setTimeout(() => {
-                setError(null);
-            }, 3000);
+            setFloatingMessage({ type: "error", text: "Error accessing the folder. Try again later." });
+            setTimeout(() => setFloatingMessage(null), 3000);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setFloatingMessage({ type: "info", text: "Adding titles, please wait..." });
 
         if (titleFormData.length === 0) {
-            setError("No titles to add. Please select a valid folder.");
-            setTimeout(() => setError(null), 3000);
+            setFloatingMessage({ type: "error", text: "No titles to add. Please select a valid folder." });
+            setTimeout(() => setFloatingMessage(null), 3000);
             return;
         }
 
@@ -93,29 +89,31 @@ const AddTitlesFromFolder = () => {
             const addedCount = totalSent - duplicates;
 
             if (response.success) {
-                setDuplicateCount(duplicates);
-
-                if (addedCount > 0) {
-                    setSuccess(`${addedCount} title${addedCount > 1 ? "s" : ""} added successfully!`);
-                } else {
-                    setSuccess("");
+                if (addedCount > 0 && duplicates === 0) {
+                    setFloatingMessage({ type: "success", text: `${addedCount} title${addedCount > 1 ? "s" : ""} added successfully!` });
+                } else if (addedCount > 0 && duplicates > 0) {
+                    setFloatingMessage({
+                        type: "success",
+                        text: `${addedCount} added successfully, ${duplicates} duplicate${duplicates > 1 ? "s were" : " was"} skipped.`,
+                    });
+                } else if (addedCount === 0 && duplicates > 0) {
+                    setFloatingMessage({
+                        type: "info",
+                        text: `All ${duplicates} titles were duplicates and were skipped.`,
+                    });
                 }
-
-                setTimeout(() => {
-                    setSuccess("");
-                    setDuplicateCount(0);
-                }, 3000);
 
                 setTitleFormData([]);
                 setFolderSelected(false);
                 setSelectedOtakuList("");
             } else {
-                setError("Error adding titles. Try again later.");
-                setTimeout(() => setError(null), 3000);
+                setFloatingMessage({ type: "error", text: "Error adding titles. Try again later." });
             }
+
+            setTimeout(() => setFloatingMessage(null), 3000);
         } catch (error) {
-            setError("Failed to connect to server");
-            setTimeout(() => setError(null), 3000);
+            setFloatingMessage({ type: "error", text: "Failed to connect to server" });
+            setTimeout(() => setFloatingMessage(null), 3000);
         } finally {
             setIsSubmitting(false);
         }
@@ -126,37 +124,31 @@ const AddTitlesFromFolder = () => {
         setSelectedType(value);
     };
 
-    const floatingMessage = isSubmitting
-        ? { text: "Adding titles, please wait...", type: "info" }
-        : error
-            ? { text: error, type: "error" }
-            : success
-                ? { text: success, type: "success" }
-                : duplicateCount > 0
-                    ? { text: `${duplicateCount} duplicate ${duplicateCount === 1 ? "title was" : "titles were"} skipped.`, type: "info" }
-                    : null;
-
-    const buttons = [
-        {
-            label: "Add to list",
-            type: "submit",
-            className: "add-titles-from-folder-button btn",
-        },
-        folderSelected
-            ? {
+    const buttons = folderSelected
+        ? [
+            {
+                label: isSubmitting ? "Adding..." : "Add to list",
+                type: "submit",
+                className: "add-titles-from-folder-button btn",
+                disabled: isSubmitting,
+            },
+            {
                 label: "Select another",
                 onClick: () => {
                     setTitleFormData([]);
                     setFolderSelected(false);
                 },
                 className: "select-another-button btn",
+                disabled: isSubmitting,
             }
-            : {
+        ]
+        : [
+            {
                 label: "See list",
                 onClick: () => navigate("/lists"),
                 className: "see-library-button btn",
-            },
-    ];
+            }
+        ];
 
     const instruction = folderSelected ? (
         <>
@@ -171,7 +163,7 @@ const AddTitlesFromFolder = () => {
                 formImageHorizontal={formImageHorizontal}
                 header="Import titles from a folder"
                 onSubmit={handleSubmit}
-                floatingMessage={floatingMessage}
+                floatingMessage={floatingMessage && floatingMessage.text ? floatingMessage : null}
                 instruction={instruction}
                 buttons={buttons}>
                 <div className="add-titles-from-folder-content">

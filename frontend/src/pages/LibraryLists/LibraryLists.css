@@ -5,6 +5,7 @@
     align-items: center;
     user-select: none;
     width: 100%;
+    font-size: 13px;
 }
 
 .tab-container {
@@ -29,6 +30,13 @@
 }
 
 .tab-item.active {
-    background-color:  #e74c3c;
+    background-color: #e74c3c;
     color: #fff;
+}
+
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
+    .tab-container {
+        height: 40px;
+    }
 }

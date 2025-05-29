@@ -6,6 +6,14 @@
     align-content: center;
 }
 
+.registration-question,
+.login-email-container,
+.password-validation,
+.registration-password-container {
+    width: 100%;
+
+}
+
 .registration-question {
     display: flex;
     justify-content: space-between;

@@ -18,7 +18,7 @@
 }
 
 .delete-list-modal p {
-    padding: 0 calc(10% - 10px); 
+    padding: 0 calc(10% - 10px);
 }
 
 .delete-list-radio {
@@ -50,8 +50,8 @@
     margin-top: 30px;
 }
 
-.delete-list-btn,
-.cancel-btn {
+.delete-list-modal>div.modal-actions>button.delete-list-btn,
+.delete-list-modal>div.modal-actions>button.cancel-btn {
     color: #fff;
     height: 36px;
     min-width: 140px;
@@ -61,11 +61,11 @@
     border-radius: 5px;
 }
 
-.delete-list-btn {
+.delete-list-modal>div.modal-actions>button.delete-list-btn {
     background: #388E3C;
 }
 
-.cancel-btn {
+.delete-list-modal>div.modal-actions>button.cancel-btn {
     background: #e53935;
 }
 

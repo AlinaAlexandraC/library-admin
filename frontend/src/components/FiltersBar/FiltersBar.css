@@ -125,11 +125,15 @@
     transition: transform 0.3s ease;
 }
 
-@media only screen and (max-width: 670px) {
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
+    .filters-bar-wrapper {
+        height: 40px;
+    }
 
     .filters-bar-options,
-    .filter-reset {
-        font-size: 12px;
+    .filters-bar-container>div>div>span {
+        font-size: 11px;
     }
 
     .reset-icon {
@@ -138,11 +142,5 @@
 
     .filter {
         min-width: 60px;
-    }
-}
-
-@media only screen and (max-width: 490px) {
-    .filters-bar-wrapper {
-        height: 40px;
     }
 }
