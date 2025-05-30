@@ -130,7 +130,11 @@ const AddTitlesManually = () => {
                         <br />
                         <br />
                         <span >
-                            Only fields marked with * are mandatory. Adding more details will increase filtering.
+                            Only * fields are mandatory.
+                        </span>
+                        <br />
+                        <span >
+                            Adding more details will increase filtering.
                         </span>
                     </>
                 }

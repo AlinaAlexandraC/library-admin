@@ -210,7 +210,7 @@ const LibraryList = () => {
                 </>
             )}
             {errorMessage && (
-                <div className="floating-error" onClick={() => setErrorMessage(null)}>
+                <div className="floating-message error" onClick={() => setErrorMessage(null)}>
                     {errorMessage}
                 </div>
             )}

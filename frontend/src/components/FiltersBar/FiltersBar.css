@@ -128,7 +128,7 @@
 @media (max-width: 480px),
 (max-height: 375px) and (orientation: landscape) {
     .filters-bar-wrapper {
-        height: 40px;
+        height: 44px;
     }
 
     .filters-bar-options,
@@ -141,6 +141,6 @@
     }
 
     .filter {
-        min-width: 60px;
+        min-width: 68px;
     }
 }

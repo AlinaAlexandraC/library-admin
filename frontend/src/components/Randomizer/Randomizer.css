@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .randomizer-inner-container {
@@ -21,7 +21,7 @@
     justify-content: center;
     align-items: center;
     width: 85%;
-    height: 90%;
+    height: 95%;
     border-radius: 20px;
     background-color: #f8f8f8;
     overflow: hidden;
@@ -58,7 +58,7 @@
 .randomizer-display {
     width: 50%;
     height: 90%;
-    margin: 20px;
+    margin: 0 20px;
     display: flex;
     flex-direction: column;
 }
@@ -79,7 +79,6 @@
 .randomizer-titles-list,
 .randomizer-list-selection {
     overflow: scroll;
-    font-size: 14px;
     height: 85%;
 }
 
@@ -96,11 +95,11 @@
 
 .title-info-randomizer .title {
     width: 100%;
-    font-size: 13px;
-    min-height: 100px;
+    min-height: 140px;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .randomizer-icon {
@@ -167,7 +166,7 @@
     }
 
     .randomizer-display {
-        height: 30%;
+        height: 40%;
     }
 
     .randomizer-titles-list {
@@ -179,6 +178,7 @@
     .randomizer-display,
     .randomizer-wrapper hr {
         width: calc(100% - 40px);
+        font-size: 12px;
     }
 
     .randomizer-wrapper hr {
@@ -189,11 +189,8 @@
         display: none;
     }
 
-    .title-info-randomizer div {
-        height: 80px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .title-info-randomizer .title {
+        font-size: 12px;
     }
 
     [class^="randomizer-element"] {

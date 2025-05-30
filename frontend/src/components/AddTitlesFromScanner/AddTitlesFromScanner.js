@@ -135,17 +135,7 @@ const AddTitlesFromScanner = () => {
                 onClick: resetSearch,
             },
         ]
-        : [
-            {
-                label: "Enter ISBN Manually",
-                type: "button",
-                className: "manual-isbn btn",
-                onClick: () => {
-                    resetSearch();
-                    setUsingManual(true);
-                },
-            },
-        ];
+        : [];
 
     return (
         <div className='add-titles-by-scanning-container'>
@@ -173,13 +163,21 @@ const AddTitlesFromScanner = () => {
                                 Scanning is only available on mobile or tablet devices.
                             </p>
                         )}
-                        <>
-                            <div className='options-decoration'>
-                                <hr />
-                                <span>OR</span>
-                                <hr />
-                            </div>
-                        </>
+                        <div className='options-decoration'>
+                            <hr />
+                            <span>OR</span>
+                            <hr />
+                        </div>
+                        <button
+                            type="button"
+                            className="btn manual-isbn"
+                            onClick={() => {
+                                resetSearch();
+                                setUsingManual(true);
+                            }}
+                        >
+                            Enter ISBN Manually
+                        </button>
                     </div>
                 )}
 

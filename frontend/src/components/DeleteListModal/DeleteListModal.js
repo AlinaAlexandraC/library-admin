@@ -2,14 +2,14 @@ import "./DeleteListModal.css";
 import { useState } from "react";
 import { fetchData } from "../../services/apiService";
 
-const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, setDeleteConfirmation }) => {
+const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, setFloatingMessage }) => {
     const [deleteType, setDeleteType] = useState("list");
-    const [error, setError] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = async () => {
         if (titleCount > 0 && !deleteType) {
-            setError("Please select whether you want to delete just the list or the list along with its titles.");
+            setFloatingMessage({ type: "info", text: "Please select whether you want to delete just the list or the list along with its titles." });
+            setTimeout(() => setFloatingMessage(null), 3000);
             return;
         }
 
@@ -35,22 +35,18 @@ const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, 
                     message = "Titles were successfully moved to the default lists.";
                 }
 
-                setDeleteConfirmation(message);
-                setTimeout(() => setDeleteConfirmation(""), 5000);
+                setFloatingMessage({ type: "success", text: message });
+                setTimeout(() => setFloatingMessage(null), 3000);
 
                 setUserLists(prevLists => prevLists.filter(list => list._id !== listId));
                 onClose();
             } else {
-                setError("Failed to delete the list. Please try again.");
-                setTimeout(() => {
-                    setError("");
-                }, 3000);
+                setFloatingMessage({ type: "error", text: "Failed to delete the list. Please try again." });
+                setTimeout(() => setFloatingMessage(null), 3000);
             }
         } catch (error) {
-            setError(error.message || "Failed to delete the list.");
-            setTimeout(() => {
-                setError("");
-            }, 3000);
+            setFloatingMessage({ type: "error", text: error.message || "Failed to delete the list." });
+            setTimeout(() => setFloatingMessage(null), 3000);
         } finally {
             setIsDeleting(false);
         }
@@ -80,7 +76,6 @@ const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, 
                     Cancel
                 </button>
             </div>
-            {error && <p className="error">{error}</p>}
         </div>
     );
 };

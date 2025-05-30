@@ -23,8 +23,7 @@ const OtakuLists = () => {
     const [currentList, setCurrentList] = useState(null);
     const [editingListId, setEditingListId] = useState(null);
     const [listName, setListName] = useState("");
-    const [renameError, setRenameError] = useState("");
-    const [deleteConfirmation, setDeleteConfirmation] = useState("");
+    const [floatingMessage, setFloatingMessage] = useState(null);
     const [query, setQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(() => {
         return parseInt(localStorage.getItem("otakuListsCurrentPage")) || 1;
@@ -88,8 +87,8 @@ const OtakuLists = () => {
         e.stopPropagation();
 
         if (!newName || newName.trim() === "") {
-            setRenameError("A list name cannot be empty");
-            setTimeout(() => setRenameError(""), 5000);
+            setFloatingMessage({ type: "error", text: "A list name cannot be empty" });
+            setTimeout(() => setFloatingMessage(null), 3000);
             return;
         };
 
@@ -98,8 +97,8 @@ const OtakuLists = () => {
         );
 
         if (nameExistsInOtherList) {
-            setRenameError("A list with this name already exists.");
-            setTimeout(() => setRenameError(""), 5000);
+            setFloatingMessage({ type: "error", text: "A list with this name already exists." });
+            setTimeout(() => setFloatingMessage(null), 3000);
             return;
         }
 
@@ -117,7 +116,7 @@ const OtakuLists = () => {
 
     const openDeleteModal = (e, listId, listName, titleCount) => {
         e.preventDefault();
-        e.stopPropagation();        
+        e.stopPropagation();
 
         const selectedList = userLists.find(list => list._id === listId);
 
@@ -245,19 +244,13 @@ const OtakuLists = () => {
                         onClose={() => setShowDeleteListModal(false)}
                         userLists={userLists}
                         setUserLists={setUserLists}
-                        setDeleteConfirmation={setDeleteConfirmation}
+                        setFloatingMessage={setFloatingMessage}
                     />
                 </>
             )}
-
-            {renameError && (
-                <div className="floating-error">
-                    <p>{renameError}</p>
-                </div>
-            )}
-            {deleteConfirmation && (
-                <div className="floating-error">
-                    <p>{deleteConfirmation}</p>
+            {floatingMessage && (
+                <div className={`floating-message ${floatingMessage.type}`}>
+                    {floatingMessage.text}
                 </div>
             )}
         </div>

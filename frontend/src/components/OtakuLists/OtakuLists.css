@@ -138,11 +138,11 @@
 @media (max-width: 480px),
 (max-height: 375px) and (orientation: landscape) {
     .list-details-container {
-        width: calc(100% - 60px);
+        width: calc(100% - 50px);
     }
 
     .otaku-lists-wrapper {
-        height: 722px;
+        height: 690px;
     }
 
     .list-buttons-container {

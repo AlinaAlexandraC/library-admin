@@ -31,9 +31,3 @@
     pointer-events: none;
     opacity: 0.5;
 }
-
-@media only screen and (max-width: 480px) {
-    .default-lists-wrapper {
-    height: 40vh;
-    }
-}

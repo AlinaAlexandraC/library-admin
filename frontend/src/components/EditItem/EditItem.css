@@ -43,10 +43,11 @@
 
 .move-default-btn {
     width: 100%;
-    padding: 8px 12px;
+    padding: 12px;
     cursor: pointer;
     border: none;
     border-radius: 5px;
+    margin: 10px 0;
 }
 
 .edit-item-container>div>div>button.save-btn.btn,

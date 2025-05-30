@@ -7,10 +7,15 @@
     width: 200px;
     height: 200px;
     cursor: pointer;
+    margin-top: 40px;
 }
 
 .folder-icon {
     width: 120px;
+}
+
+.add-titles-from-folder-content {
+    width: 100%;
 }
 
 .dropdown-lists {
