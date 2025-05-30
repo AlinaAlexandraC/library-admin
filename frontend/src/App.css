@@ -13,13 +13,14 @@
     background-color: #151e72;
     color: #fff;
     border-radius: 30px;
-    height: 36px;
-    width: 140px;
+    height: 44px;
+    min-width: 140px;
+    padding: 0 12px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     user-select: none;
 }
@@ -33,48 +34,21 @@
 }
 
 label {
-    font-size: 13px;
+    font-size: 14px;
 }
 
-input {
-    height: 25px;
-    padding: 1px 7px;
-    border-radius: 5px;
-    border: 1px solid;
-}
-
+input,
 select {
-    height: 30px;
-    padding: 1px 7px;
+    height: 36px;
+    padding: 0 12px;
     border-radius: 5px;
     border: 1px solid;
-}
-
-.error,
-.success {
-    font-size: 12px;
-    height: 30px;
-    font-weight: 600;
-    display: inline-block;
-    word-wrap: break-word;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.error {
-    color: red;
-}
-
-.success {
-    color: green;
 }
 
 .buttons {
     display: flex;
     justify-content: space-around;
     gap: 10px;
-    padding: 20px 0;
 }
 
 .floating-message {
@@ -113,7 +87,6 @@ select {
     border: 1px solid #2980b9;
 }
 
-
 @keyframes floatingFadeIn {
     from {
         opacity: 0;
@@ -138,26 +111,8 @@ select {
 
 @media (max-width: 480px),
 (max-height: 375px) and (orientation: landscape) {
-
-    span,
-    label {
-        font-size: 12px;
-    }
-
-    .buttons {
-        padding: 5px 0;
-    }
-
     .btn {
-        height: 25px;
-        font-size: 11px;
-    }
-
-    input {
-        height: 20px;
-    }
-
-    select {
-        height: 24px;
+        height: 36px;
+        font-size: 12px;
     }
 }

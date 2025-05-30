@@ -10,6 +10,13 @@
     width: 100%;
 }
 
+.my-account-details {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .first-name-container,
 .last-name-container,
 .email-container {

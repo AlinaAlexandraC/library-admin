@@ -1,5 +1,5 @@
 .default-lists-wrapper {
-    height: 80vh;
+    height: 380px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;

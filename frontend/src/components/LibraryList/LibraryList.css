@@ -15,7 +15,7 @@
 }
 
 .legend {
-    height: 30px;
+    padding: 5px 0;
     background-color: #ededed;
     width: 90vw;
     max-width: 1300px;
@@ -28,7 +28,7 @@
 .color {
     color: white;
     width: fit-content;
-    padding: 0 10px;
+    padding: 3px 6px;
     border-radius: 5px;
 }
 

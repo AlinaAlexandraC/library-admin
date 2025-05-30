@@ -83,6 +83,7 @@ const Registration = () => {
             <div className="registration-terms">
                 By selecting <strong>Create account</strong>, you agree to our <Link to='/user-agreement'>User Agreement</Link> and acknowledge reading our <Link to='/user-privacy-notice'>User Privacy Notice</Link>.
             </div>
+            <br />
             <div className="go-to-login">Already have an account? <Link to="/">Sign in</Link></div>
         </>
     );
@@ -117,22 +118,18 @@ const Registration = () => {
                     <label>Email address</label>
                     <input type="email" placeholder="john.doe@example.com" name="email" value={formData.email} onChange={handleChange} required />
                 </div>
-                <div className="registration-password-container">
-                    <Password
-                        label="Password"
-                        name="password"
-                        value={formData.password}
-                        handleChange={handleChange}
-                    />
-                </div>
-                <div className="registration-repeat-password-container">
-                    <Password
-                        label="Confirm Password"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        handleChange={handleChange}
-                    />
-                </div>
+                <Password
+                    label="Password"
+                    name="password"
+                    value={formData.password}
+                    handleChange={handleChange}
+                />
+                <Password
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    handleChange={handleChange}
+                />
             </Form>
         </div>
     );
