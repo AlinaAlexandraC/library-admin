@@ -4,7 +4,7 @@ import { fetchData } from "../../services/apiService";
 import { genreDropdown, typeDropdown } from "../../utils/constants";
 import { reservedNames } from "../../utils/constants";
 
-const EditItem = ({ title, onClose, setTitles, setErrorMessage, refreshTitles }) => {
+const EditItem = ({ title, onClose, setTitles, setFloatingMessage, refreshTitles }) => {
     const [editedTitle, setEditedTitle] = useState({ ...title });
     const [customLists, setCustomLists] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
@@ -52,13 +52,14 @@ const EditItem = ({ title, onClose, setTitles, setErrorMessage, refreshTitles })
         setIsSaving(true);
 
         const handleListUpdateResponse = async (listRes) => {
-            if (listRes.message) {
-                setErrorMessage(listRes.message);
-                setTimeout(() => setErrorMessage(""), 4000);
-            }
-
             setTitles((prevTitles) => prevTitles.filter((t) => t._id !== editedTitle._id));
             await refreshTitles();
+
+            if (listRes.message) {
+                setFloatingMessage({ text: listRes.message, type: "success" });
+                setTimeout(() => setFloatingMessage(null), 3000);
+                return;
+            }
         };
 
         try {
@@ -75,9 +76,11 @@ const EditItem = ({ title, onClose, setTitles, setErrorMessage, refreshTitles })
 
             const detailsRes = await fetchData("titles/updateDetails", "PATCH", payload);
 
+            await refreshTitles();
+
             if (detailsRes.message) {
-                setErrorMessage(detailsRes.message);
-                setTimeout(() => setErrorMessage(""), 4000);
+                setFloatingMessage({ text: detailsRes.message, type: "success" });
+                setTimeout(() => setFloatingMessage(null), 3000);
             }
 
             if (typeChanged && isInDefault) {
@@ -101,9 +104,13 @@ const EditItem = ({ title, onClose, setTitles, setErrorMessage, refreshTitles })
 
                 await handleListUpdateResponse(listRes);
             }
-
         } catch (error) {
             console.error("Failed to save item:", error);
+            setFloatingMessage({
+                text: error?.response?.data?.message || error.message || "An unexpected error occurred.",
+                type: "error"
+            });
+            setTimeout(() => setFloatingMessage(null), 3000);
         } finally {
             setIsSaving(false);
             onClose();
@@ -121,8 +128,8 @@ const EditItem = ({ title, onClose, setTitles, setErrorMessage, refreshTitles })
             const res = await fetchData("titles/updateList", "PATCH", payload);
 
             if (res.message) {
-                setErrorMessage(res.message);
-                setTimeout(() => setErrorMessage(""), 4000);
+                setFloatingMessage({ text: res.message, type: "success" });
+                setTimeout(() => setFloatingMessage(null), 3000);
             }
 
             setTitles((prev) => prev.filter((item) => item._id !== editedTitle._id));
@@ -130,8 +137,8 @@ const EditItem = ({ title, onClose, setTitles, setErrorMessage, refreshTitles })
             onClose();
         } catch (error) {
             console.error("Failed to move title to default list:", error);
-            setErrorMessage("An error occurred.");
-            setTimeout(() => setErrorMessage(""), 4000);
+            setFloatingMessage({ text: "Failed to move title to default list.", type: "error" });
+            setTimeout(() => setFloatingMessage(null), 3000);
         } finally {
             setIsMovingToDefault(false);
         }
@@ -164,6 +171,7 @@ const EditItem = ({ title, onClose, setTitles, setErrorMessage, refreshTitles })
                 name="list"
                 value={editedTitle.listName || ""}
                 onChange={(e) => setEditedTitle((prev) => ({ ...prev, listName: e.target.value }))}
+                disabled={customLists.length === 0}
             >
                 <option value="">Select a custom list</option>
                 {customLists.map((list) => (
@@ -247,24 +255,15 @@ const EditItem = ({ title, onClose, setTitles, setErrorMessage, refreshTitles })
             )}
             <div className="modal-actions">
                 <button
-                    className={`move-default-btn btn ${isMovingToDefault || reservedNames.includes(originalListName) ? "disabled" : ""
-                        }`}
-                    onClick={() => {
+                    className={`move-default-btn btn ${isMovingToDefault || reservedNames.includes(originalListName) ? "disabled" : ""}`}
+                    onClick={async () => {
                         if (!isMovingToDefault && !reservedNames.includes(originalListName)) {
-                            handleMoveToDefault();
+                            setIsMovingToDefault(true);
+                            await handleMoveToDefault();
+                            setIsMovingToDefault(false);
                         }
                     }}
                     title="Move this title to the default list matching its type"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (
-                            e.key === "Enter" &&
-                            !isMovingToDefault &&
-                            !reservedNames.includes(originalListName)
-                        ) {
-                            handleMoveToDefault();
-                        }
-                    }}
                 >
                     {isMovingToDefault ? "Moving..." : "Move to Default List"}
                 </button>

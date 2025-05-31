@@ -36,6 +36,7 @@
 }
 
 .randomizer-list-selection {
+    min-height: 250px;
     width: 100%;
     margin: 80px;
     display: flex;
@@ -199,5 +200,35 @@
 
     .select-another-list {
         width: 100%;
+    }
+}
+
+@media (max-height: 768px) and (orientation: landscape) {
+    .randomizer-icon {
+        display: none;
+    }
+}
+
+@media (max-height: 375px) and (orientation: landscape) {
+    .randomizer-inner-container {
+        height: fit-content;
+        padding: 30px 0;
+    }
+
+    .randomizer-wrapper {
+        height: fit-content;
+    }
+
+    .randomizer-titles-list {
+        height: 400px;
+        overflow: scroll;
+    }
+
+    .randomizer-display {
+        min-height: 300px;
+    }
+
+    .title-info-randomizer .title {
+        min-height: 100px;
     }
 }

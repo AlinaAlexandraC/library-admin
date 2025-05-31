@@ -4,11 +4,24 @@ import { BrowserMultiFormatReader } from '@zxing/browser';
 import Form from '../Form/Form';
 import formImage from "../../assets/images/scanner-vertical.jpg";
 import formImageHorizontal from "../../assets/images/scanner-horizontal.jpg";
+import noImage from "../../assets/icons/no-image.svg";
+import fetchCustomLists from '../../utils/fetchCustomLists';
+import { fetchData } from '../../services/apiService';
 
 const AddTitlesFromScanner = () => {
     const videoRef = useRef(null);
     const codeReader = useRef(null);
 
+    const [titleFormData, setTitleFormData] = useState({
+        title: "",
+        type: "",
+        genre: "",
+        author: "",
+        numberOfSeasons: "",
+        numberOfEpisodes: "",
+        numberOfChapters: "",
+        status: false,
+    });
     const [scannedBook, setScannedBook] = useState(null);
     const [scanning, setScanning] = useState(false);
     const [permissionDenied, setPermissionDenied] = useState(false);
@@ -16,6 +29,12 @@ const AddTitlesFromScanner = () => {
     const [isBookFound, setIsBookFound] = useState(false);
     const [usingManual, setUsingManual] = useState(false);
     const [floatingMessage, setFloatingMessage] = useState(null);
+    const [userLists, setUserLists] = useState([]);
+    const [selectedOtakuList, setSelectedOtakuList] = useState("");
+
+    useEffect(() => {
+        fetchCustomLists(setUserLists);
+    }, []);
 
     const isMobileOrTablet = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
@@ -120,20 +139,91 @@ const AddTitlesFromScanner = () => {
         setScanning(false);
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setFloatingMessage({ type: "info", text: "Adding title, please wait..." });
+
+        try {
+            let targetListId;
+            if (selectedOtakuList) {
+                const selectedList = userLists.find(list => list.name === selectedOtakuList);
+                targetListId = selectedList ? selectedList._id : null;
+            } else {
+                targetListId = "Book";
+            }
+
+            const response = await fetchData("titles/add", "POST", {
+                listId: targetListId,
+                titles: [titleFormData],
+                selectedType: "Book",
+            });
+
+            if (response.success) {
+                const duplicates = response.duplicates?.length || 0;
+
+                if ((response.title?.length || 0) > 0 || duplicates > 0) {
+                    const successText =
+                        (response.title?.length || 0) > 0
+                            ? "Title added successfully."
+                            : "";
+                    const duplicateText =
+                        duplicates > 0
+                            ? ` ${duplicates} duplicate${duplicates === 1 ? "" : "s"} skipped.`
+                            : "";
+
+                    setFloatingMessage({
+                        type: "success",
+                        text: `${successText}${duplicateText}`.trim(),
+                    });
+                    setTimeout(() => setFloatingMessage(null), 3000);
+                } else {
+                    setFloatingMessage(null);
+                }
+
+                setTitleFormData({
+                    title: "",
+                    type: "",
+                    genre: "",
+                    author: "",
+                    numberOfSeasons: "",
+                    numberOfEpisodes: "",
+                    numberOfChapters: "",
+                    status: false,
+                });
+
+                setSelectedOtakuList("");
+            } else {
+                setFloatingMessage({ type: "error", text: "Process failed. Try again later" });
+                setTimeout(() => setFloatingMessage(null), 3000);
+            }
+        } catch (error) {
+            console.error("Error during title submission:", error);
+            setFloatingMessage({ type: "error", text: error.message || "Process failed. Try again later" });
+            setTimeout(() => setFloatingMessage(null), 3000);
+        }
+    };
+
     const buttons = usingManual
-        ? [
+        ? [!isBookFound ? (
             {
                 label: "Search Book",
                 type: "button",
                 className: "btn",
                 onClick: handleManualIsbnSubmit,
-            },
+            }) : (
             {
-                label: "Back to Options",
+                label: "Add to list",
                 type: "button",
                 className: "btn",
-                onClick: resetSearch,
-            },
+                onClick: handleSubmit,
+            }
+        ),
+        {
+            label: "Back to Options",
+            type: "button",
+            className: "btn",
+            onClick: resetSearch,
+        },
         ]
         : [];
 
@@ -148,16 +238,18 @@ const AddTitlesFromScanner = () => {
                 {!isBookFound && !usingManual && (
                     <div className='method-toggle'>
                         {isMobileOrTablet ? (
-                            <button
-                                type="button"
-                                className="btn"
-                                onClick={() => {
-                                    resetSearch();
-                                    setScanning(true);
-                                }}
-                            >
-                                Scan ISBN with Camera
-                            </button>
+                            <div className="buttons">
+                                <button
+                                    type="button"
+                                    className="btn"
+                                    onClick={() => {
+                                        resetSearch();
+                                        setScanning(true);
+                                    }}
+                                >
+                                    Scan ISBN with Camera
+                                </button>
+                            </div>
                         ) : (
                             <p className="scanner-unavailable-message">
                                 Scanning is only available on mobile or tablet devices.
@@ -168,16 +260,18 @@ const AddTitlesFromScanner = () => {
                             <span>OR</span>
                             <hr />
                         </div>
-                        <button
-                            type="button"
-                            className="btn manual-isbn"
-                            onClick={() => {
-                                resetSearch();
-                                setUsingManual(true);
-                            }}
-                        >
-                            Enter ISBN Manually
-                        </button>
+                        <div className="buttons">
+                            <button
+                                type="button"
+                                className="btn manual-isbn"
+                                onClick={() => {
+                                    resetSearch();
+                                    setUsingManual(true);
+                                }}
+                            >
+                                Enter ISBN Manually
+                            </button>
+                        </div>
                     </div>
                 )}
 
@@ -195,17 +289,34 @@ const AddTitlesFromScanner = () => {
                 {usingManual && !isBookFound && (
                     <>
                         <div className='manual-isbn-input'>
-                            <label htmlFor="manual-isbn">Enter ISBN:</label>
-                            <input
-                                type="text"
-                                id="manual-isbn"
-                                value={manualIsbn}
-                                onChange={(e) => {
-                                    setManualIsbn(e.target.value);
-                                    setFloatingMessage(null);
-                                }}
-                                placeholder="ISBN (10 or 13 digits)"
-                            />
+                            <div className="otaku-list-select">
+                                <label>OtakuList</label>
+                                <select
+                                    name="customList"
+                                    className="custom-list"
+                                    value={selectedOtakuList}
+                                    onChange={(e) => setSelectedOtakuList(e.target.value)}
+                                    disabled={userLists.length === 0}
+                                >
+                                    <option value="">Select a custom list</option>
+                                    {userLists.map(list => (
+                                        <option key={list._id} value={list.name}>{list.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className='manual-isbn-input-container'>
+                                <label htmlFor="manual-isbn">Enter ISBN:</label>
+                                <input
+                                    type="text"
+                                    id="manual-isbn"
+                                    value={manualIsbn}
+                                    onChange={(e) => {
+                                        setManualIsbn(e.target.value);
+                                        setFloatingMessage(null);
+                                    }}
+                                    placeholder="ISBN (10 or 13 digits)"
+                                />
+                            </div>
                         </div>
                     </>
                 )}
@@ -214,8 +325,10 @@ const AddTitlesFromScanner = () => {
                     <div className="scanned-book">
                         <label><strong>Result for ISBN:</strong> {scannedBook.isbn}</label>
                         <div className='scanned-book-details'>
-                            {scannedBook.cover && (
+                            {scannedBook.cover ? (
                                 <img src={scannedBook.cover} alt={scannedBook.title} />
+                            ) : (
+                                <img src={noImage} alt={noImage} className='no-image' />
                             )}
                             <span className='scanned-title'><strong>{scannedBook.title}</strong></span>
                             <span><strong>Author:</strong> {scannedBook.author}</span>

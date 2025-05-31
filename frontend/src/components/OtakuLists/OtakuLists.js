@@ -1,5 +1,5 @@
 import './OtakuLists.css';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import AddListModal from '../AddListModal/AddListModal';
 import noListIcon from '../../assets/images/no-lists.jpg';
 import ListItem from '../ListItem/ListItem';
@@ -29,6 +29,21 @@ const OtakuLists = () => {
         return parseInt(localStorage.getItem("otakuListsCurrentPage")) || 1;
     });
     const listsPerPage = 10;
+    const editRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (editRef.current && !editRef.current.contains(event.target)) {
+                setEditingListId(null);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [setEditingListId]);
 
     useEffect(() => {
         const fetchLists = async () => {
@@ -156,7 +171,7 @@ const OtakuLists = () => {
                                 <div key={list._id || index} className="list-wrapper">
                                     {isEditing ? (
                                         <ListItem listIcon={icon}>
-                                            <div className="list-details-container">
+                                            <div className="list-details-container" ref={editRef}>
                                                 <input
                                                     type="text"
                                                     value={listName}
@@ -167,6 +182,7 @@ const OtakuLists = () => {
                                                         }
                                                     }}
                                                     className="list-name-input"
+                                                    autoFocus
                                                 />
                                                 <div className="list-buttons-container">
                                                     <button onClick={(e) => handleEditList(e, list._id, listName)} className='save-list-name'>
@@ -216,7 +232,9 @@ const OtakuLists = () => {
                         <div className="no-lists">
                             <img src={noListIcon} className='no-lists-image' alt='no-list-icon' />
                             <p>No lists</p>
-                            <button className='no-lists-button btn' onClick={() => setShowAddListModal(true)}>Create a list</button>
+                            <div className="buttons">
+                                <button className='no-lists-button btn' onClick={() => setShowAddListModal(true)}>Create a list</button>
+                            </div>
                         </div>
                     )}
                 </div>

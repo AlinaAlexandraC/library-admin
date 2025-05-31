@@ -3,7 +3,7 @@ import { useState } from "react";
 import { fetchData } from "../../services/apiService";
 
 const DeleteListModal = ({ listName, listId, titleCount, onClose, setUserLists, setFloatingMessage }) => {
-    const [deleteType, setDeleteType] = useState("list");
+    const [deleteType, setDeleteType] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = async () => {

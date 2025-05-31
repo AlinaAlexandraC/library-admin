@@ -22,8 +22,7 @@
 .edit-item-container input,
 .edit-item-container select {
     width: 80%;
-    padding: 8px;
-    margin: 10px 0;
+    margin: 5px 0;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: inherit;
@@ -34,7 +33,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .edit-item-container::-webkit-scrollbar {
@@ -43,11 +42,11 @@
 
 .move-default-btn {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     cursor: pointer;
     border: none;
     border-radius: 5px;
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
 .edit-item-container>div>div>button.save-btn.btn,

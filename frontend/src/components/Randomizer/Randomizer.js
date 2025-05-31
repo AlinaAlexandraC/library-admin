@@ -142,7 +142,9 @@ const Randomizer = () => {
                                         <div className="title">{titles[random]?.title_id.title || "-"}</div>
                                     </div>
                                 )}
-                                <button onClick={randomizeTitle} className="random btn">Get Random Title</button>
+                                <div className="buttons">
+                                    <button onClick={randomizeTitle} className="random btn">Get Random Title</button>
+                                </div>
                             </div>
                             <hr />
                             <div className="randomizer-titles-list">

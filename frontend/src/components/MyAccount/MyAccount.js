@@ -2,7 +2,7 @@ import Form from "../Form/Form";
 import "./MyAccount.css";
 import formImage from "../../assets/images/user-vertical.jpg";
 import formImageHorizontal from "../../assets/images/user-horizontal.jpg";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchData } from "../../services/apiService";
 import DeleteAccount from "../DeleteAccount/DeleteAccount";
 
@@ -14,6 +14,21 @@ const MyAccount = () => {
     const [email, setEmail] = useState("");
     const [originalUserData, setOriginalUserData] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const editRef = useRef();
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (editRef.current && !editRef.current.contains(event.target)) {
+                setIsEditing(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isEditing]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -128,7 +143,7 @@ const MyAccount = () => {
                 floatingMessage={floatingMessage && floatingMessage.text ? floatingMessage : null}
                 buttons={buttons}>
                 <div className="my-account-wrapper">
-                    <div className="my-account-details">
+                    <div className="my-account-details" ref={editRef}>
                         <div className="first-name-container">
                             <label>First name</label>
                             {isEditing ? (

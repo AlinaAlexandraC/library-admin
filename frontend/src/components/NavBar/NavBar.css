@@ -64,6 +64,11 @@ span {
     align-items: center;
 }
 
+.user-dropdown-button:hover {
+   background-color: #3c3d80; 
+   cursor: pointer;
+}
+
 .user-dropdown-content {
     position: absolute;
     top: 130%;
@@ -157,9 +162,16 @@ span {
     cursor: default;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
     .nav-bar-header span {
         display: none;
+    }
+
+    .user-dropdown-content .link span,
+    .log-out-button span,
+    .user-dropdown-content-help span {
+        display: block;
+        font-size: 14px;
     }
 
     .nav-bar-library,
@@ -167,7 +179,7 @@ span {
     .nav-bar-randomizer,
     .nav-bar-user,
     .user-dropdown-button {
-        width: 70px;
+        width: 90px;
     }
 }
 

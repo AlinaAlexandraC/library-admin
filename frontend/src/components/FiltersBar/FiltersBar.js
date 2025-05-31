@@ -1,15 +1,36 @@
 import "./FiltersBar.css";
 import arrowDownIconB from "../../assets/icons/arrow-down-black.svg";
 import resetIcon from "../../assets/icons/reset.svg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { genresFilters, statusesFilters } from "../../utils/constants";
 
 const FiltersBar = ({ titles, setFilteredTitles, selectedFilters, setSelectedFilters }) => {
     const [openFilter, setOpenFilter] = useState(false);
+    const genreRef = useRef(null);
+    const statusRef = useRef(null);
 
     const toggleOptions = (filter) => {
         setOpenFilter(openFilter === filter ? null : filter);
     };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!openFilter) return;
+
+            let refToCheck = null;
+            if (openFilter === "genre") refToCheck = genreRef;
+            else if (openFilter === "status") refToCheck = statusRef;
+
+            if (refToCheck && refToCheck.current && !refToCheck.current.contains(event.target)) {
+                setOpenFilter(null);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [openFilter]);
 
     const handleCheckboxChange = (filter, value) => {
         setSelectedFilters((prev) => {
@@ -62,7 +83,7 @@ const FiltersBar = ({ titles, setFilteredTitles, selectedFilters, setSelectedFil
                             alt="arrow"
                             className={`arrow-down-icon-black ${openFilter === "genre" ? "flipped" : ""}`}
                         />
-                        <div className={`options-box ${openFilter === "genre" ? "show" : ""}`}>
+                        <div ref={genreRef} className={`options-box ${openFilter === "genre" ? "show" : ""}`}>
                             <ul>
                                 {genresFilters.map((genre, index) => (
                                     <li key={index} className={`option-${index}`}>
@@ -80,7 +101,7 @@ const FiltersBar = ({ titles, setFilteredTitles, selectedFilters, setSelectedFil
                             alt="arrow"
                             className={`arrow-down-icon-black ${openFilter === "status" ? "flipped" : ""}`}
                         />
-                        <div className={`options-box ${openFilter === "status" ? "show" : ""}`}>
+                        <div ref={statusRef} className={`options-box ${openFilter === "status" ? "show" : ""}`}>
                             <ul>
                                 {statusesFilters.map((status, index) => (
                                     <li key={index} className={`option-${index}`}>

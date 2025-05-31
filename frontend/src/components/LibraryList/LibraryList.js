@@ -20,7 +20,7 @@ const LibraryList = () => {
     const [query, setQuery] = useState("");
     const [modalItem, setModalItem] = useState(null);
     const [loadingAction, setLoadingAction] = useState({ id: null, type: null });
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [floatingMessage, setFloatingMessage] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState({ genre: [], watched: [] });
     const [currentPage, setCurrentPage] = useState(() => {
         return parseInt(localStorage.getItem("libraryCurrentPage")) || 1;
@@ -54,7 +54,7 @@ const LibraryList = () => {
         const lowerQuery = query.toLowerCase();
         return baseList.filter((title) =>
             (title.title && title.title.toLowerCase().includes(lowerQuery)) ||
-            (title.author && title.author.toLowerCase().includes(lowerQuery))
+            (title.author && title.author?.toLowerCase().includes(lowerQuery))
         );
     }, [filteredTitles, sortedTitles, query, selectedFilters]);
 
@@ -92,8 +92,9 @@ const LibraryList = () => {
                     item._id === title._id ? { ...item, status: !newStatus } : item
                 )
             );
-            setErrorMessage("Failed to update status.");
-            setTimeout(() => setErrorMessage(""), 3000);
+
+            setFloatingMessage({ text: "Failed to update status.", type: "error" });
+            setTimeout(() => setFloatingMessage(null), 3000);
         }
     };
 
@@ -110,8 +111,8 @@ const LibraryList = () => {
             setTitles(updatedTitles);
         } catch (error) {
             console.error("Failed to delete item:", error);
-            setErrorMessage("Failed to delete item.");
-            setTimeout(() => setErrorMessage(""), 3000);
+            setFloatingMessage({ text: "Failed to delete item.", type: "error" });
+            setTimeout(() => setFloatingMessage(null), 3000);
         } finally {
             setLoadingAction({ id: null, type: null });
         }
@@ -140,8 +141,7 @@ const LibraryList = () => {
     };
 
     const refreshTitles = async () => {
-        const updatedTitles = await fetchData("titles");
-        setTitles(updatedTitles);
+        await fetchTitles(listId, setTitles, setError, setLoading);
     };
 
     return (
@@ -171,13 +171,13 @@ const LibraryList = () => {
                 ) : (selectedFilters.genre.length > 0 || selectedFilters.watched.length > 0) && activeList.length === 0 ? (
                     <div className="no-results">No titles match your filters.</div>
                 ) : titles.length === 0 ? (
-                    <>
-                        <div className="no-titles">
-                            <div>No titles found</div>
-                            <img src={noTitles} alt="no-titles" className="no-titles-image" />
+                    <div className="no-titles">
+                        <div>No titles found</div>
+                        <img src={noTitles} alt="no-titles" className="no-titles-image" />
+                        <div className="buttons">
                             <button className="no-titles-button btn" onClick={() => navigate("/form")}>Add a title</button>
                         </div>
-                    </>
+                    </div>
                 ) : (
                     <div>
                         <ul className="library-list-titles" >
@@ -206,12 +206,15 @@ const LibraryList = () => {
             {modalItem && (
                 <>
                     <div className="overlay" onClick={closeModal}></div>
-                    <EditItem title={modalItem} onClose={closeModal} setTitles={setTitles} setErrorMessage={setErrorMessage} refreshTitles={refreshTitles} />
+                    <EditItem title={modalItem} onClose={closeModal} setTitles={setTitles} setFloatingMessage={setFloatingMessage} refreshTitles={refreshTitles} />
                 </>
             )}
-            {errorMessage && (
-                <div className="floating-message error" onClick={() => setErrorMessage(null)}>
-                    {errorMessage}
+            {floatingMessage && floatingMessage.text && (
+                <div
+                    className={`floating-message ${floatingMessage.type}`}
+                    onClick={() => setFloatingMessage(null)}
+                >
+                    {floatingMessage.text}
                 </div>
             )}
         </div>

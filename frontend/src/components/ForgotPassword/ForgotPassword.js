@@ -4,7 +4,7 @@ import formImage from "../../assets/images/login-vertical.jpg";
 import formImageHorizontal from "../../assets/images/login-horizontal.jpg";
 import { useState } from "react";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { useNavigate, Link } from "react-router";
+import { useNavigate } from "react-router";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -87,6 +87,7 @@ const ForgotPassword = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        placeholder="john.doe@example.com"
                     />
                 </div>
             </Form>

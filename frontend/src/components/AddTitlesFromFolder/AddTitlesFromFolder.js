@@ -17,6 +17,7 @@ const AddTitlesFromFolder = () => {
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isFolderLoading, setIsFolderLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,6 +31,7 @@ const AddTitlesFromFolder = () => {
         }
 
         try {
+            setIsFolderLoading(true);
             const directoryHandle = await window.showDirectoryPicker();
             const folderNames = [];
 
@@ -44,6 +46,8 @@ const AddTitlesFromFolder = () => {
         } catch (error) {
             setFloatingMessage({ type: "error", text: "Error accessing the folder. Try again later." });
             setTimeout(() => setFloatingMessage(null), 3000);
+        } finally {
+            setIsFolderLoading(false);
         }
     };
 
@@ -168,9 +172,12 @@ const AddTitlesFromFolder = () => {
                 buttons={buttons}>
                 <div className="add-titles-from-folder-content">
                     {!folderSelected && (
-                        <div className="select-folder-container" onClick={handleFolderSelection}>
+                        <div
+                            className={`select-folder-container ${isFolderLoading ? "disabled" : ""}`}
+                            onClick={!isFolderLoading ? handleFolderSelection : undefined}
+                        >
                             <img src={folderIcon} alt="folder-icon" className="folder-icon" />
-                            <span>Select Folder</span>
+                            <span>{isFolderLoading ? "Loading..." : "Select Folder"}</span>
                         </div>
                     )}
                     {titleFormData.length > 0 && (

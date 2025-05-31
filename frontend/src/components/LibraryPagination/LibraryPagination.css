@@ -8,6 +8,8 @@
     border-radius: 0 0 10px 10px;
     user-select: none;
     z-index: 10;
+    position: absolute;
+    bottom: 0;
 }
 
 .left-arrow-icon,

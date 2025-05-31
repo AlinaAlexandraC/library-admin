@@ -80,7 +80,7 @@ export const addTitleToUserList = async (req, res) => {
             savedTitles.push(newTitle);
         }
 
-        await list.save();       
+        await list.save();
 
         return res.status(201).json({
             success: true,
@@ -137,6 +137,10 @@ export const updateTitleDetails = async (req, res) => {
 
         const user = await User.findOne({ firebaseUid });
         if (!user) return res.status(404).json({ message: "User not found." });
+
+        if ('title' in updatedData && updatedData.title.trim() === "") {
+            return res.status(400).json({ message: "Title cannot be empty." });
+        }
 
         const duplicate = await Title.findOne({
             title: updatedData.title,
