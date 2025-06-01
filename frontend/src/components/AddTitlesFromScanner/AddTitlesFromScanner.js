@@ -109,6 +109,10 @@ const AddTitlesFromScanner = () => {
             mediaStream.current.getTracks().forEach(track => track.stop());
             mediaStream.current = null;
         }
+
+        if (videoRef.current) {
+            videoRef.current.srcObject = null;
+        }
     };
 
     useEffect(() => {
