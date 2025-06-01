@@ -1,6 +1,7 @@
 import './AddTitlesFromScanner.css';
 import { useEffect, useRef, useState } from 'react';
-import { BarcodeFormat, BrowserMultiFormatReader, DecodeHintType } from '@zxing/browser';
+import { BrowserMultiFormatReader } from '@zxing/browser';
+import { BarcodeFormat, DecodeHintType } from '@zxing/library';
 import Form from '../Form/Form';
 import formImage from "../../assets/images/scanner-vertical.jpg";
 import formImageHorizontal from "../../assets/images/scanner-horizontal.jpg";

@@ -11,6 +11,7 @@ const EditItem = ({ title, onClose, setTitles, setFloatingMessage, refreshTitles
     const [isMovingToDefault, setIsMovingToDefault] = useState(false);
     const [currentListId, setCurrentListId] = useState(title.listId || null);
     const [originalListName, setOriginalListName] = useState(null);
+    const isCustomList = originalListName && !reservedNames.includes(originalListName);
 
     useEffect(() => {
         const fetchLists = async () => {
@@ -255,9 +256,9 @@ const EditItem = ({ title, onClose, setTitles, setFloatingMessage, refreshTitles
             )}
             <div className="modal-actions">
                 <button
-                    className={`move-default-btn btn ${isMovingToDefault || reservedNames.includes(originalListName) ? "disabled" : ""}`}
+                    className={`move-default-btn btn ${!isCustomList || isMovingToDefault ? "disabled" : ""}`}
                     onClick={async () => {
-                        if (!isMovingToDefault && !reservedNames.includes(originalListName)) {
+                        if (isCustomList && !isMovingToDefault) {
                             setIsMovingToDefault(true);
                             await handleMoveToDefault();
                             setIsMovingToDefault(false);
