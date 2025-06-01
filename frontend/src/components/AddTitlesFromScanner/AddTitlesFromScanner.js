@@ -32,12 +32,13 @@ const AddTitlesFromScanner = () => {
     const [floatingMessage, setFloatingMessage] = useState(null);
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
+    const [noResultFound, setNoResultFound] = useState(false);
 
     useEffect(() => {
         fetchCustomLists(setUserLists);
     }, []);
 
-    const isMobileOrTablet = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isMobileOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet|Touch/i.test(navigator.userAgent);
 
     useEffect(() => {
         if (!navigator.mediaDevices?.getUserMedia) return;
@@ -102,14 +103,31 @@ const AddTitlesFromScanner = () => {
         };
     }, [scanning, isMobileOrTablet]);
 
+    useEffect(() => {
+        let noBarcodeTimeout;
+        if (scanning) {
+            noBarcodeTimeout = setTimeout(() => {
+                setFloatingMessage({
+                    type: 'info',
+                    text: 'If the ISBN is printed only as text without a barcode, please enter it manually.'
+                });
+            }, 10000);
+        }
+        return () => clearTimeout(noBarcodeTimeout);
+    }, [scanning]);
+
+
     const fetchBookByIsbn = async (isbn) => {
         try {
             alert("Fetching book for ISBN: " + isbn);
             const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
             const data = await res.json();
             const item = data.items?.[0];
-            alert("Google Books API response: " + JSON.stringify(data));
-            if (!item) return null;
+            if (!item) {
+                setNoResultFound(true);
+                setScanning(false);
+                return;
+            }
 
             const info = item.volumeInfo;
             return {
@@ -173,6 +191,7 @@ const AddTitlesFromScanner = () => {
         setIsBookFound(false);
         setUsingManual(false);
         setScanning(false);
+        setNoResultFound(false);
     };
 
     const handleSubmit = async (e) => {
@@ -224,29 +243,52 @@ const AddTitlesFromScanner = () => {
         }
     };
 
-    const buttons = usingManual
-        ? [!isBookFound ? (
+    const buttons = [];
+
+    if (noResultFound) {
+        buttons.push(
             {
-                label: "Search Book",
+                label: "Try Another Scan",
                 type: "button",
                 className: "btn",
-                onClick: handleManualIsbnSubmit,
-            }) : (
+                onClick: () => {
+                    setNoResultFound(false);
+                    setScanning(true);
+                },
+            },
             {
-                label: "Add to list",
+                label: "Enter ISBN Manually",
                 type: "button",
                 className: "btn",
-                onClick: handleSubmit,
+                onClick: () => {
+                    setNoResultFound(false);
+                    setUsingManual(true);
+                },
             }
-        ),
-        {
-            label: "Back to Options",
-            type: "button",
-            className: "btn",
-            onClick: resetSearch,
-        },
-        ]
-        : [];
+        );
+    } else if (usingManual) {
+        buttons.push(
+            !isBookFound
+                ? {
+                    label: "Search Book",
+                    type: "button",
+                    className: "btn",
+                    onClick: handleManualIsbnSubmit,
+                }
+                : {
+                    label: "Add to list",
+                    type: "button",
+                    className: "btn",
+                    onClick: handleSubmit,
+                },
+            {
+                label: "Back to Options",
+                type: "button",
+                className: "btn",
+                onClick: resetSearch,
+            }
+        );
+    }
 
     return (
         <div className='add-titles-by-scanning-container'>
@@ -300,7 +342,18 @@ const AddTitlesFromScanner = () => {
                 {scanning && !isBookFound && (
                     <div className='scanner-ui'>
                         <p>Place the barcode in front of the camera</p>
-                        <video ref={videoRef} style={{ width: '100%', maxWidth: '500px' }} playsInline muted autoPlay />
+
+                        <div className="scanner-wrapper">
+                            <video
+                                ref={videoRef}
+                                className="scanner-video"
+                                playsInline
+                                muted
+                                autoPlay
+                            />
+                            <div className="focus-frame"></div>
+                        </div>
+
                         <div className='scanner-actions'>
                             <button className='btn' onClick={() => setScanning(false)}>Stop Scanning</button>
                             <button className='btn' onClick={() => { setScanning(false); setUsingManual(true); }}>Try Manually</button>
@@ -355,6 +408,12 @@ const AddTitlesFromScanner = () => {
                             <span className='scanned-title'><strong>{scannedBook.title}</strong></span>
                             <span><strong>Author:</strong> {scannedBook.author}</span>
                         </div>
+                    </div>
+                )}
+
+                {noResultFound && (
+                    <div className="no-result-message">
+                        <p>No book data found for the scanned code.</p>
                     </div>
                 )}
             </Form>

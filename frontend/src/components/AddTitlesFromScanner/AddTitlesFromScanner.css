@@ -116,3 +116,33 @@
 .scanned-title {
     margin: 10px 0;
 }
+
+.scanner-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem auto;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.scanner-video {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    background-color: black;
+    border-radius: 12px;
+}
+
+.focus-frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60%;
+    height: 30%;
+    transform: translate(-50%, -50%);
+    border: 2px dashed rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
