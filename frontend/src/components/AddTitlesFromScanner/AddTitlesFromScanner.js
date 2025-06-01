@@ -107,6 +107,8 @@ const AddTitlesFromScanner = () => {
                     text: 'If the ISBN is printed only as text without a barcode, please enter it manually.'
                 });
             }, 10000);
+        } else {
+            setFloatingMessage(null);
         }
         return () => clearTimeout(noBarcodeTimeout);
     }, [scanning]);
@@ -298,7 +300,7 @@ const AddTitlesFromScanner = () => {
                 },
             },
         ];
-    } else if (usingManual && !isBookFound && !searchAttempted) {    
+    } else if (usingManual && !isBookFound && !searchAttempted) {
         buttons = [
             {
                 label: "Search Book",
