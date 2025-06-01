@@ -39,19 +39,19 @@ const AddTitlesFromScanner = () => {
         fetchCustomLists(setUserLists);
     }, []);
 
-    const isMobileOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet|Touch/i.test(navigator.userAgent);
+    const isMobileDevice = navigator.userAgentData?.mobile ?? /Mobi|Android|iPhone|iPad|iPod|Tablet|Touch/i.test(navigator.userAgent);
+
+    const isScannerCapable = isMobileDevice;
 
     useEffect(() => {
         if (!navigator.mediaDevices?.getUserMedia) return;
 
-        if (scanning && isMobileOrTablet && videoRef.current) {
+        if (scanning && isScannerCapable && videoRef.current) {
             const initScanner = async () => {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                     mediaStream.current = stream;
                     videoRef.current.srcObject = stream;
-
-                    await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 } catch (err) {
                     setPermissionDenied(true);
                     setScanning(false);
@@ -102,16 +102,20 @@ const AddTitlesFromScanner = () => {
             stopCamera();
             if (codeReader.current?.reset) codeReader.current.reset();
         };
-    }, [scanning, isMobileOrTablet]);
+    }, [scanning, isScannerCapable]);
 
     const stopCamera = () => {
         if (mediaStream.current) {
             mediaStream.current.getTracks().forEach(track => track.stop());
             mediaStream.current = null;
         }
-
+        
         if (videoRef.current) {
             videoRef.current.srcObject = null;
+        }
+        
+        if (codeReader.current?.reset) {
+            codeReader.current.reset();
         }
     };
 
@@ -353,7 +357,7 @@ const AddTitlesFromScanner = () => {
             >
                 {!isBookFound && !usingManual && !scanning && (
                     <div className='method-toggle'>
-                        {isMobileOrTablet ? (
+                        {isScannerCapable ? (
                             <div className="buttons">
                                 <button
                                     type="button"
@@ -363,6 +367,7 @@ const AddTitlesFromScanner = () => {
                                         setUsingManual(false);
                                         setScanning(true);
                                     }}
+                                    disabled={permissionDenied}
                                 >
                                     Scan ISBN with Camera
                                 </button>
@@ -391,7 +396,11 @@ const AddTitlesFromScanner = () => {
                         </div>
                     </div>
                 )}
-
+                {permissionDenied && (
+                    <p className="permission-denied-message">
+                        Camera access was denied. Please allow camera permissions in your browser settings to scan ISBNs.
+                    </p>
+                )}
                 {scanning && !isBookFound && (
                     <div className='scanner-ui'>
                         <p>Place the barcode in front of the camera</p>
@@ -410,51 +419,50 @@ const AddTitlesFromScanner = () => {
                 )}
 
                 {usingManual && !isBookFound && (
-                    <>
-                        <div className='manual-isbn-input'>
-                            <div className="otaku-list-select">
-                                <label>OtakuList</label>
-                                <select
-                                    name="customList"
-                                    className="custom-list"
-                                    value={selectedOtakuList}
-                                    onChange={(e) => setSelectedOtakuList(e.target.value)}
-                                    disabled={userLists.length === 0}
-                                >
-                                    <option value="">Select a custom list</option>
-                                    {userLists.map(list => (
-                                        <option key={list._id} value={list.name}>{list.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className='manual-isbn-input-container'>
-                                <label htmlFor="manual-isbn">Enter ISBN:</label>
-                                <input
-                                    type="text"
-                                    id="manual-isbn"
-                                    value={manualIsbn}
-                                    onChange={(e) => {
-                                        setManualIsbn(e.target.value);
-                                        setFloatingMessage(null);
-                                    }}
-                                    placeholder="ISBN (10 or 13 digits)"
-                                />
-                            </div>
-                        </div>
-                    </>
+                    <div className='manual-isbn-input-container'>
+                        <label htmlFor="manual-isbn">Enter ISBN:</label>
+                        <input
+                            type="text"
+                            id="manual-isbn"
+                            value={manualIsbn}
+                            onChange={(e) => {
+                                setManualIsbn(e.target.value);
+                                setFloatingMessage(null);
+                            }}
+                            placeholder="ISBN (10 or 13 digits)"
+                        />
+                    </div>
                 )}
 
                 {isBookFound && scannedBook && (
                     <div className="scanned-book">
-                        <label><strong>Result for ISBN:</strong> {scannedBook.isbn}</label>
-                        <div className='scanned-book-details'>
-                            {scannedBook.cover ? (
-                                <img src={scannedBook.cover} alt={scannedBook.title} />
-                            ) : (
-                                <img src={noImage} alt={noImage} className='no-image' />
-                            )}
-                            <span className='scanned-title'><strong>{scannedBook.title}</strong></span>
-                            <span><strong>Author:</strong> {scannedBook.author}</span>
+                        <div className="otaku-list-select">
+                            <label>OtakuList</label>
+                            <select
+                                name="customList"
+                                className="custom-list"
+                                value={selectedOtakuList}
+                                onChange={(e) => setSelectedOtakuList(e.target.value)}
+                                disabled={userLists.length === 0}
+                            >
+                                <option value="">Select a custom list</option>
+                                {userLists.map(list => (
+                                    <option key={list._id} value={list.name}>{list.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='manual-isbn-input'>
+
+                            <label><strong>Result for ISBN:</strong> {scannedBook.isbn}</label>
+                            <div className='scanned-book-details'>
+                                {scannedBook.cover ? (
+                                    <img src={scannedBook.cover} alt={scannedBook.title} />
+                                ) : (
+                                    <img src={noImage} alt={noImage} className='no-image' />
+                                )}
+                                <span className='scanned-title'><strong>{scannedBook.title}</strong></span>
+                                <span><strong>Author:</strong> {scannedBook.author}</span>
+                            </div>
                         </div>
                     </div>
                 )}

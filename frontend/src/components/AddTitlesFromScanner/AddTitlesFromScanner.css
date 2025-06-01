@@ -56,8 +56,6 @@
 
 .manual-isbn-input {
     width: 100%;
-    min-height: 150px;
-    margin: 70px 0;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -67,6 +65,8 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100%;
+    margin: 70px 0;
 }
 
 .manual-isbn-input input {
@@ -89,13 +89,16 @@
 }
 
 .scanned-book {
-    margin: 30px 0;
+    margin-bottom: 30px;
+}
+
+.form-body-content>div>div.otaku-list-select {
+    margin: 25px 0;
 }
 
 .scanned-book-details {
     border: 1px solid #ccc;
     padding: 10px;
-    margin: 10px 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -128,7 +131,7 @@
 
 .scanner-video {
     width: 100%;
-    height: 180px;
+    height: 220px;
     object-fit: cover;
     background-color: black;
     border-radius: 12px;
