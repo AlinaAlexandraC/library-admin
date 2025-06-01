@@ -62,15 +62,10 @@ const AddTitlesFromScanner = () => {
                     if (result) {
                         const rawIsbn = result.getText();
                         const isbn = rawIsbn.replace(/[^0-9Xx]/g, '').slice(0, 13);
-                        alert("Scanned ISBN:", isbn);
 
                         (async () => {
-                            alert("Sanitized ISBN: " + isbn);
                             const bookData = await fetchBookByIsbn(isbn);
-                            if (bookData) {
-                                alert("Book found");
-                            }
-                            alert('Book title: ' + bookData?.title);
+
                             if (bookData) {
                                 setScannedBook({ isbn, ...bookData });
                                 setTitleFormData({
@@ -246,59 +241,77 @@ const AddTitlesFromScanner = () => {
         }
     };
 
-    const buttons = [];
+    let buttons = [];
 
-    if (usingManual) {
-        buttons.push(
-            !isBookFound
-                ? {
-                    label: "Search Book",
-                    type: "button",
-                    className: "btn",
-                    onClick: handleManualIsbnSubmit,
-                }
-                : {
-                    label: "Add to list",
-                    type: "button",
-                    className: "btn",
-                    onClick: handleSubmit,
+    if (scanning) {
+        buttons = [
+            {
+                label: "Stop Scanning",
+                type: "button",
+                className: "btn",
+                onClick: () => setScanning(false),
+            },
+            {
+                label: "Try Manually",
+                type: "button",
+                className: "btn",
+                onClick: () => {
+                    setScanning(false);
+                    setUsingManual(true);
                 },
+            },
+        ];
+    } else if (isBookFound) {
+        buttons = [
+            {
+                label: "Add to List",
+                type: "button",
+                className: "btn",
+                onClick: handleSubmit,
+            },
             {
                 label: "Back to Options",
                 type: "button",
                 className: "btn",
                 onClick: resetSearch,
-            }
-        );
-    } else if (!isBookFound && !scanning && searchAttempted) {
-        buttons.push(
-            isMobileOrTablet
-                ? {
-                    label: "Scan ISBN with Camera",
-                    type: "button",
-                    className: "btn",
-                    onClick: () => {
-                        resetSearch();
-                        setUsingManual(false);
-                        setScanning(true);
-                    },
-                }
-                : {
-                    label: "Scanning Unavailable on Desktop",
-                    type: "button",
-                    className: "btn disabled",
-                    onClick: () => { },
-                },
+            },
+        ];
+    } else if (!isBookFound && searchAttempted) {
+        buttons = [
             {
-                label: "Enter ISBN Manually",
+                label: "Scan Another",
+                type: "button",
+                className: "btn",
+                onClick: () => {
+                    resetSearch();
+                    setScanning(true);
+                },
+            },
+            {
+                label: "Try Manually",
                 type: "button",
                 className: "btn",
                 onClick: () => {
                     resetSearch();
                     setUsingManual(true);
                 },
-            }
-        );
+            },
+        ];
+    } else if (usingManual && !isBookFound && !searchAttempted) {    
+        buttons = [
+            {
+                label: "Search Book",
+                type: "button",
+                className: "btn",
+                onClick: handleManualIsbnSubmit,
+            },
+            {
+                label: "Back to Options",
+                type: "button",
+                className: "btn",
+                onClick: resetSearch,
+            },
+        ];
     }
 
     return (
