@@ -64,8 +64,12 @@ const AddTitlesFromScanner = () => {
                         alert("Scanned ISBN:", isbn);
 
                         (async () => {
+                            alert("Sanitized ISBN: " + isbn);
                             const bookData = await fetchBookByIsbn(isbn);
-                            alert('Book data fetched:', bookData);
+                            if (bookData) {
+                                alert("Book found");
+                            }
+                            alert('Book title: ' + bookData?.title);
                             if (bookData) {
                                 setScannedBook({ isbn, ...bookData });
                                 setTitleFormData({
@@ -100,10 +104,11 @@ const AddTitlesFromScanner = () => {
 
     const fetchBookByIsbn = async (isbn) => {
         try {
+            alert("Fetching book for ISBN: " + isbn);
             const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
             const data = await res.json();
             const item = data.items?.[0];
-            alert("Google Books API response:", data);
+            alert("Google Books API response: " + JSON.stringify(data));
             if (!item) return null;
 
             const info = item.volumeInfo;
