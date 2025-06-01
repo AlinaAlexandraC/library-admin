@@ -1,6 +1,6 @@
 import './AddTitlesFromScanner.css';
 import { useEffect, useRef, useState } from 'react';
-import { BrowserMultiFormatReader } from '@zxing/browser';
+import { BarcodeFormat, BrowserMultiFormatReader, DecodeHintType } from '@zxing/browser';
 import Form from '../Form/Form';
 import formImage from "../../assets/images/scanner-vertical.jpg";
 import formImageHorizontal from "../../assets/images/scanner-horizontal.jpg";
@@ -51,11 +51,15 @@ const AddTitlesFromScanner = () => {
                     return;
                 }
 
-                codeReader.current = new BrowserMultiFormatReader();
+                const hints = new Map();
+                hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13]);
+
+                codeReader.current = new BrowserMultiFormatReader(hints);
 
                 codeReader.current.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
                     if (result) {
-                        const isbn = result.getText();
+                        const rawIsbn = result.getText();
+                        const isbn = rawIsbn.replace(/[^0-9Xx]/g, '').slice(0, 13);
                         alert("Scanned ISBN:", isbn);
 
                         (async () => {
@@ -98,6 +102,7 @@ const AddTitlesFromScanner = () => {
             const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
             const data = await res.json();
             const item = data.items?.[0];
+            alert("Google Books API response:", data);
             if (!item) return null;
 
             const info = item.volumeInfo;
