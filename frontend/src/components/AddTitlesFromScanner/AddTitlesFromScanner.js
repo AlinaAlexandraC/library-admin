@@ -254,6 +254,7 @@ const AddTitlesFromScanner = () => {
                 });
 
                 setSelectedOtakuList("");
+                stopCamera();
                 resetSearch();
             } else {
                 setFloatingMessage({ type: "error", text: "Process failed. Try again later." });
