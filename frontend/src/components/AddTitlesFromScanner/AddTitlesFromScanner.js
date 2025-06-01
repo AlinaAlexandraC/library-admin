@@ -230,6 +230,7 @@ const AddTitlesFromScanner = () => {
                 });
 
                 setSelectedOtakuList("");
+                resetSearch();
             } else {
                 setFloatingMessage({ type: "error", text: "Process failed. Try again later." });
                 setTimeout(() => setFloatingMessage(null), 3000);
