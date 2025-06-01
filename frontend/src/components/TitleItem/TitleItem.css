@@ -26,16 +26,16 @@
 
 .title-item-name {
     height: calc(100% - 60px);
-    margin-top: 8px;
     display: flex;
     justify-content: flex-start;
+    margin: 8px 0;
 }
 
-.index {
+.title-item-name>span.index {
     padding: 0;
 }
 
-.filename {
+.title-item-name>span.filename {
     font-weight: 600;
     word-break: break-word;
     overflow-wrap: anywhere;
@@ -45,11 +45,12 @@
     width: 60%;
 }
 
-.other-details {
+.title-details>div.other-details {
     height: 40px;
     display: flex;
     align-items: center;
-    margin: 0 8px;
+    margin: 8px 0;
+    width: 100%;
 }
 
 .title-only {
@@ -90,7 +91,9 @@
     }
 
     .title-item-name-only>span.filename,
-    .index {
+    .title-item-name>span.filename,
+    .title-item-name>span.index,
+    .title-details>div.other-details {
         font-size: 12px;
     }
 }

@@ -160,7 +160,7 @@
     border-radius: 0 0 10px 10px;
 }
 
-@media (max-width: 480px),
+@media (max-width: 700px),
 (max-height: 375px) and (orientation: landscape) {
     .randomizer-wrapper {
         flex-direction: column;

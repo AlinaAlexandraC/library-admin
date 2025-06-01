@@ -54,26 +54,11 @@ const AddTitlesManually = () => {
             });
 
             if (response.success) {
-                const duplicates = response.duplicates?.length || 0;
-
-                if ((response.title?.length || 0) > 0 || duplicates > 0) {
-                    const successText =
-                        (response.title?.length || 0) > 0
-                            ? "Title added successfully."
-                            : "";
-                    const duplicateText =
-                        duplicates > 0
-                            ? ` ${duplicates} duplicate${duplicates === 1 ? "" : "s"} skipped.`
-                            : "";
-
-                    setFloatingMessage({
-                        type: "success",
-                        text: `${successText}${duplicateText}`.trim(),
-                    });
-                    setTimeout(() => setFloatingMessage(null), 3000);
-                } else {
-                    setFloatingMessage(null);
-                }
+                setFloatingMessage({
+                    type: "success",
+                    text: `${response.message}`,
+                });
+                setTimeout(() => setFloatingMessage(null), 3000);
 
                 setTitleFormData({
                     title: "",

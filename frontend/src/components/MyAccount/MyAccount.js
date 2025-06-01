@@ -18,7 +18,11 @@ const MyAccount = () => {
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (editRef.current && !editRef.current.contains(event.target)) {
+            if (
+                editRef.current &&
+                !editRef.current.contains(event.target) &&
+                !event.target.closest('.btn')
+            ) {
                 setIsEditing(false);
             }
         }

@@ -53,18 +53,32 @@ const AddTitlesFromScanner = () => {
 
                 codeReader.current = new BrowserMultiFormatReader();
 
-                codeReader.current.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
+                codeReader.current.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
                     if (result) {
                         const isbn = result.getText();
-                        console.log("Scanned ISBN:", isbn);
-                        const bookData = await fetchBookByIsbn(isbn);
-                        if (bookData) {
-                            setScannedBook({ isbn, ...bookData });
-                            setIsBookFound(true);
-                        } else {
-                            console.warn('No book data found.');
-                        }
-                        setScanning(false);
+                        alert("Scanned ISBN:", isbn);
+
+                        (async () => {
+                            const bookData = await fetchBookByIsbn(isbn);
+                            alert('Book data fetched:', bookData);
+                            if (bookData) {
+                                setScannedBook({ isbn, ...bookData });
+                                setTitleFormData({
+                                    title: bookData.title,
+                                    author: bookData.author,
+                                    type: "Book",
+                                    genre: "",
+                                    numberOfSeasons: "",
+                                    numberOfEpisodes: "",
+                                    numberOfChapters: "",
+                                    status: false,
+                                });
+                                setIsBookFound(true);
+                            } else {
+                                console.warn('No book data found.');
+                            }
+                            setScanning(false);
+                        })();
                     }
                     if (err && !(err.name === 'NotFoundException')) {
                         console.error(err);
@@ -114,6 +128,17 @@ const AddTitlesFromScanner = () => {
 
             if (bookData) {
                 setScannedBook({ isbn: sanitizedIsbn, ...bookData });
+                setTitleFormData({
+                    title: bookData.title,
+                    author: bookData.author,
+                    type: "Book",
+                    genre: "",
+                    numberOfSeasons: "",
+                    numberOfEpisodes: "",
+                    numberOfChapters: "",
+                    status: false,
+                });
+
                 setIsBookFound(true);
                 setFloatingMessage({ type: "success", text: "Book found!" });
                 setTimeout(() => setFloatingMessage(null), 3000);
@@ -159,26 +184,11 @@ const AddTitlesFromScanner = () => {
             });
 
             if (response.success) {
-                const duplicates = response.duplicates?.length || 0;
-
-                if ((response.title?.length || 0) > 0 || duplicates > 0) {
-                    const successText =
-                        (response.title?.length || 0) > 0
-                            ? "Title added successfully."
-                            : "";
-                    const duplicateText =
-                        duplicates > 0
-                            ? ` ${duplicates} duplicate${duplicates === 1 ? "" : "s"} skipped.`
-                            : "";
-
-                    setFloatingMessage({
-                        type: "success",
-                        text: `${successText}${duplicateText}`.trim(),
-                    });
-                    setTimeout(() => setFloatingMessage(null), 3000);
-                } else {
-                    setFloatingMessage(null);
-                }
+                setFloatingMessage({
+                    type: "success",
+                    text: `${response.message}`,
+                });
+                setTimeout(() => setFloatingMessage(null), 3000);
 
                 setTitleFormData({
                     title: "",
@@ -193,12 +203,12 @@ const AddTitlesFromScanner = () => {
 
                 setSelectedOtakuList("");
             } else {
-                setFloatingMessage({ type: "error", text: "Process failed. Try again later" });
+                setFloatingMessage({ type: "error", text: "Process failed. Try again later." });
                 setTimeout(() => setFloatingMessage(null), 3000);
             }
         } catch (error) {
             console.error("Error during title submission:", error);
-            setFloatingMessage({ type: "error", text: error.message || "Process failed. Try again later" });
+            setFloatingMessage({ type: "error", text: error.message || "Error during title submission." });
             setTimeout(() => setFloatingMessage(null), 3000);
         }
     };
@@ -235,7 +245,7 @@ const AddTitlesFromScanner = () => {
                 onSubmit={(e) => e.preventDefault()}
                 buttons={buttons}
             >
-                {!isBookFound && !usingManual && (
+                {!isBookFound && !usingManual && !scanning && (
                     <div className='method-toggle'>
                         {isMobileOrTablet ? (
                             <div className="buttons">
@@ -244,6 +254,7 @@ const AddTitlesFromScanner = () => {
                                     className="btn"
                                     onClick={() => {
                                         resetSearch();
+                                        setUsingManual(false);
                                         setScanning(true);
                                     }}
                                 >

@@ -82,9 +82,18 @@ export const addTitleToUserList = async (req, res) => {
 
         await list.save();
 
+        let message = '';
+        if (savedTitles.length > 0 && duplicateTitles.length === 0) {
+            message = "Title(s) added successfully!";
+        } else if (savedTitles.length === 0 && duplicateTitles.length > 0) {
+            message = "Duplicate(s) title skipped.";
+        } else if (savedTitles.length > 0 && duplicateTitles.length > 0) {
+            message = "Title(s) added successfully! Duplicate(s) title skipped.";
+        }
+
         return res.status(201).json({
             success: true,
-            message: "Title(s) added successfully!",
+            message,
             addedTitles: savedTitles,
             duplicates: duplicateTitles
         });
@@ -94,7 +103,6 @@ export const addTitleToUserList = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
-
 
 // Get all titles
 
