@@ -124,7 +124,7 @@
     position: relative;
     width: 100%;
     max-width: 400px;
-    margin: 1rem auto;
+    margin: 2rem auto;
     border-radius: 12px;
     overflow: hidden;
 }
@@ -148,10 +148,4 @@
     border-radius: 8px;
     pointer-events: none;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.testing-scanner {
-    display: flex;
-    justify-content: center;
-    margin: 10px 0;
 }
