@@ -33,6 +33,7 @@ const AddTitlesFromScanner = () => {
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
     const [searchAttempted, setSearchAttempted] = useState(false);
+    const mediaStream = useRef(null);
 
     useEffect(() => {
         fetchCustomLists(setUserLists);
@@ -46,6 +47,10 @@ const AddTitlesFromScanner = () => {
         if (scanning && isMobileOrTablet && videoRef.current) {
             const initScanner = async () => {
                 try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                    mediaStream.current = stream;
+                    videoRef.current.srcObject = stream;
+
                     await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 } catch (err) {
                     setPermissionDenied(true);
@@ -94,9 +99,17 @@ const AddTitlesFromScanner = () => {
         }
 
         return () => {
+            stopCamera();
             if (codeReader.current?.reset) codeReader.current.reset();
         };
     }, [scanning, isMobileOrTablet]);
+
+    const stopCamera = () => {
+        if (mediaStream.current) {
+            mediaStream.current.getTracks().forEach(track => track.stop());
+            mediaStream.current = null;
+        }
+    };
 
     useEffect(() => {
         let noBarcodeTimeout;
@@ -257,7 +270,10 @@ const AddTitlesFromScanner = () => {
                 label: "Stop Scanning",
                 type: "button",
                 className: "btn",
-                onClick: () => setScanning(false),
+                onClick: () => {
+                    stopCamera();
+                    setScanning(false);
+                },
             },
             {
                 label: "Try Manually",
@@ -276,6 +292,21 @@ const AddTitlesFromScanner = () => {
                 type: "button",
                 className: "btn",
                 onClick: handleSubmit,
+            },
+            {
+                label: "Back to Options",
+                type: "button",
+                className: "btn",
+                onClick: resetSearch,
+            },
+        ];
+    } else if (usingManual && !isBookFound && !searchAttempted) {
+        buttons = [
+            {
+                label: "Search Book",
+                type: "button",
+                className: "btn",
+                onClick: handleManualIsbnSubmit,
             },
             {
                 label: "Back to Options",
@@ -303,21 +334,6 @@ const AddTitlesFromScanner = () => {
                     resetSearch();
                     setUsingManual(true);
                 },
-            },
-        ];
-    } else if (usingManual && !isBookFound && !searchAttempted) {
-        buttons = [
-            {
-                label: "Search Book",
-                type: "button",
-                className: "btn",
-                onClick: handleManualIsbnSubmit,
-            },
-            {
-                label: "Back to Options",
-                type: "button",
-                className: "btn",
-                onClick: resetSearch,
             },
         ];
     }
@@ -384,11 +400,6 @@ const AddTitlesFromScanner = () => {
                                 autoPlay
                             />
                             <div className="focus-frame"></div>
-                        </div>
-
-                        <div className='scanner-actions'>
-                            <button className='btn' onClick={() => setScanning(false)}>Stop Scanning</button>
-                            <button className='btn' onClick={() => { setScanning(false); setUsingManual(true); }}>Try Manually</button>
                         </div>
                     </div>
                 )}
