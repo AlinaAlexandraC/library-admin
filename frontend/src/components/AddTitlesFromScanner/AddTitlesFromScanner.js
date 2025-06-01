@@ -113,6 +113,11 @@ const AddTitlesFromScanner = () => {
         return () => clearTimeout(noBarcodeTimeout);
     }, [scanning]);
 
+    useEffect(() => {
+        if (isBookFound) {
+            setFloatingMessage(null);
+        }
+    }, [isBookFound]);
 
     const fetchBookByIsbn = async (isbn) => {
         try {
