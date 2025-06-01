@@ -32,7 +32,7 @@ const AddTitlesFromScanner = () => {
     const [floatingMessage, setFloatingMessage] = useState(null);
     const [userLists, setUserLists] = useState([]);
     const [selectedOtakuList, setSelectedOtakuList] = useState("");
-    const [noResultFound, setNoResultFound] = useState(false);
+    const [searchAttempted, setSearchAttempted] = useState(false);
 
     useEffect(() => {
         fetchCustomLists(setUserLists);
@@ -119,20 +119,22 @@ const AddTitlesFromScanner = () => {
 
     const fetchBookByIsbn = async (isbn) => {
         try {
-            alert("Fetching book for ISBN: " + isbn);
             const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
             const data = await res.json();
             const item = data.items?.[0];
-            if (!item) {
-                setNoResultFound(true);
+
+            if (!item || !item.volumeInfo?.title) {
+                setIsBookFound(false);
+                setScannedBook(null);
                 setScanning(false);
-                return;
+                setSearchAttempted(true);
+                return null;
             }
 
             const info = item.volumeInfo;
             return {
-                title: info.title || 'No title found',
-                author: info.authors?.[0] || 'Unknown author',
+                title: info.title,
+                author: info.authors?.[0] || '',
                 cover: info.imageLinks?.thumbnail || '',
             };
         } catch (err) {
@@ -176,6 +178,7 @@ const AddTitlesFromScanner = () => {
                 setTimeout(() => setFloatingMessage(null), 3000);
                 setIsBookFound(false);
                 setScannedBook(null);
+                setSearchAttempted(true);
             }
         } catch (error) {
             setFloatingMessage({ type: "error", text: "Error fetching book data. Please try again later." });
@@ -191,7 +194,7 @@ const AddTitlesFromScanner = () => {
         setIsBookFound(false);
         setUsingManual(false);
         setScanning(false);
-        setNoResultFound(false);
+        setSearchAttempted(false);
     };
 
     const handleSubmit = async (e) => {
@@ -245,28 +248,7 @@ const AddTitlesFromScanner = () => {
 
     const buttons = [];
 
-    if (noResultFound) {
-        buttons.push(
-            {
-                label: "Try Another Scan",
-                type: "button",
-                className: "btn",
-                onClick: () => {
-                    setNoResultFound(false);
-                    setScanning(true);
-                },
-            },
-            {
-                label: "Enter ISBN Manually",
-                type: "button",
-                className: "btn",
-                onClick: () => {
-                    setNoResultFound(false);
-                    setUsingManual(true);
-                },
-            }
-        );
-    } else if (usingManual) {
+    if (usingManual) {
         buttons.push(
             !isBookFound
                 ? {
@@ -286,6 +268,35 @@ const AddTitlesFromScanner = () => {
                 type: "button",
                 className: "btn",
                 onClick: resetSearch,
+            }
+        );
+    } else if (!isBookFound && !scanning && searchAttempted) {
+        buttons.push(
+            isMobileOrTablet
+                ? {
+                    label: "Scan ISBN with Camera",
+                    type: "button",
+                    className: "btn",
+                    onClick: () => {
+                        resetSearch();
+                        setUsingManual(false);
+                        setScanning(true);
+                    },
+                }
+                : {
+                    label: "Scanning Unavailable on Desktop",
+                    type: "button",
+                    className: "btn disabled",
+                    onClick: () => { },
+                },
+            {
+                label: "Enter ISBN Manually",
+                type: "button",
+                className: "btn",
+                onClick: () => {
+                    resetSearch();
+                    setUsingManual(true);
+                },
             }
         );
     }
@@ -411,10 +422,8 @@ const AddTitlesFromScanner = () => {
                     </div>
                 )}
 
-                {noResultFound && (
-                    <div className="no-result-message">
-                        <p>No book data found for the scanned code.</p>
-                    </div>
+                {searchAttempted && !isBookFound && !scanning && !usingManual && (
+                    <p>No book data found for the given ISBN.</p>
                 )}
             </Form>
         </div>
