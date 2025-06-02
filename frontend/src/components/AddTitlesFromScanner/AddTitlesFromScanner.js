@@ -286,6 +286,7 @@ const AddTitlesFromScanner = () => {
                 onClick: () => {
                     stopCamera();
                     setScanning(false);
+                    window.location.href = window.location.pathname + '?mode=scanner';
                 },
             },
             {
@@ -483,7 +484,7 @@ const AddTitlesFromScanner = () => {
                 )}
 
                 {searchAttempted && !isBookFound && !scanning && !usingManual && (
-                    <p>No book data found for the given ISBN.</p>
+                    <p className='no-book-found'>No book data found for the given ISBN.</p>
                 )}
             </Form>
         </div>

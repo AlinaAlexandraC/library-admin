@@ -28,7 +28,8 @@
     height: calc(100% - 60px);
     display: flex;
     justify-content: flex-start;
-    margin: 8px 0;
+    align-items: center;
+    margin: 16px 0;
 }
 
 .title-item-name>span.index {
@@ -36,7 +37,6 @@
 }
 
 .title-item-name>span.filename {
-    font-weight: 600;
     word-break: break-word;
     overflow-wrap: anywhere;
 }

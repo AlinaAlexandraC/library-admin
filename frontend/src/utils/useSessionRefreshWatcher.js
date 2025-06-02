@@ -1,57 +1,63 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { auth } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-let showModalSetter = null;
+const INACTIVITY_LIMIT = 55 * 60 * 1000;
 
-export const registerSessionModalSetter = (setterFn) => {
-  showModalSetter = setterFn;
-};
-
-export const showSessionExpiredModal = () => {
-  if (typeof showModalSetter === 'function') {
-    showModalSetter(true);
-  }
-};
-
-const useSessionRefreshWatcher = (setShowModal, resetSignal) => {
+const useSessionRefreshWatcher = (setShowModal) => {
     const timerIdRef = useRef(null);
+    const manualLogoutRef = useRef(false);
+    const [expired, setExpired] = useState(false);
 
-    const startTimer = useCallback(() => {
+    const resetTimer = useCallback(() => {
         clearTimeout(timerIdRef.current);
+        setExpired(false);
         timerIdRef.current = setTimeout(() => {
+            setExpired(true);
             setShowModal(true);
-            timerIdRef.current = null;
-        }, 55 * 60 * 1000);
+        }, INACTIVITY_LIMIT);
+    }, [setShowModal]);
+
+    const signOutUser = useCallback(async () => {
+        manualLogoutRef.current = true;
+        clearTimeout(timerIdRef.current);
+        timerIdRef.current = null;
+        setShowModal(false);
+        await auth.signOut();
+        window.location.replace("/");
     }, [setShowModal]);
 
     useEffect(() => {
-        if (auth.currentUser) {
-            startTimer();
-        }
+        if (!auth.currentUser) return;
 
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        resetTimer();
+
+        const activityHandler = () => {
+            if (!expired) resetTimer();
+        };
+
+        const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+        events.forEach(evt => window.addEventListener(evt, activityHandler));
+
+        const unsubscribe = onAuthStateChanged(auth, user => {
             if (user) {
-                startTimer();
+                resetTimer();
             } else {
-                clearTimeout(timerIdRef.current);
-                timerIdRef.current = null;
+                if (!manualLogoutRef.current) {
+                    setExpired(true);
+                    setShowModal(true);
+                }
             }
         });
 
         return () => {
+            events.forEach(evt => window.removeEventListener(evt, activityHandler));
             unsubscribe();
             clearTimeout(timerIdRef.current);
         };
-    }, [startTimer]);
+    }, [resetTimer, signOutUser, expired, setShowModal]);
 
-    useEffect(() => {
-        if (resetSignal) {
-            startTimer();
-        }
-    }, [resetSignal, startTimer]);
-
-    return null;
+    return { expired, signOutUser, resetTimer };
 };
 
 export default useSessionRefreshWatcher;

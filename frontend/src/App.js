@@ -4,7 +4,7 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import Layout from './pages/Layout';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import ServerStatusModal from './components/ServerStatusModal/ServerStatusModal';
-import useSessionRefreshWatcher, { registerSessionModalSetter } from './utils/useSessionRefreshWatcher';
+import useSessionRefreshWatcher from './utils/useSessionRefreshWatcher';
 import SessionRefreshModal from './components/SessionRefreshModal/SessionRefreshModal';
 import Loader from './components/Loader/Loader';
 
@@ -101,17 +101,17 @@ function App() {
   const [serverStatus, setServerStatus] = useState("Waking up the server... Please wait ⏳");
   const [showServerModal, setShowServerModal] = useState(true);
   const [showSessionModal, setShowSessionModal] = useState(false);
-  const [resetSessionTimer, setResetSessionTimer] = useState(0);
 
-  useSessionRefreshWatcher(setShowSessionModal, resetSessionTimer);
-
-  useEffect(() => {
-    registerSessionModalSetter(setShowSessionModal);
-  }, []);
+  const { expired, signOutUser, resetTimer } = useSessionRefreshWatcher(setShowSessionModal);
 
   const handleStayLoggedIn = () => {
     setShowSessionModal(false);
-    setResetSessionTimer(prev => prev + 1);
+    resetTimer();
+  };
+
+  const handleLogOut = async () => {
+    setShowSessionModal(false);
+    await signOutUser();
   };
 
   useEffect(() => {
@@ -154,12 +154,22 @@ function App() {
           <RouterProvider router={router} />
         </Suspense>
       </header>
-      {showSessionModal &&
+
+      {showSessionModal && !expired && (
         <SessionRefreshModal
           message="Your session is about to expire, do you want to stay logged in?"
           onClose={handleStayLoggedIn}
+          onLogout={handleLogOut}
         />
-      }
+      )}
+
+      {expired && !showSessionModal && (
+        <SessionRefreshModal
+          message="Your session has expired. Please log in again."
+          onClose={() => window.location.replace('/')}
+          expired={true}
+        />
+      )}
 
       <ServerStatusModal message={serverStatus} showModal={showServerModal} onClose={() => setShowServerModal(false)} />
     </div>

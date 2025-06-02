@@ -187,7 +187,7 @@ const MyAccount = () => {
             {showDeleteModal && (
                 <>
                     <div className="overlay" onClick={handleCloseDeleteModal}></div>
-                    <DeleteAccount onClose={handleCloseDeleteModal} />
+                    <DeleteAccount onClose={handleCloseDeleteModal} setFloatingMessage={setFloatingMessage} />
                 </>
             )}
         </div>

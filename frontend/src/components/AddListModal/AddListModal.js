@@ -2,34 +2,32 @@ import './AddListModal.css';
 import { useState } from "react";
 import { reservedNames } from "../../utils/constants";
 
-const AddListModal = ({ onSave, onClose, existingLists }) => {
+const AddListModal = ({ onSave, onClose, existingLists, setFloatingMessage }) => {
     const [listName, setListName] = useState("");
-    const [error, setError] = useState("");
 
     const handleSave = () => {
         const trimmedName = listName.trim();
 
         if (!trimmedName) {
-            setError("List name cannot be empty");
-            setTimeout(() => setError(""), 3000);
+            setFloatingMessage({ type: "error", text: "List name cannot be empty" });
+            setTimeout(() => setFloatingMessage(null), 3000);
             return;
         }
 
         if (reservedNames.some(name => name.toLowerCase() === trimmedName.toLowerCase())) {
-            setError("This list name is reserved and cannot be used.");
-            setTimeout(() => setError(""), 3000);
+            setFloatingMessage({ type: "error", text: "This list name is reserved and cannot be used." });
+            setTimeout(() => setFloatingMessage(null), 3000);
             return;
         }
 
         if (existingLists.some(list => list.toLowerCase() === trimmedName.toLowerCase())) {
-            setError("A list with this name already exists.");
-            setTimeout(() => setError(""), 3000);
+            setFloatingMessage({ type: "error", text: "A list with this name already exists." });
+            setTimeout(() => setFloatingMessage(null), 3000);
             return;
         }
 
         onSave(trimmedName);
         setListName("");
-        setError("");
     };
 
     return (
@@ -40,7 +38,6 @@ const AddListModal = ({ onSave, onClose, existingLists }) => {
                 <button onClick={handleSave} className="save-btn">Create List</button>
                 <button onClick={onClose} className="cancel-btn">Cancel</button>
             </div>
-            <div className="error">{error || ""}</div>
         </div >
     );
 };

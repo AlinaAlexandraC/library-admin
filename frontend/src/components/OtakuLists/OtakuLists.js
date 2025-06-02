@@ -248,7 +248,7 @@ const OtakuLists = () => {
             {showAddListModal && (
                 <>
                     <div className="overlay" onClick={() => setShowAddListModal(false)}></div>
-                    <AddListModal onSave={handleAddList} onClose={() => setShowAddListModal(false)} existingLists={userLists.map(list => list.name)} />
+                    <AddListModal onSave={handleAddList} onClose={() => setShowAddListModal(false)} existingLists={userLists.map(list => list.name)} setFloatingMessage={setFloatingMessage}/>
                 </>
             )}
 

@@ -3,10 +3,9 @@ import "./DeleteAccount.css";
 import { useNavigate } from "react-router";
 import { fetchData } from "../../services/apiService";
 
-const DeleteAccount = ({ onClose }) => {
+const DeleteAccount = ({ onClose, setFloatingMessage }) => {
     const [input, setInput] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
-    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
@@ -19,19 +18,20 @@ const DeleteAccount = ({ onClose }) => {
         if (input === "delete my account") {
             try {
                 setIsDeleting(true);
-                setError("");
+                setFloatingMessage(null);
 
                 await fetchData("users/delete", "DELETE");
+
                 localStorage.removeItem("rememberedEmail");
                 navigate("/");
                 onClose();
             } catch (error) {
-                setError("Error deleting the account. Please try again.");
-                setTimeout(() => setError(""), 3000);
+                setFloatingMessage({ text: "Error deleting the account. Please try again.", type: "error" });
+                setTimeout(() => setFloatingMessage(null), 3000);
             }
         } else {
-            setError("Confirmation phrase doesn't match. Please type the exact phrase.");
-            setTimeout(() => setError(""), 3000);
+            setFloatingMessage({ text: "Confirmation phrase doesn't match. Please type the exact phrase.", type: "error" });
+            setTimeout(() => setFloatingMessage(null), 3000);
         }
     };
 
@@ -43,11 +43,6 @@ const DeleteAccount = ({ onClose }) => {
             <button onClick={handleDelete} disabled={isDeleting} >
                 {isDeleting ? "Deleting..." : "Delete Account"}
             </button>
-            {error && (
-                <p className="error">
-                    {error}
-                </p>
-            )}
         </div>
     );
 };
