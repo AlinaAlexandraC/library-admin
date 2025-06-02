@@ -39,22 +39,15 @@ const AddTitlesFromScanner = () => {
         fetchCustomLists(setUserLists);
     }, []);
 
-    const isMobileDevice =
-        navigator.userAgentData?.mobile ||
-        /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    const isScannerCapable = isMobileDevice;
+    const isScannerCapable = /Android|iPhone/i.test(navigator.userAgent);
 
     useEffect(() => {
-        let isMounted = true;
+        if (!scanning || !isScannerCapable || !videoRef.current) return;
 
         const initScanner = async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                if (!isMounted) {
-                    stream.getTracks().forEach(track => track.stop());
-                    return;
-                }
+
                 mediaStream.current = stream;
                 videoRef.current.srcObject = stream;
 
@@ -62,12 +55,9 @@ const AddTitlesFromScanner = () => {
                 hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13]);
 
                 codeReader.current = new BrowserMultiFormatReader(hints);
-
                 codeReader.current.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
                     if (result) {
-                        const rawIsbn = result.getText();
-                        const isbn = rawIsbn.replace(/[^0-9Xx]/g, '').slice(0, 13);
-
+                        const isbn = result.getText().replace(/[^0-9Xx]/g, '').slice(0, 13);
                         const bookData = await fetchBookByIsbn(isbn);
                         if (bookData) {
                             setScannedBook({ isbn, ...bookData });
@@ -82,16 +72,11 @@ const AddTitlesFromScanner = () => {
                                 status: false,
                             });
                             setIsBookFound(true);
-                        } else {
-                            console.warn('No book data found.');
                         }
                         setScanning(false);
                     }
-                    if (err && err.name !== 'NotFoundException') {
-                        console.error(err);
-                    }
+                    if (err && err.name !== 'NotFoundException') console.error(err);
                 });
-
             } catch (err) {
                 console.error("Camera access error:", err);
                 setPermissionDenied(true);
@@ -99,12 +84,9 @@ const AddTitlesFromScanner = () => {
             }
         };
 
-        if (scanning && isScannerCapable && videoRef.current) {
-            initScanner();
-        }
+        initScanner();
 
         return () => {
-            isMounted = false;
             stopCamera();
         };
     }, [scanning, isScannerCapable]);
@@ -281,8 +263,7 @@ const AddTitlesFromScanner = () => {
                 });
 
                 setSelectedOtakuList("");
-                stopCamera();
-                resetSearch();
+                window.location.reload();
             } else {
                 setFloatingMessage({ type: "error", text: "Process failed. Try again later." });
                 setTimeout(() => setFloatingMessage(null), 3000);
@@ -330,9 +311,7 @@ const AddTitlesFromScanner = () => {
                 type: "button",
                 className: "btn",
                 onClick: () => {
-                    setScanning(false);
-                    stopCamera();
-                    resetSearch();
+                    window.location.reload();
                 }
             },
         ];
@@ -394,14 +373,13 @@ const AddTitlesFromScanner = () => {
                                         setUsingManual(false);
                                         setScanning(true);
                                     }}
-                                    disabled={permissionDenied}
                                 >
                                     Scan ISBN with Camera
                                 </button>
                             </div>
                         ) : (
                             <p className="scanner-unavailable-message">
-                                Scanning is only available on mobile or tablet devices.
+                                Scanning is only supported on phones.
                             </p>
                         )}
                         <div className='options-decoration'>
