@@ -286,6 +286,7 @@ const AddTitlesFromScanner = () => {
                 onClick: () => {
                     stopCamera();
                     setScanning(false);
+                    window.location.href = window.location.pathname + '?mode=scanner';
                 },
             },
             {
@@ -295,6 +296,7 @@ const AddTitlesFromScanner = () => {
                 onClick: () => {
                     setScanning(false);
                     setUsingManual(true);
+                    window.location.href = window.location.pathname + '?mode=scanner';
                 },
             },
         ];
@@ -337,7 +339,11 @@ const AddTitlesFromScanner = () => {
                 type: "button",
                 className: "btn",
                 onClick: () => {
-                    resetSearch();
+                    setScannedBook(null);
+                    setManualIsbn('');
+                    setIsBookFound(false);
+                    setUsingManual(false);
+                    setSearchAttempted(true);
                     setScanning(true);
                 },
             },
@@ -346,8 +352,13 @@ const AddTitlesFromScanner = () => {
                 type: "button",
                 className: "btn",
                 onClick: () => {
-                    resetSearch();
+                    setScannedBook(null);
+                    setManualIsbn('');
+                    setIsBookFound(false);
                     setUsingManual(true);
+                    setSearchAttempted(true);
+                    setScanning(false);
+                    window.location.href = window.location.pathname + '?mode=scanner';
                 },
             },
         ];
