@@ -1,11 +1,19 @@
 import "./AddTitlesPage.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddToLibrary from "../../components/AddTitlesManually/AddTitlesManually";
 import AddTitlesFromFolder from "../../components/AddTitlesFromFolder/AddTitlesFromFolder";
 import AddTitlesFromScanner from "../../components/AddTitlesFromScanner/AddTitlesFromScanner";
 
 const AddTitlesPage = () => {
     const [activeTab, setActiveTab] = useState("Manually");
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        if (mode === 'scanner') {
+            setActiveTab('Scanner');
+        }
+    }, []);
 
     return (
         <div className="add-titles-page-container">

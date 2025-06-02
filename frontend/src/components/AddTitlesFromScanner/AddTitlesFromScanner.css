@@ -92,7 +92,7 @@
     margin-bottom: 30px;
 }
 
-.form-body-content>div>div.otaku-list-select {
+.add-titles-by-scanning-container > div > div > div.form-structure > form > div.form-body-content > div > div.otaku-list-select {
     margin: 25px 0;
 }
 

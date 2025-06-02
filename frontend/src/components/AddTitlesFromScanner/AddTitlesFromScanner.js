@@ -263,7 +263,7 @@ const AddTitlesFromScanner = () => {
                 });
 
                 setSelectedOtakuList("");
-                window.location.reload();
+                window.location.href = window.location.pathname + '?mode=scanner';
             } else {
                 setFloatingMessage({ type: "error", text: "Process failed. Try again later." });
                 setTimeout(() => setFloatingMessage(null), 3000);
@@ -311,7 +311,7 @@ const AddTitlesFromScanner = () => {
                 type: "button",
                 className: "btn",
                 onClick: () => {
-                    window.location.reload();
+                    window.location.href = window.location.pathname + '?mode=scanner';
                 }
             },
         ];
