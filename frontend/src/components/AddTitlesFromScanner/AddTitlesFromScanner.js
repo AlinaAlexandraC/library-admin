@@ -39,81 +39,86 @@ const AddTitlesFromScanner = () => {
         fetchCustomLists(setUserLists);
     }, []);
 
-    const isMobileDevice = navigator.userAgentData?.mobile ?? /Mobi|Android|iPhone|iPad|iPod|Tablet|Touch/i.test(navigator.userAgent);
-
-    const isScannerCapable = isMobileDevice;
+    const isScannerCapable = !!navigator.mediaDevices?.getUserMedia;
 
     useEffect(() => {
-        if (!navigator.mediaDevices?.getUserMedia) return;
+        let isMounted = true;
 
-        if (scanning && isScannerCapable && videoRef.current) {
-            const initScanner = async () => {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                    mediaStream.current = stream;
-                    videoRef.current.srcObject = stream;
-                } catch (err) {
-                    setPermissionDenied(true);
-                    setScanning(false);
+        const initScanner = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                if (!isMounted) {
+                    stream.getTracks().forEach(track => track.stop());
                     return;
                 }
+                mediaStream.current = stream;
+                videoRef.current.srcObject = stream;
 
                 const hints = new Map();
                 hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13]);
 
                 codeReader.current = new BrowserMultiFormatReader(hints);
 
-                codeReader.current.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
+                codeReader.current.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
                     if (result) {
                         const rawIsbn = result.getText();
                         const isbn = rawIsbn.replace(/[^0-9Xx]/g, '').slice(0, 13);
 
-                        (async () => {
-                            const bookData = await fetchBookByIsbn(isbn);
-
-                            if (bookData) {
-                                setScannedBook({ isbn, ...bookData });
-                                setTitleFormData({
-                                    title: bookData.title,
-                                    author: bookData.author,
-                                    type: "Book",
-                                    genre: "",
-                                    numberOfSeasons: "",
-                                    numberOfEpisodes: "",
-                                    numberOfChapters: "",
-                                    status: false,
-                                });
-                                setIsBookFound(true);
-                            } else {
-                                console.warn('No book data found.');
-                            }
-                            setScanning(false);
-                        })();
+                        const bookData = await fetchBookByIsbn(isbn);
+                        if (bookData) {
+                            setScannedBook({ isbn, ...bookData });
+                            setTitleFormData({
+                                title: bookData.title,
+                                author: bookData.author,
+                                type: "Book",
+                                genre: "",
+                                numberOfSeasons: "",
+                                numberOfEpisodes: "",
+                                numberOfChapters: "",
+                                status: false,
+                            });
+                            setIsBookFound(true);
+                        } else {
+                            console.warn('No book data found.');
+                        }
+                        setScanning(false);
                     }
-                    if (err && !(err.name === 'NotFoundException')) {
+                    if (err && err.name !== 'NotFoundException') {
                         console.error(err);
                     }
                 });
-            };
+
+            } catch (err) {
+                console.error("Camera access error:", err);
+                setPermissionDenied(true);
+                setScanning(false);
+            }
+        };
+
+        if (scanning && isScannerCapable && videoRef.current) {
             initScanner();
         }
 
         return () => {
+            isMounted = false;
             stopCamera();
-            if (codeReader.current?.reset) codeReader.current.reset();
         };
     }, [scanning, isScannerCapable]);
 
     const stopCamera = () => {
         if (mediaStream.current) {
-            mediaStream.current.getTracks().forEach(track => track.stop());
+            mediaStream.current.getTracks().forEach(track => {
+                if (track.readyState === "live") {
+                    track.stop();
+                }
+            });
             mediaStream.current = null;
         }
-        
+
         if (videoRef.current) {
             videoRef.current.srcObject = null;
         }
-        
+
         if (codeReader.current?.reset) {
             codeReader.current.reset();
         }
@@ -212,11 +217,12 @@ const AddTitlesFromScanner = () => {
     };
 
     const resetSearch = () => {
+        setScanning(false);
+        stopCamera();
         setScannedBook(null);
         setManualIsbn('');
         setIsBookFound(false);
         setUsingManual(false);
-        setScanning(false);
         setSearchAttempted(false);
     };
 
@@ -306,7 +312,11 @@ const AddTitlesFromScanner = () => {
                 label: "Back to Options",
                 type: "button",
                 className: "btn",
-                onClick: resetSearch,
+                onClick: () => {
+                    setScanning(false);
+                    stopCamera();
+                    resetSearch();
+                }
             },
         ];
     } else if (usingManual && !isBookFound && !searchAttempted) {
