@@ -1,6 +1,8 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useEffect, useState, lazy, Suspense } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { setSessionExpiredHandler } from './utils/sessionExpiredHandler';
 import Layout from './pages/Layout';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import ServerStatusModal from './components/ServerStatusModal/ServerStatusModal';
@@ -101,8 +103,14 @@ function App() {
   const [serverStatus, setServerStatus] = useState("Waking up the server... Please wait ⏳");
   const [showServerModal, setShowServerModal] = useState(true);
   const [showSessionModal, setShowSessionModal] = useState(false);
+  const [userLoaded, setUserLoaded] = useState(false);
 
-  const { expired, signOutUser, resetTimer } = useSessionRefreshWatcher(setShowSessionModal);
+  const {
+    expired,
+    signOutUser,
+    resetTimer,
+    clearExpired
+  } = useSessionRefreshWatcher(setShowSessionModal, userLoaded);
 
   const handleStayLoggedIn = () => {
     setShowSessionModal(false);
@@ -113,6 +121,36 @@ function App() {
     setShowSessionModal(false);
     await signOutUser();
   };
+
+  // useEffect(() => {
+  //   const auth = getAuth();
+
+  //   let timeoutId;
+
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     setUserLoaded(true);
+
+  //     if (user) {
+  //       clearExpired();
+
+  //       // Delay setting handler slightly after confirmed login
+  //       timeoutId = setTimeout(() => {
+  //         console.log("✅ Session expired handler SET (delayed)");
+  //         setSessionExpiredHandler(() => setShowSessionModal(true));
+  //       }, 3000);
+  //     } else {
+  //       console.log("❌ Session expired handler CLEARED");
+  //       setSessionExpiredHandler(null);
+  //     }
+  //   });
+
+  //   // Cleanup happens on component unmount OR on effect re-run
+  //   return () => {
+  //     unsubscribe();
+  //     if (timeoutId) clearTimeout(timeoutId);
+  //     setSessionExpiredHandler(null); // <- ensure it’s always cleared when component goes
+  //   };
+  // }, [clearExpired]);
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") {
@@ -155,7 +193,7 @@ function App() {
         </Suspense>
       </header>
 
-      {showSessionModal && !expired && (
+      {userLoaded && showSessionModal && !expired && (
         <SessionRefreshModal
           message="Your session is about to expire, do you want to stay logged in?"
           onClose={handleStayLoggedIn}
@@ -163,7 +201,7 @@ function App() {
         />
       )}
 
-      {expired && !showSessionModal && (
+      {userLoaded && expired && !showSessionModal && (
         <SessionRefreshModal
           message="Your session has expired. Please log in again."
           onClose={() => window.location.replace('/')}

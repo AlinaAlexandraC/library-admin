@@ -47,3 +47,11 @@
 .login-button {
     width: 100%;
 }
+
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
+    .login-container {
+        align-content: flex-start;
+        margin: 10px 0;
+    }
+}

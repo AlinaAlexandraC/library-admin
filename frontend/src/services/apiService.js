@@ -1,7 +1,8 @@
 import axios from "axios";
 import { auth } from "../config/firebase";
+import { callSessionExpiredHandler } from '../utils/sessionExpiredHandler';
 
-export const fetchData = async (endpoint, method = 'GET', body = null, onSessionExpired = null) => {
+export const fetchData = async (endpoint, method = 'GET', body = null) => {
   try {
     const user = auth.currentUser;
 
@@ -26,11 +27,11 @@ export const fetchData = async (endpoint, method = 'GET', body = null, onSession
 
     return response.data;
   } catch (error) {
-    const message = error.response?.data?.message || 'An error occurred';
     const status = error.response?.status;
+    const message = error.response?.data?.message || 'An error occurred';
 
-    if (status === 403 && typeof onSessionExpired === 'function') {
-      onSessionExpired();
+    if (status === 403) {
+      callSessionExpiredHandler();
     }
 
     throw new Error(message);

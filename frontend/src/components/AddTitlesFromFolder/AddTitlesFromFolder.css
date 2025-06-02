@@ -14,6 +14,10 @@
     width: 120px;
 }
 
+.form-structure>form>div.form-body-content>div {
+    width: 100%;
+}
+
 .dropdown-lists {
     height: 60px;
     display: flex;
@@ -46,15 +50,15 @@
     position: relative;
 }
 
-.titles-list-from-folder ul {
+.titles-list-from-folder::-webkit-scrollbar {
+    display: none;
+}
+
+.extracted-titles-list-container {
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-}
-
-.titles-list-from-folder::-webkit-scrollbar {
-    display: none;
 }
 
 .extracted-title-container {

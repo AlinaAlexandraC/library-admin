@@ -183,8 +183,7 @@ span {
     }
 }
 
-@media (max-width: 480px),
-(max-height: 375px) and (orientation: landscape) {
+@media (max-width: 480px) {
 
     .user-dropdown-content .link span,
     .log-out-button span,

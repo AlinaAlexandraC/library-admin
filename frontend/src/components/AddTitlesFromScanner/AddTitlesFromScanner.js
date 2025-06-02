@@ -99,7 +99,6 @@ const AddTitlesFromScanner = () => {
                         track.stop();
                     } catch (err) {
                         console.error("Error stopping track:", err);
-                        alert("Error stopping track: " + err.message);
                     }
                 });
                 mediaStream.current = null;
@@ -114,12 +113,10 @@ const AddTitlesFromScanner = () => {
                     codeReader.current.reset();
                 } catch (err) {
                     console.error("Error resetting codeReader:", err);
-                    alert("Error resetting codeReader: " + err.message);
                 }
             }
         } catch (err) {
             console.error("stopCamera failed:", err);
-            alert("stopCamera error: " + err.message);
         }
     };
 

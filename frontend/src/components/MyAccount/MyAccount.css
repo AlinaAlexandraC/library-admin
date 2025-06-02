@@ -1,9 +1,9 @@
 .my-account-container {
-    height: calc(100vh - 90px);
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+    margin: 40px 0;
 }
 
 .my-account-wrapper {
