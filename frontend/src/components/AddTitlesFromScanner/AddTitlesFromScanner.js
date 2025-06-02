@@ -286,7 +286,6 @@ const AddTitlesFromScanner = () => {
                 onClick: () => {
                     stopCamera();
                     setScanning(false);
-                    window.location.href = window.location.pathname + '?mode=scanner';
                 },
             },
             {
@@ -372,7 +371,7 @@ const AddTitlesFromScanner = () => {
                 onSubmit={(e) => e.preventDefault()}
                 buttons={buttons}
             >
-                {!isBookFound && !usingManual && !scanning && (
+                {!isBookFound && !usingManual && !scanning && !searchAttempted && (
                     <div className='method-toggle'>
                         {isScannerCapable ? (
                             <div className="buttons">
