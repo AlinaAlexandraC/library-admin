@@ -105,22 +105,25 @@ const AddTitlesFromScanner = () => {
         };
     }, [scanning, isScannerCapable]);
 
-    const stopCamera = () => {
-        if (mediaStream.current) {
-            mediaStream.current.getTracks().forEach(track => {
-                if (track.readyState === "live") {
+    const stopCamera = async () => {
+        try {
+            if (codeReader.current) {
+                await codeReader.current.reset();
+            }
+
+            if (mediaStream.current) {
+                mediaStream.current.getTracks().forEach(track => {
                     track.stop();
-                }
-            });
-            mediaStream.current = null;
-        }
+                });
+                mediaStream.current = null;
+            }
 
-        if (videoRef.current) {
-            videoRef.current.srcObject = null;
-        }
-
-        if (codeReader.current?.reset) {
-            codeReader.current.reset();
+            if (videoRef.current) {
+                videoRef.current.srcObject = null;
+            }
+        } catch (err) {
+            console.error('Failed to stop camera:', err);
+            alert('Failed to stop camera:', err);
         }
     };
 
