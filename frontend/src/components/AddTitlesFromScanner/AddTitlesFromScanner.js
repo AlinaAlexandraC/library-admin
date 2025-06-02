@@ -39,7 +39,11 @@ const AddTitlesFromScanner = () => {
         fetchCustomLists(setUserLists);
     }, []);
 
-    const isScannerCapable = !!navigator.mediaDevices?.getUserMedia;
+    const isMobileDevice =
+        navigator.userAgentData?.mobile ||
+        /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    const isScannerCapable = isMobileDevice;
 
     useEffect(() => {
         let isMounted = true;
@@ -105,15 +109,16 @@ const AddTitlesFromScanner = () => {
         };
     }, [scanning, isScannerCapable]);
 
-    const stopCamera = async () => {
+    const stopCamera = () => {
         try {
-            if (codeReader.current) {
-                await codeReader.current.reset();
-            }
-
             if (mediaStream.current) {
                 mediaStream.current.getTracks().forEach(track => {
-                    track.stop();
+                    try {
+                        track.stop();
+                    } catch (err) {
+                        console.error("Error stopping track:", err);
+                        alert("Error stopping track: " + err.message);
+                    }
                 });
                 mediaStream.current = null;
             }
@@ -121,9 +126,18 @@ const AddTitlesFromScanner = () => {
             if (videoRef.current) {
                 videoRef.current.srcObject = null;
             }
+
+            if (codeReader.current?.reset) {
+                try {
+                    codeReader.current.reset();
+                } catch (err) {
+                    console.error("Error resetting codeReader:", err);
+                    alert("Error resetting codeReader: " + err.message);
+                }
+            }
         } catch (err) {
-            console.error('Failed to stop camera:', err);
-            alert('Failed to stop camera:', err);
+            console.error("stopCamera failed:", err);
+            alert("stopCamera error: " + err.message);
         }
     };
 
