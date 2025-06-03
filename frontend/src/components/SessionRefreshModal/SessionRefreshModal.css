@@ -11,7 +11,7 @@
     z-index: 1000;
 }
 
-.modal {
+#root > div > div.session-refresh-modal-container > div {
     background: white;
     padding: 2rem;
     border-radius: 8px;
