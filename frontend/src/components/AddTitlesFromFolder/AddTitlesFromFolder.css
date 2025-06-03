@@ -1,3 +1,8 @@
+.select-folder-otaku-list-select-container {
+    display: flex;
+    justify-content: center;
+}
+
 .select-folder-container {
     display: flex;
     justify-content: center;

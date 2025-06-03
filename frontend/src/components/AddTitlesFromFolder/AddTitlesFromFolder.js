@@ -172,12 +172,14 @@ const AddTitlesFromFolder = () => {
                 buttons={buttons}>
                 <div className="add-titles-from-folder-content">
                     {!folderSelected && (
-                        <div
-                            className={`select-folder-container ${isFolderLoading ? "disabled" : ""}`}
-                            onClick={!isFolderLoading ? handleFolderSelection : undefined}
-                        >
-                            <img src={folderIcon} alt="folder-icon" className="folder-icon" />
-                            <span>{isFolderLoading ? "Loading..." : "Select Folder"}</span>
+                        <div className="select-folder-otaku-list-select-container">
+                            <div
+                                className={`select-folder-container ${isFolderLoading ? "disabled" : ""}`}
+                                onClick={!isFolderLoading ? handleFolderSelection : undefined}
+                            >
+                                <img src={folderIcon} alt="folder-icon" className="folder-icon" />
+                                <span>{isFolderLoading ? "Loading..." : "Select Folder"}</span>
+                            </div>
                         </div>
                     )}
                     {titleFormData.length > 0 && (

@@ -52,6 +52,6 @@
 (max-height: 375px) and (orientation: landscape) {
     .login-container {
         align-content: flex-start;
-        margin: 10px 0;
+        margin: 40px 0;
     }
 }
