@@ -37,7 +37,8 @@
     width: 100%;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 480px),
+(max-height: 375px) and (orientation: landscape) {
 
     .registration-terms,
     .go-to-login {
