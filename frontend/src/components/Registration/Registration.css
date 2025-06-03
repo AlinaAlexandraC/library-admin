@@ -37,8 +37,7 @@
     width: 100%;
 }
 
-@media (max-width: 480px),
-(max-height: 375px) and (orientation: landscape) {
+@media (max-width: 480px) {
 
     .registration-terms,
     .go-to-login {
@@ -48,5 +47,11 @@
     .registration-container {
         align-content: flex-start;
         margin: 40px 0;
+    }
+}
+
+@media (max-height: 730px) and (orientation: landscape) {
+    .registration-container {
+        margin: 20px 0;
     }
 }

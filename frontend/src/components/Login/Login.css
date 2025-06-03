@@ -48,10 +48,15 @@
     width: 100%;
 }
 
-@media (max-width: 480px),
-(max-height: 375px) and (orientation: landscape) {
+@media (max-width: 480px) {
     .login-container {
         align-content: flex-start;
         margin: 40px 0;
+    }
+}
+
+@media (max-height: 730px) and (orientation: landscape) {
+    .login-container {
+        margin: 20px 0;
     }
 }
