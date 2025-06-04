@@ -1,32 +1,73 @@
-# List Manager
+# 📚 List Manager
 
-A full-stack list-management application for tracking and organizing titles (e.g., books, movies, anime). Users can create, manage, and edit personalized lists.
+A full-stack app to track, organize, and randomly pick from your favorite books, movies, and anime — all in one place.  
 Built with React, Express, MongoDB Atlas, and Firebase Authentication.
 
 Deployed on [Render](https://library-admin-1.onrender.com/).
 
-# Features
+## 🔐 Demo Account
 
-🔐 User Authentication: Secure sign-up and login via Firebase Authentication.
-📝 Custom Lists: Create and manage personalized lists (e.g., "Watch Later - Anime").
-📑 Default Lists: Predefined list types for quick organization (e.g., Books, Movies).
-📂 Title Management: Add titles individually or in bulk by selecting a folder.
-🎲 Random Picker: Pick a random title from any list when you can’t decide.
-✏️ Edit and Delete Titles: Easily manage and modify your lists.
+Use this account to test the app without registering:
 
-# Tech Stack
+- **Email:** demo@listmanager.com
+- **Password:** Password@2025
 
-🔧 Frontend: React.js
+## ✨ Features
+
+### 🔐 User Authentication
+
+- Secure login, registration, and password reset via email
+
+### 📂 List Organization
+
+- Custom and default lists (Books, Movies, Anime, etc.)
+- Move titles freely between any lists
+- Delete lists (with or without keeping titles)
+
+### ➕ Add Titles
+
+- Manually, by selecting a folder, or via ISBN (barcode scan or manual input)
+- Duplicate prevention across all lists
+
+### 📝 Title Details
+
+- Edit titles with type-specific fields (e.g., author, genre, episodes)
+- Mark titles as seen/unseen
+
+### 🔍 Search & Filter
+
+- Filter by genre and status
+- Search by title name or author
+
+### 🎲 Randomizer
+
+- Randomly select a title from any list with 2+ entries
+
+### 👤 Account Settings
+
+- Update name/email or delete account
+
+## 🛠 Tech Stack
+
+🔧 Frontend: React.js, JavaScript, CSS
 🖥️ Backend: Express.js (Node.js)
 💾 Database: MongoDB Atlas
 🔑 Authentication: Firebase Auth
+📚 External API: Google Books API (for ISBN autofill)
 ⚙️ Environment Configuration: dotenv
 🌐 Deployment: Render (for hosting the app)
 🐙 Version Control: GitHub
 
-# Usage
+## 🚀 Usage
 
-1. Sign up or log in to the app using Firebase Authentication.
-2. Create personalized lists and add titles individually or in bulk.
-3. Use the random title picker when you need help deciding what to watch or read.
-4. Edit or delete titles as needed from your lists.
+1. Sign up or log in using Firebase Authentication
+2. Choose your organization style:
+   - Create your own custom lists
+   - Use the built-in default lists (Books, Movies, Anime) for auto-sorting
+3. Add titles to your lists in three ways:
+   - Manually enter the title details
+   - Select a folder (bulk import)
+   - Add via ISBN: Scan the barcode (on mobile) or input the ISBN manually
+4. Use the Randomizer to help you choose what to watch or read
+5. Edit or delete titles as needed to keep your lists up to date
+6. Manage your account from the “My Account” page, where you can edit your name and email or delete your account.
