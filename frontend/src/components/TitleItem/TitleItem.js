@@ -13,7 +13,9 @@ const TitleItem = ({ title, index, openModal, onToggleStatus, onDelete, loadingA
                 </div>
                 <div className={(title.genre || title.author || title.numberOfSeasons || title.numberOfEpisodes || title.numberOfChapters) ? "other-details" : "no-details"}>
                     <span className="genre">{title.genre || ""}</span>
-                    <span className="author"> Written by <strong>{title.author || ""}</strong></span>
+                    {title.type === "Book" && (
+                        <span className="author"> Written by <i>{title.author || ""}</i></span>
+                    )}
                     {title.numberOfSeasons != null && (
                         <span className="numberOfSeasons">
                             {title.numberOfSeasons} {title.numberOfSeasons === 1 ? 'season' : 'seasons'}
