@@ -19,7 +19,6 @@
 .list-link {
     text-decoration: none;
     color: black;
-    font-weight: 600;
 }
 
 .list-link:visited {
@@ -37,6 +36,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+#root > div > header > div > main > div > div.otaku-lists-container > div > div.otaku-lists > div:nth-child(4) > a > div > div > span {
+    width: calc(100% - 88px);
 }
 
 .create-otaku-lists-button {
