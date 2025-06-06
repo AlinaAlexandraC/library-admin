@@ -329,7 +329,7 @@ const AddTitlesFromScanner = () => {
                 onClick: resetSearch,
             },
         ];
-    } else if (!isBookFound && searchAttempted) {
+    } else if (!isBookFound && searchAttempted && !usingManual) {
         buttons = [
             {
                 label: "Scan Another",
@@ -357,6 +357,29 @@ const AddTitlesFromScanner = () => {
                     setScanning(false);
                     window.location.href = window.location.pathname + '?mode=scanner';
                 },
+            },
+        ];
+    } else if (usingManual && !isBookFound && searchAttempted) {
+        buttons = [
+            {
+                label: "Search Another",
+                type: "button",
+                className: "btn",
+                onClick: () => {
+                    setScannedBook(null);
+                    setManualIsbn('');
+                    setIsBookFound(false);
+                    setUsingManual(false);
+                    setSearchAttempted(true);
+                },
+            },
+            {
+                label: "Back to Options",
+                type: "button",
+                className: "btn",
+                onClick: () => {
+                    window.location.href = window.location.pathname + '?mode=scanner';
+                }
             },
         ];
     }
