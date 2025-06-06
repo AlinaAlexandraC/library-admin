@@ -367,8 +367,9 @@ const AddTitlesFromScanner = () => {
                 className: "btn",
                 onClick: () => {
                     setManualIsbn('');
+                    setUsingManual(true);
                     setIsBookFound(false);
-                    setSearchAttempted(true);
+                    setSearchAttempted(false);
                 },
             },
             {
