@@ -340,7 +340,7 @@ const AddTitlesFromScanner = () => {
                     setManualIsbn('');
                     setIsBookFound(false);
                     setUsingManual(false);
-                    setSearchAttempted(true);
+                    setSearchAttempted(false);
                     setScanning(true);
                 },
             },
